@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "lib": ["esnext", "dom"],
+    "noLib": false,
+    "useDefineForClassFields": true,
+    "baseUrl": ".",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "resolveJsonModule": true,
+    "types": ["vite/client", "unplugin-icons/types/vue", "element-plus/global"],
+    "allowJs": true,
+    "strict": true,
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true /* 允许默认导入 */,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */ /* Ensure that casing is correct in imports. */
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "src/typings/**/*.d.ts",
+    "mock/**/*.ts",
+    "vite.config.ts"
+  ],
+  "exclude": ["node_modules", "dist", "**/*.js"]
+}

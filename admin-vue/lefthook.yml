@@ -1,0 +1,29 @@
+# EXAMPLE USAGE:
+#
+#   Refer for explanation to following link:
+#   https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md
+#
+# pre-commit:
+#   parallel: true
+#   commands:
+#     lint-vue-js:
+#       glob: 'src/**/*.{vue,html}'
+#       run: npx eslint {staged_files} --fix
+#     lint-vue-css:
+#       glob: 'src/**/*.{vue,html}'
+#       run: npx stylelint {staged_files} --fix
+#     lint-js:
+#       glob: 'src/**/*.{js,ts}'
+#       run: npx eslint {staged_files} --fix
+#     lint-css:
+#       glob: 'src/**/*.{scss,css}'
+#       run: npx stylelint {staged_files} --fix
+# Removed unnecessary rubocop and govet commands
+# this is a list of scripts that will be executed by lefthook.
+# the key is a glob pattern and the value is a runner command.
+# the runner command will be executed with the glob pattern as an argument.
+#
+# example:
+#   scripts:
+#     "*.js":
+#       runner: eslint
