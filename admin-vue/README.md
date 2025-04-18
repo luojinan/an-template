@@ -10,6 +10,7 @@ npx degit luojinan/an-template/admin-vue your-project-name
 
 1. 使用 degit 命令创建项目
 2. 安装依赖
+3. git init
 
 ## 项目简介
 
