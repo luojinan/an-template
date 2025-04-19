@@ -1,24 +1,24 @@
 <template>
   <view class="settings-container">
-    <wd-cell-group>
-      <wd-cell title="账号和安全" icon="secured" is-link @click="navigateToAccount" />
-      <wd-cell title="用户协议" icon="user" is-link @click="navigateToUserAgreement" />
-      <wd-cell title="隐私政策" icon="folder" is-link @click="navigateToPrivacy" />
-    </wd-cell-group>
+    <nut-cell-group>
+      <nut-cell title="账号和安全" icon="secured" is-link @click="navigateToAccount" />
+      <nut-cell title="用户协议" icon="user" is-link @click="navigateToUserAgreement" />
+      <nut-cell title="隐私政策" icon="folder" is-link @click="navigateToPrivacy" />
+    </nut-cell-group>
 
-    <wd-cell-group custom-style="margin-top:40rpx">
-      <wd-cell
+    <nut-cell-group custom-style="margin-top:40rpx">
+      <nut-cell
         title="清空缓存"
         icon="delete1"
         :value="cacheSize"
         clickable
         @click="handleClearCache"
       />
-    </wd-cell-group>
+    </nut-cell-group>
 
-    <wd-cell-group v-if="isLogin" custom-style="margin-top:40rpx">
-      <wd-cell title="退出" icon="logout" is-link @click="handleLogout" />
-    </wd-cell-group>
+    <nut-cell-group v-if="isLogin" custom-style="margin-top:40rpx">
+      <nut-cell title="退出" icon="logout" is-link @click="handleLogout" />
+    </nut-cell-group>
 
     <!-- 全屏 loading -->
     <view v-if="clearing" class="loading-mask">

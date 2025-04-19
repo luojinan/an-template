@@ -1,5 +1,5 @@
-import type { App } from "vue";
 import { createPinia } from "pinia";
+import type { App } from "vue";
 
 const store = createPinia();
 
@@ -8,7 +8,7 @@ export function setupStore(app: App<Element>) {
   app.use(store);
 }
 
-export * from "./modules/user";
 export * from "./modules/dict";
-export * from "./modules/theme";
+export * from "./modules/user";
+export * from "./modules/loading";
 export { store };

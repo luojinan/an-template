@@ -6,6 +6,14 @@ import { setToken, getUserInfo, setUserInfo, clearAll } from "@/utils/cache";
 export const useUserStore = defineStore("user", () => {
   const userInfo = ref<UserInfo | undefined>(getUserInfo());
 
+  // 计算属性
+  const hasUser = computed(() => !!userInfo.value);
+  const level = computed(() => userInfo.value?.level || 0);
+  const levelName = computed(() => userInfo.value?.levelName || "");
+  const isChild = computed(() => userInfo.value?.isChild || false);
+  const phone = computed(() => userInfo.value?.phone || "");
+  const discount = computed(() => userInfo.value?.discount || 0);
+
   // 登录
   const login = (data: LoginFormData) => {
     return new Promise((resolve, reject) => {
@@ -73,6 +81,12 @@ export const useUserStore = defineStore("user", () => {
 
   return {
     userInfo,
+    hasUser,
+    level,
+    levelName,
+    isChild,
+    phone,
+    discount,
     login,
     loginByWechat,
     logout,

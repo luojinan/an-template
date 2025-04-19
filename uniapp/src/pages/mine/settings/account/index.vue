@@ -1,39 +1,39 @@
 <template>
   <view class="profile">
     <view class="profile-card">
-      <wd-cell-group border>
-        <wd-cell
+      <nut-cell-group border>
+        <nut-cell
           title="账户密码"
           label="定期修改密码有助于保护账户安全"
           value="修改"
           is-link
           @click="handleOpenDialog(DialogType.PASSWORD)"
         />
-        <wd-cell
+        <nut-cell
           title="绑定手机"
           :value="userProfile?.mobile"
           is-link
           @click="handleOpenDialog(DialogType.MOBILE)"
         />
-        <wd-cell
+        <nut-cell
           title="绑定邮箱"
           :value="userProfile?.email ? userProfile.email : '未绑定邮箱'"
           is-link
           @click="handleOpenDialog(DialogType.EMAIL)"
         />
-      </wd-cell-group>
+      </nut-cell-group>
     </view>
 
     <!--用户信息编辑弹出框-->
-    <wd-popup v-model="dialog.visible" position="bottom">
-      <wd-form
+    <nut-popup v-model="dialog.visible" position="bottom">
+      <nut-form
         v-if="dialog.type === DialogType.PASSWORD"
         ref="passwordChangeFormRef"
         :model="passwordChangeForm"
         custom-class="edit-form"
       >
-        <wd-cell-group border>
-          <wd-input
+        <nut-cell-group border>
+          <nut-input
             v-model="passwordChangeForm.oldPassword"
             label="原密码"
             label-width="160rpx"
@@ -43,7 +43,7 @@
             prop="oldPassword"
             :rules="rules.oldPassword"
           />
-          <wd-input
+          <nut-input
             v-model="passwordChangeForm.newPassword"
             label="新密码"
             label-width="160rpx"
@@ -53,7 +53,7 @@
             prop="newPassword"
             :rules="rules.newPassword"
           />
-          <wd-input
+          <nut-input
             v-model="passwordChangeForm.confirmPassword"
             label="确认密码"
             label-width="160rpx"
@@ -63,19 +63,19 @@
             prop="confirmPassword"
             :rules="rules.confirmPassword"
           />
-        </wd-cell-group>
+        </nut-cell-group>
         <view class="footer">
-          <wd-button type="primary" size="large" block @click="handleSubmit">提交</wd-button>
+          <nut-button type="primary" size="large" block @click="handleSubmit">提交</nut-button>
         </view>
-      </wd-form>
-      <wd-form
+      </nut-form>
+      <nut-form
         v-if="dialog.type === DialogType.MOBILE"
         ref="mobileBindingFormRef"
         :model="mobileBindingForm"
         custom-class="edit-form"
       >
-        <wd-cell-group border>
-          <wd-input
+        <nut-cell-group border>
+          <nut-input
             v-model="mobileBindingForm.mobile"
             label="手机号码"
             label-width="160rpx"
@@ -84,7 +84,7 @@
             prop="mobile"
             :rules="rules.mobile"
           />
-          <wd-input
+          <nut-input
             v-model="mobileBindingForm.code"
             label="验证码"
             label-width="160rpx"
@@ -94,28 +94,28 @@
             :rules="rules.code"
           >
             <template #suffix>
-              <wd-button
+              <nut-button
                 plain
                 :disabled="mobileCountdown > 0"
                 @click="handleSendVerificationCode('MOBILE')"
               >
                 {{ mobileCountdown > 0 ? `${mobileCountdown}s后重新发送` : "发送验证码" }}
-              </wd-button>
+              </nut-button>
             </template>
-          </wd-input>
-        </wd-cell-group>
+          </nut-input>
+        </nut-cell-group>
         <view class="footer">
-          <wd-button type="primary" size="large" block @click="handleSubmit">提交</wd-button>
+          <nut-button type="primary" size="large" block @click="handleSubmit">提交</nut-button>
         </view>
-      </wd-form>
-      <wd-form
+      </nut-form>
+      <nut-form
         v-if="dialog.type === DialogType.EMAIL"
         ref="emailBindingFormRef"
         :model="emailBindingForm"
         custom-class="edit-form"
       >
-        <wd-cell-group border>
-          <wd-input
+        <nut-cell-group border>
+          <nut-input
             v-model="emailBindingForm.email"
             label="邮箱"
             label-width="160rpx"
@@ -124,7 +124,7 @@
             prop="email"
             :rules="rules.email"
           />
-          <wd-input
+          <nut-input
             v-model="emailBindingForm.code"
             label="验证码"
             label-width="160rpx"
@@ -134,21 +134,21 @@
             :rules="rules.code"
           >
             <template #suffix>
-              <wd-button
+              <nut-button
                 plain
                 :disabled="emailCountdown > 0"
                 @click="handleSendVerificationCode('EMAIL')"
               >
                 {{ emailCountdown > 0 ? `${emailCountdown}s后重新发送` : "发送验证码" }}
-              </wd-button>
+              </nut-button>
             </template>
-          </wd-input>
-        </wd-cell-group>
+          </nut-input>
+        </nut-cell-group>
         <view class="footer">
-          <wd-button type="primary" size="large" block @click="handleSubmit">提交</wd-button>
+          <nut-button type="primary" size="large" block @click="handleSubmit">提交</nut-button>
         </view>
-      </wd-form>
-    </wd-popup>
+      </nut-form>
+    </nut-popup>
   </view>
 </template>
 <script setup lang="ts">

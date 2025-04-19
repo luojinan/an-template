@@ -1,507 +1,585 @@
 <template>
   <view class="mine-container">
-    <!-- 用户信息卡片 -->
-    <view class="user-profile">
-      <view class="blur-bg"></view>
-      <view class="user-info">
-        <view class="avatar-container" @click="navigateToProfile">
-          <image
-            class="avatar"
-            :src="isLogin ? userInfo!.avatar : defaultAvatar"
-            mode="aspectFill"
+    <!-- 用户信息区域 -->
+    <view class="user-info">
+      <view class="user-left">
+        <view class="avatar-container">
+          <nut-avatar size="large">
+            <image src="https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/head_moren@2x.png" />
+          </nut-avatar>
+          
+          <image 
+            v-if="level == 1" 
+            class="avatar-logo" 
+            src="https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/vip_kuang1@2x.png" 
+            mode="widthFix" 
           />
-          <view v-if="isLogin" class="avatar-edit">
-            <wd-icon name="edit-pen" size="16" color="#fff" />
+          <image 
+            v-if="level == 2" 
+            class="avatar-logo" 
+            src="https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/vip_kuang2@2x.png" 
+            mode="widthFix" 
+          />
+          <image 
+            v-if="level == 3" 
+            class="avatar-logo" 
+            src="https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/vip_kuang3@2x.png" 
+            mode="widthFix" 
+          />
+          <image 
+            v-if="level == 4" 
+            class="avatar-logo" 
+            src="https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/vip_kuang4@2x.png" 
+            mode="widthFix" 
+          />
+        </view>
+
+        <view class="nickname-container">
+          <view @click="turnToLogin" v-if="!hasUser">点击登录</view>
+          <view v-else>{{ nickname || (phoneTail ? "游客"+phoneTail : "") }}</view>
+          <view v-if="level" class="level-container" @click="turnToVIP">
+            <image 
+              v-if="level == 1" 
+              class="vip-logo" 
+              src="https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/Group 1779@2x.png" 
+            />
+            <image 
+              v-if="level == 2" 
+              class="vip-logo" 
+              src="https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/Group 1780@2x.png" 
+            />
+            <image 
+              v-if="level == 3" 
+              class="vip-logo" 
+              src="https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/Group 1785@2x.png" 
+            />
+            <image 
+              v-if="level == 4" 
+              class="vip-logo" 
+              src="https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/Group 1786@2x.png" 
+            />
+            <view 
+              class="level-name" 
+              :class="{
+                'gray': level == 1,
+                'orange': level == 2,
+                'purple': level == 3,
+                'green': level == 4
+              }"
+            >
+              {{ levelName }}
+            </view>
           </view>
         </view>
-        <view class="user-details">
-          <block v-if="isLogin">
-            <view class="nickname">{{ userInfo!.nickname || "匿名用户" }}</view>
-            <view class="user-id">ID: {{ userInfo?.username || "0000000" }}</view>
-          </block>
-          <block v-else>
-            <view class="login-prompt">立即登录获取更多功能</view>
-            <wd-button class="login-btn" size="small" type="primary" @click="navigateToLoginPage">
-              登录/注册
-            </wd-button>
-          </block>
+      </view>
+
+      <view class="user-right">
+        <view class="notice-container" v-if="isVip">
+          <nut-icon name="notice" size="20" />
+          <view class="notice-num" v-if="noticeNum > 0">{{ noticeNum }}</view>
         </view>
-        <view class="actions">
-          <view class="action-btn" @click="navigateToSettings">
-            <wd-icon name="setting1" size="22" color="#333" />
-          </view>
-          <view v-if="isLogin" class="action-btn" @click="navigateToSection('messages')">
-            <wd-icon name="message" size="22" color="#333" />
-            <view v-if="true" class="badge">2</view>
-          </view>
-        </view>
+        <nut-icon name="setting" size="20" @click="turnToSettings" />
       </view>
     </view>
 
-    <!-- 数据统计 -->
-    <view class="stats-container">
-      <view class="stat-item" @click="navigateToSection('wallet')">
-        <view class="stat-value">0.00</view>
-        <view class="stat-label">我的余额</view>
+    <!-- 钱包区域 -->
+    <view class="wallet-container">
+      <view class="wallet-card" @click="turnToDo(walletItem)">
+        <view class="wallet-header">
+          <text>我的钱包</text>
+          <nut-icon name="right" size="12" />
+        </view>
+        <image class="wallet-bg" src="https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/center_bg@2x.png" mode="widthFix" />
+        <view class="wallet-content" @click.stop="turnToDo(pointItem)">
+          <view class="amount-title">积分</view>
+          <view class="amount">{{ formatPoint(point) }}</view>
+        </view>
       </view>
-      <view class="divider"></view>
-      <view class="stat-item" @click="navigateToSection('favorites')">
-        <view class="stat-value">0</view>
-        <view class="stat-label">我的收藏</view>
-      </view>
-      <view class="divider"></view>
-      <view class="stat-item" @click="navigateToSection('history')">
-        <view class="stat-value">0</view>
-        <view class="stat-label">浏览历史</view>
+
+      <!-- 菜单区域 -->
+      <view class="menu-grid">
+        <nut-grid :column-num="4">
+          <nut-grid-item 
+            v-for="item in menu" 
+            :key="item.name"
+            @click="turnToDo(item)"
+          >
+            <image class="menu-icon" :src="'https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/'+item.src" />
+            <text class="menu-text">{{ item.name }}</text>
+          </nut-grid-item>
+        </nut-grid>
       </view>
     </view>
 
-    <!-- 我的订单 -->
-    <view class="card-container">
-      <view class="card-header">
-        <view class="card-title">
-          <wd-icon name="cart" size="18" :color="themeStore.primaryColor" />
-          <text>我的订单</text>
-        </view>
-        <view class="card-action" @click="navigateToSection('orders')">
-          <text>全部订单</text>
-          <wd-icon name="arrow-right" size="14" color="#999" />
-        </view>
-      </view>
-      <view class="order-status">
-        <view class="status-item" @click="navigateToSection('orders', 'pending')">
-          <view class="status-icon">
-            <wd-icon name="wallet-pay" size="28" :color="themeStore.primaryColor" />
-            <view v-if="true" class="status-badge">2</view>
-          </view>
-          <view class="status-label">待付款</view>
-        </view>
-        <view class="status-item" @click="navigateToSection('orders', 'shipping')">
-          <view class="status-icon">
-            <wd-icon name="shopping" size="28" :color="themeStore.primaryColor" />
-          </view>
-          <view class="status-label">待发货</view>
-        </view>
-        <view class="status-item" @click="navigateToSection('orders', 'receiving')">
-          <view class="status-icon">
-            <wd-icon name="car" size="28" :color="themeStore.primaryColor" />
-          </view>
-          <view class="status-label">待收货</view>
-        </view>
-        <view class="status-item" @click="navigateToSection('orders', 'comment')">
-          <view class="status-icon">
-            <wd-icon name="comment-o" size="28" :color="themeStore.primaryColor" />
-          </view>
-          <view class="status-label">待评价</view>
-        </view>
-        <view class="status-item" @click="navigateToSection('orders', 'after-sale')">
-          <view class="status-icon">
-            <wd-icon name="service" size="28" :color="themeStore.primaryColor" />
-          </view>
-          <view class="status-label">售后</view>
-        </view>
-      </view>
+    <!-- 操作列表 -->
+    <view class="operation-list">
+      <nut-cell-group>
+        <nut-cell 
+          v-for="item in operationList" 
+          :key="item.name"
+          :title="item.name"
+          :icon="item.src"
+          is-link
+          @click="turnToDo(item)"
+        />
+      </nut-cell-group>
     </view>
 
-    <!-- 常用工具 -->
-    <view class="card-container">
-      <view class="card-header">
-        <view class="card-title">
-          <wd-icon name="tools" size="18" :color="themeStore.primaryColor" />
-          <text>常用工具</text>
-        </view>
-      </view>
-      <view class="tools-grid">
-        <view class="tool-item" @click="navigateToSettings">
-          <view class="tool-icon">
-            <wd-icon name="setting1" size="24" :color="themeStore.primaryColor" />
-          </view>
-          <view class="tool-label">设置</view>
-        </view>
-      </view>
-    </view>
+    <!-- 底部空白区域 -->
+    <view class="bottom-blank"></view>
 
-    <view v-if="isLogin" class="logout-btn-container">
-      <wd-button class="logout-btn" @click="handleLogout">退出登录</wd-button>
+    <!-- 公众号提示 -->
+    <view class="official-tip" v-if="showToOfficial">
+      <view class="tip-content">
+        <nut-icon name="close" @click="closeShowToOfficial" />
+        <text>关注公众号，及时接收订单最新消息</text>
+      </view>
+      <nut-button type="primary" @click="turnToOfficial">去关注</nut-button>
     </view>
-
-    <wd-toast />
   </view>
 </template>
 
-<script lang="ts" setup>
-import { computed } from "vue";
-import { useToast } from "wot-design-uni";
-import { useThemeStore } from "@/store/modules/theme";
-import { useUserStore } from "@/store/modules/user";
+<script setup lang="ts">
+import { onMounted, ref } from "vue";
+import CommonAPI from "@/api/common";
+// import { useAppStore } from "@/stores/app";
+import { useUserStore } from "@/store/index";
+import { getWechatCustomerCustGetpoints } from "@/utils/proApi/wx";
 
-const toast = useToast();
+// const appStore = useAppStore();
 const userStore = useUserStore();
-const themeStore = useThemeStore();
-const userInfo = computed(() => userStore.userInfo);
-const isLogin = computed(() => !!userInfo.value);
-const defaultAvatar = "/static/images/default-avatar.png";
 
-// 登录
-const navigateToLoginPage = () => {
-  const pages = getCurrentPages();
-  const currentPage = pages[pages.length - 1];
-  const currentPagePath = `/${currentPage.route}`;
+// 数据定义
+const menu = ref([
+  {
+    src: "icon_center_order@2x.png",
+    name: "我的订单",
+    path: "/pages/orderList/orderList",
+  },
+  {
+    src: "icon_center_quan@2x.png",
+    name: "优惠券",
+    path: "/pages/coupon/coupon",
+  },
+  {
+    src: "icon_center_point@2x.png",
+    name: "我的积分",
+    path: "/pages/points/points",
+  },
+  {
+    src: "icon_center_favor@2x.png",
+    name: "我的收藏",
+    path: "/pages/myCollections/myCollections",
+  },
+]);
 
+const operationList = ref([
+  {
+    src: "icon_center_feedback@2x.png",
+    name: "我的课表",
+    path: "/pages/mySchedule/mySchedule",
+  },
+  {
+    src: "icon_center_class@2x.png",
+    name: "我的课程",
+    path: "/pages/myCourse/myCourse",
+  },
+  {
+    src: "icon_center_account@2x.png",
+    name: "亲子账号",
+    path: "/pages/childAccounts/childAccounts",
+  },
+  {
+    src: "icon_center_add@2x.png",
+    name: "邀请好友",
+    path: "/pages/myInvite/myInvite",
+  },
+  {
+    src: "icon_center_feedback@2x.png",
+    name: "意见反馈",
+    path: "/pages/feedback/feedback",
+  },
+]);
+
+const pointItem = {
+  name: "积分",
+  path: "/pages/points/points",
+};
+
+const walletItem = {
+  name: "我的钱包",
+  path: "/pages/myWallet/myWallet",
+};
+
+// 用户信息
+const nickname = ref("");
+const phoneTail = ref("");
+const avatar = ref("");
+const isVip = ref(false);
+const level = ref(0);
+const levelName = ref("");
+const noticeNum = ref(0);
+const point = ref("");
+const hasUser = ref(false);
+const showToOfficial = ref(true);
+const officialUrl = ref("");
+
+// 方法定义
+const formatPoint = (value: string) => {
+  if (!value) return "";
+  return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+const turnToOfficial = () => {
   uni.navigateTo({
-    url: `/pages/login/index?redirect=${encodeURIComponent(currentPagePath)}`,
+    url: `/pages/officialAccount/officialAccount?src=${encodeURIComponent(officialUrl.value)}`,
   });
 };
 
-// 退出登录
-const handleLogout = () => {
-  uni.showModal({
-    title: "提示",
-    content: "确认退出登录吗？",
-    success: (res) => {
-      if (res.confirm) {
-        userStore.logout();
-        toast.show("已退出登录");
-      }
+const getCustMsg = () => {
+  const userInfo = userStore.userInfo;
+  nickname.value = userInfo?.nickname || "";
+  avatar.value = userInfo?.avatar || "";
+  phoneTail.value = userInfo?.phone?.slice(7) || "";
+  hasUser.value = userStore.hasUser;
+
+  if (userStore.hasUser) {
+    isVip.value = true;
+    level.value = userInfo?.level || 0;
+    levelName.value = userInfo?.levelName || "";
+    // getCustomPoint();
+  }
+};
+
+const getCustomPoint = async () => {
+  const points = await getWechatCustomerCustGetpoints();
+  point.value = points;
+};
+
+const turnToSettings = () => {
+  if (!userStore.hasUser) {
+    turnToLogin();
+    return;
+  }
+
+  uni.navigateTo({
+    url: "/pages/settings/settings",
+    events: {
+      updateUserInfo: (data: UserInfo) => {
+        userStore.userInfo = data;
+      },
+      clearUserInfo: () => {
+        userStore.userInfo = undefined;
+      },
     },
   });
 };
 
-// 个人信息
-const navigateToProfile = () => {
-  if (!isLogin.value) {
-    navigateToLoginPage();
+interface UserInfo {
+  nickname?: string;
+  avatar?: string;
+  phone?: string;
+  level?: number;
+  levelName?: string;
+  isChild?: boolean;
+}
+
+interface MenuItem {
+  src: string;
+  name: string;
+  path: string;
+}
+
+const turnToDo = (item: MenuItem) => {
+  if (!userStore.hasUser) {
+    turnToLogin();
     return;
   }
-  uni.navigateTo({ url: "/pages/mine/profile/index" });
-};
 
-// 设置
-const navigateToSettings = () => {
-  uni.navigateTo({ url: "/pages/mine/settings/index" });
-};
-// 导航到各个板块
-const navigateToSection = (section: string, subSection?: string) => {
-  if (!isLogin.value && section !== "services") {
-    navigateToLoginPage();
+  const path = item.path;
+  if (
+    userStore.isChild &&
+    ![
+      "/pages/myCourse/myCourse",
+      "/pages/mySchedule/mySchedule",
+      "/pages/myInvite/myInvite",
+    ].includes(path)
+  ) {
+    uni.showToast({
+      icon: "none",
+      title: "暂无权限，请用主账号查看",
+    });
     return;
   }
 
-  const sections: Record<string, string> = {
-    messages: "消息中心",
-    todos: "待办事项",
-    favorites: "我的收藏",
-    history: "浏览历史",
-    wallet: "我的钱包",
-    orders: "我的订单",
-    address: "收货地址",
-    services: "增值服务",
-  };
-
-  let message = sections[section];
-  if (subSection) {
-    message += ` - ${subSection}`;
+  if (path) {
+    uni.navigateTo({ url: path });
   }
-
-  toast.show(`${message}功能开发中...`);
 };
+
+const turnToLogin = () => {
+  uni.navigateTo({
+    url: "/pages/login/login",
+    events: {
+      refresh: () => {
+        getCustMsg();
+      },
+    },
+  });
+};
+
+const turnToVIP = () => {
+  uni.navigateTo({
+    url: "/pages/vip/vip",
+  });
+};
+
+const closeShowToOfficial = () => {
+  showToOfficial.value = false;
+};
+
+// 生命周期
+onMounted(() => {
+  CommonAPI.login()
+  
+    // // 获取微信登录的临时 code
+    // const { code } = await uni.login({
+    //   provider: "weixin",
+    // });
+
+    // // 调用后端接口进行登录认证
+    // const result = await userStore.loginByWechat(code);
+
+    // if (result) {
+    //   // 获取用户信息
+    //   await userStore.getInfo();
+    //   toast.success("登录成功");
+    // }
+});
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .mine-container {
   min-height: 100vh;
-  padding-bottom: 100rpx;
-  background-color: #f5f7fa;
+  background-color: #f5f6f7;
+  padding-bottom: 20px;
 }
 
-// 用户信息卡片
-.user-profile {
+.user-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 13px;
+  height: 60px;
   position: relative;
-  padding: 30rpx;
-  overflow: hidden;
+  z-index: 1;
+}
 
-  .blur-bg {
+.user-left,
+.user-right,
+.notice-container {
+  display: flex;
+  align-items: center;
+}
+
+.notice-container {
+  margin-right: 25px;
+  position: relative;
+}
+
+.notice-num {
+  position: absolute;
+  top: -50%;
+  left: 50%;
+  padding: 2px 4px;
+  background: #f49843;
+  border-radius: 30px;
+  font-weight: bold;
+  font-size: 12px;
+  color: #ffffff;
+  line-height: 14px;
+  text-align: center;
+}
+
+.avatar-container {
+  position: relative;
+  height: 60px;
+  width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .avatar-logo {
     position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    z-index: 0;
-    height: 240rpx;
-    background: linear-gradient(to bottom, var(--primary-color), var(--primary-color-light));
+    top: -1px;
+    left: -1px;
+    height: 60px;
+    width: 60px;
+  }
+}
+
+.nickname-container {
+  margin-left: 7px;
+  font-weight: bold;
+  font-size: 16px;
+  color: #333333;
+  line-height: 22px;
+}
+
+.level-container {
+  position: relative;
+  margin-left: -3px;
+
+  .vip-logo {
+    width: 104px;
+    height: 28px;
   }
 
-  .user-info {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    align-items: center;
+  .level-name {
+    position: absolute;
+    bottom: 6px;
+    left: 31px;
+    font-weight: bold;
+    font-size: 13px;
+    line-height: 18px;
 
-    .avatar-container {
-      position: relative;
-
-      .avatar {
-        width: 120rpx;
-        height: 120rpx;
-        border: 4rpx solid rgba(255, 255, 255, 0.8);
-        border-radius: 50%;
-        box-shadow: 0 6rpx 16rpx rgba(0, 0, 0, 0.1);
-      }
-
-      .avatar-edit {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 36rpx;
-        height: 36rpx;
-        background-color: var(--primary-color);
-        border-radius: 50%;
-        box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.2);
-      }
+    &.gray {
+      color: #444444;
     }
 
-    .user-details {
-      flex: 1;
-      margin-left: 24rpx;
-
-      .nickname {
-        margin-bottom: 8rpx;
-        font-size: 34rpx;
-        font-weight: bold;
-        color: #fff;
-      }
-
-      .user-id {
-        font-size: 24rpx;
-        color: rgba(255, 255, 255, 0.8);
-      }
-
-      .login-prompt {
-        margin-bottom: 16rpx;
-        font-size: 28rpx;
-        color: #fff;
-      }
-
-      .login-btn {
-        width: 160rpx;
-        height: 60rpx;
-        font-size: 26rpx;
-        color: var(--primary-color);
-        background-color: #fff;
-        border: none;
-        border-radius: 30rpx;
-      }
+    &.orange {
+      color: #865418;
     }
 
-    .actions {
-      display: flex;
+    &.purple {
+      color: #984396;
+    }
 
-      .action-btn {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 70rpx;
-        height: 70rpx;
-        margin-left: 16rpx;
-        background-color: rgba(255, 255, 255, 0.9);
-        border-radius: 50%;
-        box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
-
-        .badge {
-          position: absolute;
-          top: -6rpx;
-          right: -6rpx;
-          z-index: 2;
-          min-width: 32rpx;
-          height: 32rpx;
-          padding: 0 6rpx;
-          font-size: 20rpx;
-          line-height: 32rpx;
-          color: #fff;
-          text-align: center;
-          background-color: #ff4d4f;
-          border: 2rpx solid #fff;
-          border-radius: 16rpx;
-        }
-      }
+    &.green {
+      color: #4A854F;
     }
   }
 }
 
-// 数据统计
-.stats-container {
+.wallet-container {
+  margin: 10px 0 0 13px;
+  height: 175px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02),
+              0 7px 7px rgba(0, 0, 0, 0.02),
+              0 15px 9px rgba(0, 0, 0, 0.01),
+              0 27px 11px rgba(0, 0, 0, 0),
+              0 43px 12px rgba(0, 0, 0, 0);
+}
+
+.wallet-card {
+  position: relative;
+  z-index: 1;
+  width: 350px;
+  height: 96px;
+}
+
+.wallet-bg {
+  width: 350px;
+  position: absolute;
+  z-index: 12;
+}
+
+.wallet-header {
+  background: #7d5728;
+  border-radius: 15px 15px 0 0;
+  position: absolute;
+  z-index: 11;
+  top: 5px;
+  width: 100%;
+  height: 45px;
+  font-weight: bold;
+  font-size: 12px;
+  color: #ffffff;
+  line-height: 14px;
   display: flex;
-  padding: 30rpx 20rpx;
-  margin: 20rpx 30rpx;
-  background: #fff;
-  border-radius: 16rpx;
-  box-shadow: 0 6rpx 16rpx rgba(0, 0, 0, 0.04);
-
-  .stat-item {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: center;
-
-    .stat-value {
-      margin-bottom: 8rpx;
-      font-size: 36rpx;
-      font-weight: 600;
-      color: #333;
-    }
-
-    .stat-label {
-      font-size: 26rpx;
-      color: #666;
-    }
-  }
-
-  .divider {
-    width: 1px;
-    margin: 0 20rpx;
-    background-color: #eee;
-  }
+  justify-content: flex-end;
+  padding-right: 24px;
+  padding-top: 7px;
+  box-sizing: border-box;
 }
 
-// 卡片容器通用样式
-.card-container {
-  margin: 24rpx 30rpx;
-  overflow: hidden;
-  background: #fff;
-  border-radius: 16rpx;
-  box-shadow: 0 6rpx 16rpx rgba(0, 0, 0, 0.04);
-
-  .card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20rpx 24rpx;
-    border-bottom: 1rpx solid #f5f5f5;
-
-    .card-title {
-      display: flex;
-      align-items: center;
-
-      text {
-        margin-left: 12rpx;
-        font-size: 28rpx;
-        font-weight: 600;
-        color: #333;
-      }
-    }
-
-    .card-action {
-      display: flex;
-      align-items: center;
-
-      text {
-        margin-right: 8rpx;
-        font-size: 24rpx;
-        color: #999;
-      }
-    }
-  }
+.wallet-content {
+  width: 65%;
+  position: relative;
+  z-index: 13;
+  padding: 14px 0 0 22px;
 }
 
-// 订单状态
-.order-status {
+.amount-title {
+  font-weight: bold;
+  font-size: 15px;
+  color: #FFFFFF;
+  line-height: 21px;
+}
+
+.amount {
+  font-weight: 500;
+  font-size: 24px;
+  color: #FFFFFF;
+  line-height: 29px;
+  margin-top: 3px;
+}
+
+.menu-grid {
+  width: 350px;
+  height: 97px;
+  background: #ffffff;
+  border-radius: 15px;
+  position: relative;
+  top: -18px;
+  z-index: 13;
+}
+
+.menu-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.menu-text {
+  font-weight: 500;
+  font-size: 15px;
+  color: #333333;
+  line-height: 21px;
+  margin-top: 6px;
+}
+
+.operation-list {
+  margin-top: 15px;
+  width: 350px;
+  background: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02),
+              0 7px 7px rgba(0, 0, 0, 0.02),
+              0 15px 9px rgba(0, 0, 0, 0.01),
+              0 27px 11px rgba(0, 0, 0, 0),
+              0 43px 12px rgba(0, 0, 0, 0);
+  border-radius: 15px;
+  margin-left: 13px;
+}
+
+.bottom-blank {
+  height: 20px;
+}
+
+.official-tip {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  padding: 10px;
   display: flex;
-  padding: 30rpx 0 20rpx;
+  align-items: center;
+  justify-content: space-between;
 
-  .status-item {
+  .tip-content {
     display: flex;
-    flex: 1;
-    flex-direction: column;
     align-items: center;
-
-    .status-icon {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 80rpx;
-      height: 80rpx;
-      margin-bottom: 12rpx;
-
-      .status-badge {
-        position: absolute;
-        top: -10rpx;
-        right: -10rpx;
-        z-index: 2;
-        min-width: 32rpx;
-        height: 32rpx;
-        padding: 0 6rpx;
-        font-size: 20rpx;
-        line-height: 32rpx;
-        color: #fff;
-        text-align: center;
-        background-color: #ff4d4f;
-        border-radius: 16rpx;
-      }
-    }
-
-    .status-label {
-      font-size: 24rpx;
-      color: #666;
-    }
-  }
-}
-
-// 工具网格
-.tools-grid {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 20rpx 0 10rpx;
-
-  .tool-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 25%;
-    margin-bottom: 30rpx;
-
-    .tool-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 90rpx;
-      height: 90rpx;
-      margin-bottom: 12rpx;
-      background-color: rgba(var(--primary-color-rgb), 0.08);
-      border-radius: 18rpx;
-      transition: transform 0.2s;
-
-      &:active {
-        transform: scale(0.95);
-      }
-    }
-
-    .tool-label {
-      font-size: 24rpx;
-      color: #555;
-    }
-  }
-}
-
-// 退出登录按钮
-.logout-btn-container {
-  margin: 60rpx 30rpx;
-
-  .logout-btn {
-    width: 100%;
-    height: 80rpx;
-    font-size: 28rpx;
-    color: #666;
-    background-color: #f5f5f5;
-    border: none;
-    border-radius: 40rpx;
-
-    &:active {
-      opacity: 0.8;
-    }
+    gap: 10px;
   }
 }
 </style>

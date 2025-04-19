@@ -1,9 +1,9 @@
 <template>
   <view class="work">
     <template v-for="(item, index) in gridList" :key="index">
-      <wd-card :title="item.title">
-        <wd-grid clickable :column="4">
-          <wd-grid-item
+      <nut-card :title="item.title">
+        <nut-grid clickable :column-num="4">
+          <nut-grid-item
             v-for="(child, index) in item.children"
             :key="index"
             :v-has-perm="child.prem"
@@ -15,9 +15,9 @@
               <image class="w-72rpx h-72rpx rounded-8rpx" :src="child.icon" />
             </view>
             <view class="text">{{ child.title }}</view>
-          </wd-grid-item>
-        </wd-grid>
-      </wd-card>
+          </nut-grid-item>
+        </nut-grid>
+      </nut-card>
     </template>
   </view>
 </template>

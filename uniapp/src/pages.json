@@ -1,11 +1,4 @@
 {
-  "easycom": {
-    "autoscan": true,
-    "custom": {
-      "^wd-(.*)": "wot-design-uni/components/wd-$1/wd-$1.vue",
-      "^cu-(.*)": "@/components/cu-$1/index.vue"
-    }
-  },
   "pages": [
     {
       "path": "pages/index/index",
@@ -35,42 +28,6 @@
       "path": "pages/mine/settings/account/index",
       "style": {
         "navigationBarTitleText": "账号和安全"
-      }
-    },
-    {
-      "path": "pages/mine/settings/agreement/index",
-      "style": {
-        "navigationBarTitleText": "用户协议"
-      }
-    },
-    {
-      "path": "pages/mine/settings/privacy/index",
-      "style": {
-        "navigationBarTitleText": "隐私政策"
-      }
-    },
-    {
-      "path": "pages/login/index",
-      "style": {
-        "navigationBarTitleText": "登录"
-      }
-    },
-    {
-      "path": "pages/login/complete-profile",
-      "style": {
-        "navigationBarTitleText": "完善个人信息"
-      }
-    },
-    {
-      "path": "pages/mine/profile/index",
-      "style": {
-        "navigationBarTitleText": "个人资料"
-      }
-    },
-    {
-      "path": "pages/work/user/index",
-      "style": {
-        "navigationStyle": "custom"
       }
     }
   ],

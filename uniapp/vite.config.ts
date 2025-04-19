@@ -1,5 +1,8 @@
 import uni from "@dcloudio/vite-plugin-uni";
 import AutoImport from "unplugin-auto-import/vite";
+import UniComponents from "@uni-helper/vite-plugin-uni-components";
+import { NutResolver } from "nutui-uniapp";
+
 import { type ConfigEnv, defineConfig, loadEnv, type UserConfig } from "vite";
 
 export default defineConfig(async ({ mode }: ConfigEnv): Promise<UserConfig> => {
@@ -30,6 +33,12 @@ export default defineConfig(async ({ mode }: ConfigEnv): Promise<UserConfig> => 
         eslintrc: {
           enabled: false,
         },
+      }),
+      // 确保放在 `Uni()` 之前
+      UniComponents({
+        resolvers: [
+          NutResolver()
+        ]
       }),
       uni(),
     ],
