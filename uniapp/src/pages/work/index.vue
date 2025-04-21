@@ -11,9 +11,6 @@
             link-type="navigateTo"
             :url="child.url"
           >
-            <view class="p-2">
-              <image class="w-72rpx h-72rpx rounded-8rpx" :src="child.icon" />
-            </view>
             <view class="text">{{ child.title }}</view>
           </nut-grid-item>
         </nut-grid>
@@ -28,7 +25,6 @@ const gridList = reactive([
     title: "系统管理",
     children: [
       {
-        icon: "/static/icons/user.png",
         title: "用户管理",
         url: "/pages/work/user/index",
         prem: "sys:user:query",

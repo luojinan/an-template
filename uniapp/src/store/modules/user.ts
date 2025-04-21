@@ -1,96 +1,33 @@
 import { defineStore } from "pinia";
-import AuthAPI, { type LoginFormData } from "@/api/auth";
-import UserAPI, { type UserInfo } from "@/api/system/user";
-import { setToken, getUserInfo, setUserInfo, clearAll } from "@/utils/cache";
+import type { UserInfo } from "@/api/system/user";
+import { getUserInfo, setToken, setUserInfo } from "@/utils/cache";
+import { postWechatCustGetopenid } from "@/utils/proApi/wx";
 
 export const useUserStore = defineStore("user", () => {
   const userInfo = ref<UserInfo | undefined>(getUserInfo());
 
   // 计算属性
-  const hasUser = computed(() => !!userInfo.value);
   const level = computed(() => userInfo.value?.level || 0);
-  const levelName = computed(() => userInfo.value?.levelName || "");
-  const isChild = computed(() => userInfo.value?.isChild || false);
-  const phone = computed(() => userInfo.value?.phone || "");
-  const discount = computed(() => userInfo.value?.discount || 0);
-
-  // 登录
-  const login = (data: LoginFormData) => {
-    return new Promise((resolve, reject) => {
-      AuthAPI.login(data)
-        .then((data) => {
-          setToken(data.accessToken);
-          resolve(data);
-        })
-        .catch((error) => {
-          console.error("登录失败", error);
-          reject(error);
-        });
-    });
-  };
+  const hasUser = computed(() => !!userInfo.value?.token);
 
   // 微信登录
-  const loginByWechat = (code: string) => {
-    return new Promise((resolve, reject) => {
-      AuthAPI.wechatLogin(code)
-        .then((data) => {
-          setToken(data.accessToken);
-          resolve(data);
-        })
-        .catch((error) => {
-          console.error("微信登录失败", error);
-          reject(error);
-        });
+  const loginByWechat = async () => {
+    // // 获取微信登录的临时 code
+    const { code } = await uni.login({
+      provider: "weixin",
     });
+
+    // 调用后端接口进行登录认证
+    const data = await postWechatCustGetopenid({ code });
+
+    setToken(data.accessToken);
+    setUserInfo(data)
+    return data
   };
-
-  // 获取用户信息
-  const getInfo = () => {
-    return new Promise((resolve, reject) => {
-      UserAPI.getUserInfo()
-        .then((data) => {
-          setUserInfo(data);
-          userInfo.value = data;
-          resolve(data);
-        })
-        .catch((error) => {
-          console.error("获取用户信息失败", error);
-          reject(error);
-        });
-    });
-  };
-
-  // 登出
-  const logout = async () => {
-    try {
-      await AuthAPI.logout(); // 调用后台注销接口
-    } catch (error) {
-      console.error("登出失败", error);
-    } finally {
-      clearAll(); // 清除本地的 token 和用户信息缓存
-      userInfo.value = undefined; // 清空用户信息
-    }
-  };
-
-  // 判断用户信息是否完整
-  const isUserInfoComplete = (): boolean => {
-    if (!userInfo.value) return false;
-
-    return !!(userInfo.value.nickname && userInfo.value.avatar);
-  };
-
   return {
     userInfo,
-    hasUser,
     level,
-    levelName,
-    isChild,
-    phone,
-    discount,
-    login,
+    hasUser,
     loginByWechat,
-    logout,
-    getInfo,
-    isUserInfoComplete,
   };
 });

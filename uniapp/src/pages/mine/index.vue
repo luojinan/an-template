@@ -5,69 +5,31 @@
       <view class="user-left">
         <view class="avatar-container">
           <nut-avatar size="large">
-            <image src="https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/head_moren@2x.png" />
+            <image :src="setImageUrl('head_moren@2x.png')" />
           </nut-avatar>
           
           <image 
-            v-if="level == 1" 
+            v-if="level"
             class="avatar-logo" 
-            src="https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/vip_kuang1@2x.png" 
-            mode="widthFix" 
-          />
-          <image 
-            v-if="level == 2" 
-            class="avatar-logo" 
-            src="https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/vip_kuang2@2x.png" 
-            mode="widthFix" 
-          />
-          <image 
-            v-if="level == 3" 
-            class="avatar-logo" 
-            src="https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/vip_kuang3@2x.png" 
-            mode="widthFix" 
-          />
-          <image 
-            v-if="level == 4" 
-            class="avatar-logo" 
-            src="https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/vip_kuang4@2x.png" 
+            :src="setImageUrl(currentLevelConfig.avatarFrame)"
             mode="widthFix" 
           />
         </view>
 
         <view class="nickname-container">
           <view @click="turnToLogin" v-if="!hasUser">点击登录</view>
-          <view v-else>{{ nickname || (phoneTail ? "游客"+phoneTail : "") }}</view>
+          <view v-else>{{ userInfo.nickname || (userInfo?.phoneTail ? "游客"+userInfo?.phoneTail : "") }}</view>
           <view v-if="level" class="level-container" @click="turnToVIP">
             <image 
-              v-if="level == 1" 
+              v-if="level"
               class="vip-logo" 
-              src="https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/Group 1779@2x.png" 
-            />
-            <image 
-              v-if="level == 2" 
-              class="vip-logo" 
-              src="https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/Group 1780@2x.png" 
-            />
-            <image 
-              v-if="level == 3" 
-              class="vip-logo" 
-              src="https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/Group 1785@2x.png" 
-            />
-            <image 
-              v-if="level == 4" 
-              class="vip-logo" 
-              src="https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/Group 1786@2x.png" 
+              :src="setImageUrl(currentLevelConfig.vipLogo)"
             />
             <view 
               class="level-name" 
-              :class="{
-                'gray': level == 1,
-                'orange': level == 2,
-                'purple': level == 3,
-                'green': level == 4
-              }"
+              :class="currentLevelConfig.levelColor"
             >
-              {{ levelName }}
+              {{ currentLevelConfig.levelName }}
             </view>
           </view>
         </view>
@@ -89,7 +51,7 @@
           <text>我的钱包</text>
           <nut-icon name="right" size="12" />
         </view>
-        <image class="wallet-bg" src="https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/center_bg@2x.png" mode="widthFix" />
+        <image class="wallet-bg" :src="setImageUrl('center_bg@2x.png')" mode="widthFix" />
         <view class="wallet-content" @click.stop="turnToDo(pointItem)">
           <view class="amount-title">积分</view>
           <view class="amount">{{ formatPoint(point) }}</view>
@@ -104,7 +66,7 @@
             :key="item.name"
             @click="turnToDo(item)"
           >
-            <image class="menu-icon" :src="'https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/'+item.src" />
+            <image class="menu-icon" :src="setImageUrl(item.src)" />
             <text class="menu-text">{{ item.name }}</text>
           </nut-grid-item>
         </nut-grid>
@@ -118,7 +80,7 @@
           v-for="item in operationList" 
           :key="item.name"
           :title="item.name"
-          :icon="item.src"
+          :icon="setImageUrl(item.src)"
           is-link
           @click="turnToDo(item)"
         />
@@ -140,89 +102,26 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import CommonAPI from "@/api/common";
+import { onMounted, ref, computed } from "vue";
 // import { useAppStore } from "@/stores/app";
 import { useUserStore } from "@/store/index";
-import { getWechatCustomerCustGetpoints } from "@/utils/proApi/wx";
+import { clearUserInfo, setUserInfo } from "@/utils/cache";
+import { menu, operationList, pointItem, walletItem, vipLevels } from "./common/const";
+import { setImageUrl } from "@/utils/index";
 
-// const appStore = useAppStore();
-const userStore = useUserStore();
-
-// 数据定义
-const menu = ref([
-  {
-    src: "icon_center_order@2x.png",
-    name: "我的订单",
-    path: "/pages/orderList/orderList",
-  },
-  {
-    src: "icon_center_quan@2x.png",
-    name: "优惠券",
-    path: "/pages/coupon/coupon",
-  },
-  {
-    src: "icon_center_point@2x.png",
-    name: "我的积分",
-    path: "/pages/points/points",
-  },
-  {
-    src: "icon_center_favor@2x.png",
-    name: "我的收藏",
-    path: "/pages/myCollections/myCollections",
-  },
-]);
-
-const operationList = ref([
-  {
-    src: "icon_center_feedback@2x.png",
-    name: "我的课表",
-    path: "/pages/mySchedule/mySchedule",
-  },
-  {
-    src: "icon_center_class@2x.png",
-    name: "我的课程",
-    path: "/pages/myCourse/myCourse",
-  },
-  {
-    src: "icon_center_account@2x.png",
-    name: "亲子账号",
-    path: "/pages/childAccounts/childAccounts",
-  },
-  {
-    src: "icon_center_add@2x.png",
-    name: "邀请好友",
-    path: "/pages/myInvite/myInvite",
-  },
-  {
-    src: "icon_center_feedback@2x.png",
-    name: "意见反馈",
-    path: "/pages/feedback/feedback",
-  },
-]);
-
-const pointItem = {
-  name: "积分",
-  path: "/pages/points/points",
-};
-
-const walletItem = {
-  name: "我的钱包",
-  path: "/pages/myWallet/myWallet",
-};
+const { loginByWechat, userInfo, hasUser, level } = useUserStore();
 
 // 用户信息
-const nickname = ref("");
-const phoneTail = ref("");
-const avatar = ref("");
 const isVip = ref(false);
-const level = ref(0);
-const levelName = ref("");
 const noticeNum = ref(0);
 const point = ref("");
-const hasUser = ref(false);
 const showToOfficial = ref(true);
 const officialUrl = ref("");
+
+// 计算当前等级的配置
+const currentLevelConfig = computed(() => {
+  return vipLevels.find(item => item.level === level) || vipLevels[0];
+});
 
 // 方法定义
 const formatPoint = (value: string) => {
@@ -236,28 +135,8 @@ const turnToOfficial = () => {
   });
 };
 
-const getCustMsg = () => {
-  const userInfo = userStore.userInfo;
-  nickname.value = userInfo?.nickname || "";
-  avatar.value = userInfo?.avatar || "";
-  phoneTail.value = userInfo?.phone?.slice(7) || "";
-  hasUser.value = userStore.hasUser;
-
-  if (userStore.hasUser) {
-    isVip.value = true;
-    level.value = userInfo?.level || 0;
-    levelName.value = userInfo?.levelName || "";
-    // getCustomPoint();
-  }
-};
-
-const getCustomPoint = async () => {
-  const points = await getWechatCustomerCustGetpoints();
-  point.value = points;
-};
-
 const turnToSettings = () => {
-  if (!userStore.hasUser) {
+  if (!hasUser) {
     turnToLogin();
     return;
   }
@@ -266,10 +145,10 @@ const turnToSettings = () => {
     url: "/pages/settings/settings",
     events: {
       updateUserInfo: (data: UserInfo) => {
-        userStore.userInfo = data;
+        setUserInfo(data);
       },
       clearUserInfo: () => {
-        userStore.userInfo = undefined;
+        clearUserInfo();
       },
     },
   });
@@ -291,14 +170,14 @@ interface MenuItem {
 }
 
 const turnToDo = (item: MenuItem) => {
-  if (!userStore.hasUser) {
+  if (!hasUser) {
     turnToLogin();
     return;
   }
 
   const path = item.path;
   if (
-    userStore.isChild &&
+    userInfo.isChild &&
     ![
       "/pages/myCourse/myCourse",
       "/pages/mySchedule/mySchedule",
@@ -322,7 +201,7 @@ const turnToLogin = () => {
     url: "/pages/login/login",
     events: {
       refresh: () => {
-        getCustMsg();
+        // getCustMsg();
       },
     },
   });
@@ -340,21 +219,7 @@ const closeShowToOfficial = () => {
 
 // 生命周期
 onMounted(() => {
-  CommonAPI.login()
-  
-    // // 获取微信登录的临时 code
-    // const { code } = await uni.login({
-    //   provider: "weixin",
-    // });
-
-    // // 调用后端接口进行登录认证
-    // const result = await userStore.loginByWechat(code);
-
-    // if (result) {
-    //   // 获取用户信息
-    //   await userStore.getInfo();
-    //   toast.success("登录成功");
-    // }
+  loginByWechat();
 });
 </script>
 

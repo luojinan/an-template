@@ -13,6 +13,7 @@ export const useLoadingStore = defineStore("loading", () => {
     if (loadingCount.value <= 0) {
       loadingCount.value = 0;
       isOpenLoading.value = false;
+      uni.hideLoading();
     }
   };
   

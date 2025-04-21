@@ -7,15 +7,6 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    CuDateQuery: typeof import('./src/components/cu-date-query/index.vue')['default']
-    CuDict: typeof import('./src/components/cu-dict/index.vue')['default']
-    CuDictLabel: typeof import('./src/components/cu-dict-label/index.vue')['default']
-    CuPicker: typeof import('./src/components/cu-picker/index.vue')['default']
-    Loading1: typeof import('./src/components/qiun-loading/loading1.vue')['default']
-    Loading2: typeof import('./src/components/qiun-loading/loading2.vue')['default']
-    Loading3: typeof import('./src/components/qiun-loading/loading3.vue')['default']
-    Loading4: typeof import('./src/components/qiun-loading/loading4.vue')['default']
-    Loading5: typeof import('./src/components/qiun-loading/loading5.vue')['default']
     NutAvatar: typeof import('nutui-uniapp/components/avatar/avatar.vue')['default']
     NutButton: typeof import('nutui-uniapp/components/button/button.vue')['default']
     NutCard: typeof import('nutui-uniapp/components/card/card.vue')['default']
@@ -28,9 +19,5 @@ declare module 'vue' {
     NutInput: typeof import('nutui-uniapp/components/input/input.vue')['default']
     NutPopup: typeof import('nutui-uniapp/components/popup/popup.vue')['default']
     NutSwiper: typeof import('nutui-uniapp/components/swiper/swiper.vue')['default']
-    QiunError: typeof import('./src/components/qiun-error/qiun-error.vue')['default']
-    QiunLoading: typeof import('./src/components/qiun-loading/qiun-loading.vue')['default']
-    TodoItem: typeof import('./src/components/todo/TodoItem.vue')['default']
-    TodoList: typeof import('./src/components/todo/TodoList.vue')['default']
   }
 }
