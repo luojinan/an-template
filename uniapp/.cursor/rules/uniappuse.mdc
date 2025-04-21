@@ -1,0 +1,27 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# UniApp 项目技术栈与规范
+
+## 核心框架与技术
+- 框架：Vue 3 + TypeScript
+- 跨平台框架：uni-app
+- 包管理器：pnpm
+- 代码格式化：Biome（替代 ESLint 和 Prettier）
+- CSS 工具：UnoCSS
+- CSS 使用 scss
+- 组件库：NutUI-UniApp
+
+## 开发规范
+1. 组件使用规范：
+   - 使用 NutUI-UniApp 组件库
+   - 组件采用自动导入方式（auto import component）
+   - 模板中使用横杠命名法（如 `<nut-button>`）
+
+2. 跨平台开发规范：
+   - 使用 `uni.xx()` 替代 `wx.xx()`
+   - 支持 `<view>`/`<div>` 和 `<image>`/`<img>` 混用
+   - 优先使用 Web 语法以降低心智负担
+

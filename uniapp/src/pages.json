@@ -17,6 +17,24 @@
       "style": {
         "navigationBarTitleText": "我的"
       }
+    },
+    {
+      "path": "pages/demo/index",
+      "style": {
+        "navigationBarTitleText": "示例中心"
+      }
+    },
+    {
+      "path": "pages/demo/navigate",
+      "style": {
+        "navigationBarTitleText": "页面跳转示例"
+      }
+    },
+    {
+      "path": "pages/demo/navigate-target",
+      "style": {
+        "navigationBarTitleText": "页面跳转目标"
+      }
     }
   ],
   "globalStyle": {
@@ -45,6 +63,12 @@
       {
         "pagePath": "pages/mine/index",
         "text": "我的",
+        "iconPath": "static/tabbar/mine.png",
+        "selectedIconPath": "static/tabbar/mine-active.png"
+      },
+      {
+        "pagePath": "pages/demo/index",
+        "text": "示例中心",
         "iconPath": "static/tabbar/mine.png",
         "selectedIconPath": "static/tabbar/mine-active.png"
       }
