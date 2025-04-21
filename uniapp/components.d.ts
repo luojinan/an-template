@@ -12,12 +12,9 @@ declare module 'vue' {
     NutCard: typeof import('nutui-uniapp/components/card/card.vue')['default']
     NutCell: typeof import('nutui-uniapp/components/cell/cell.vue')['default']
     NutCellGroup: typeof import('nutui-uniapp/components/cellgroup/cellgroup.vue')['default']
-    NutForm: typeof import('nutui-uniapp/components/form/form.vue')['default']
     NutGrid: typeof import('nutui-uniapp/components/grid/grid.vue')['default']
     NutGridItem: typeof import('nutui-uniapp/components/griditem/griditem.vue')['default']
     NutIcon: typeof import('nutui-uniapp/components/icon/icon.vue')['default']
-    NutInput: typeof import('nutui-uniapp/components/input/input.vue')['default']
-    NutPopup: typeof import('nutui-uniapp/components/popup/popup.vue')['default']
     NutSwiper: typeof import('nutui-uniapp/components/swiper/swiper.vue')['default']
   }
 }

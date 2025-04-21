@@ -20,6 +20,8 @@
 </template>
 
 <script lang="ts" setup>
+import { reactive } from "vue";
+
 const gridList = reactive([
   {
     title: "系统管理",

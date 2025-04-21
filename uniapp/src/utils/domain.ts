@@ -1,5 +1,6 @@
-const accountInfo = wx.getAccountInfoSync();
-let envVersion = accountInfo.miniProgram.envVersion;
+// const accountInfo = uni.getAccountInfoSync(); // uni.getAccountInfoSync login 不兼容h5，🤔可能是自己加uniapp plugin？
+// let envVersion = accountInfo.miniProgram.envVersion;
+let envVersion = 'trial'
 
 let domain = 'https://dsjedu.com.cn/prod-api/'
 switch (envVersion) {

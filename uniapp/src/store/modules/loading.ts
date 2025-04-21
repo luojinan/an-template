@@ -1,13 +1,14 @@
 import { defineStore } from "pinia";
+import { ref } from "vue";
 
 export const useLoadingStore = defineStore("loading", () => {
   const loadingCount = ref(0);
   const isOpenLoading = ref(false);
-  
+
   const plusOne = () => {
     loadingCount.value++;
   };
-  
+
   const minusOne = () => {
     loadingCount.value--;
     if (loadingCount.value <= 0) {
@@ -16,7 +17,7 @@ export const useLoadingStore = defineStore("loading", () => {
       uni.hideLoading();
     }
   };
-  
+
   return {
     loadingCount,
     isOpenLoading,

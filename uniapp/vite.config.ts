@@ -1,5 +1,4 @@
 import uni from "@dcloudio/vite-plugin-uni";
-import AutoImport from "unplugin-auto-import/vite";
 import UniComponents from "@uni-helper/vite-plugin-uni-components";
 import { NutResolver } from "nutui-uniapp";
 
@@ -26,15 +25,7 @@ export default defineConfig(async ({ mode }: ConfigEnv): Promise<UserConfig> => 
     plugins: [
       // https://github.com/unocss/unocss
       UnoCss(),
-
-      AutoImport({
-        imports: ["vue", "uni-app"],
-        dts: "src/types/auto-imports.d.ts", // 自动生成的类型声明文件
-        eslintrc: {
-          enabled: false,
-        },
-      }),
-      // 确保放在 `Uni()` 之前
+      // 确保放在 `Uni()` 之前，官方文档没有找到手动引入组件的示例，都默认使用auto component 😡
       UniComponents({
         resolvers: [
           NutResolver()

@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
-import DictAPI, { type DictVO, type DictData } from "@/api/system/dict";
-import { setDictCache, getDictCache } from "@/utils/cache";
+import { ref } from "vue";
+import DictAPI, { type DictData, type DictVO } from "@/api/system/dict";
+import { getDictCache, setDictCache } from "@/utils/cache";
 export const useDictStore = defineStore("dict", () => {
   const dictionary = ref<Record<string, DictData[]>>(getDictCache());
 
@@ -10,7 +11,10 @@ export const useDictStore = defineStore("dict", () => {
   };
 
   const loadDictionaries = async () => {
-    const dictList = await DictAPI.getList();
+    const dictList = await DictAPI.getPage({
+      pageNum: 1,
+      pageSize: 1000,
+    });
     dictList.forEach(setDictionary);
   };
 

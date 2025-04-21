@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { computed, ref } from "vue";
 import type { UserInfo } from "@/api/system/user";
 import { getUserInfo, setToken, setUserInfo } from "@/utils/cache";
 import { postWechatCustGetopenid } from "@/utils/proApi/wx";

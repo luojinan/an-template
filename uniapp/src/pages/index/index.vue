@@ -171,7 +171,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { ref } from "vue";
 
 // 数据定义
 const regionItem = ref({ name: "" });
