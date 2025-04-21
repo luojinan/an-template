@@ -1,14 +1,15 @@
 import presetWeapp from "unocss-preset-weapp";
-import { extractorAttributify, transformerClass } from "unocss-preset-weapp/transformer";
+import { transformerClass } from "unocss-preset-weapp/transformer";
 
-const { presetWeappAttributify, transformerAttributify } = extractorAttributify();
+// remove style attributify mode 😡 it is ugly
+// https://github.com/MellowCo/unocss-preset-weapp?tab=readme-ov-file#attributify-autocomplete-v0531
+// https://github.com/MellowCo/unocss-preset-weapp/tree/main/src/transformer/transformerAttributify
+// const { presetWeappAttributify, transformerAttributify } = extractorAttributify();
 
 export default {
   presets: [
     // https://github.com/MellowCo/unocss-preset-weapp
     presetWeapp(),
-    // attributify autocomplete
-    presetWeappAttributify(),
   ],
   shortcuts: [
     {
@@ -20,9 +21,6 @@ export default {
   ],
 
   transformers: [
-    // https://github.com/MellowCo/unocss-preset-weapp/tree/main/src/transformer/transformerAttributify
-    transformerAttributify(),
-
     // https://github.com/MellowCo/unocss-preset-weapp/tree/main/src/transformer/transformerClass
     transformerClass(),
   ],
