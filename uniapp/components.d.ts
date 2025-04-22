@@ -7,7 +7,6 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    MyComponent: typeof import('./src/components/demo/MyComponent.vue')['default']
     NutAvatar: typeof import('nutui-uniapp/components/avatar/avatar.vue')['default']
     NutButton: typeof import('nutui-uniapp/components/button/button.vue')['default']
     NutCell: typeof import('nutui-uniapp/components/cell/cell.vue')['default']
@@ -15,6 +14,7 @@ declare module 'vue' {
     NutGrid: typeof import('nutui-uniapp/components/grid/grid.vue')['default']
     NutGridItem: typeof import('nutui-uniapp/components/griditem/griditem.vue')['default']
     NutIcon: typeof import('nutui-uniapp/components/icon/icon.vue')['default']
+    NutRate: typeof import('nutui-uniapp/components/rate/rate.vue')['default']
     NutSwiper: typeof import('nutui-uniapp/components/swiper/swiper.vue')['default']
   }
 }

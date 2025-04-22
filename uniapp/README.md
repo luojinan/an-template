@@ -74,5 +74,5 @@ css 建议尽可能使用 [unocss](https://www.cnblogs.com/haoxianrui/p/18684753
 1. 写 `<view>`、`<image>` 或者 `<div>`、`<img>`，没有区别，在编译时都会被转化为目标平台的语法。（如果uniapp项目更多的用于小程序，可以考虑都写 `view` 等小程序语法来优化小程序的编译速度，相应的 web 编译会慢点，但是这点编译耗时感觉可以忽略不计... 还是写熟悉的 web 语法心智负担更低）
 2. 使用 `uni.xx()` 代替 `wx.xx()`
 3. 自定义组件，`definedoption` `virtualHost` 设置为true才可以让外部class、style生效，同样需要注意权重，外部class权重都比内部低...
-4. TODO: 自定义组件 VSCode import 跳转问题，悬浮类型定义问题
+4. 自定义组件 VSCode import 跳转问题，悬浮类型定义，设置 tsconfig 路径别名
 5. TODO: webview 集成，除了 首页、支付、登录 等依赖微信小程序内置功能的页面使用 uniapp 开发外，其他页面理论上都应该用 webview，在 H5项目 开发而不是 uniapp项目

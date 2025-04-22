@@ -1,3 +1,4 @@
+import { fileURLToPath, URL } from 'node:url'
 import uni from "@dcloudio/vite-plugin-uni";
 import UniComponents from "@uni-helper/vite-plugin-uni-components";
 import { NutResolver } from "nutui-uniapp";
@@ -27,6 +28,7 @@ export default defineConfig(async ({ mode }: ConfigEnv): Promise<UserConfig> => 
       UnoCss(),
       // 确保放在 `Uni()` 之前，官方文档没有找到手动引入组件的示例，都默认使用auto component 😡
       UniComponents({
+        globs: [], // 设置为空数组，不扫描业务目录
         resolvers: [
           NutResolver()
         ]
@@ -34,5 +36,10 @@ export default defineConfig(async ({ mode }: ConfigEnv): Promise<UserConfig> => 
       // https://github.com/dcloudio/uni-app/blob/next/packages/vite-plugin-uni/src/index.ts
       uni(),
     ],
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL('./src', import.meta.url))
+      },
+    },
   };
 });

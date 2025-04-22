@@ -1,5 +1,9 @@
 <template>
   <div class="p-5">
+    <nut-cell custom-class="cell">
+      <!-- rate 组件渲染不出来 -->
+      <nut-rate v-model="value" />
+    </nut-cell>
     <h1 class="text-2xl font-bold mb-2 text-center">组件开发示例</h1>
     <p class="text-gray-500 text-center mb-8">这里展示了组件开发的基础知识，包括props、插槽、样式覆盖等</p>
     
@@ -40,7 +44,7 @@
     <div class="mb-8">
       <h2 class="text-xl font-bold mb-4">4. 组件通信</h2>
       <p v-if="clickMessage" class="mt-4 text-green-500">{{ clickMessage }}</p>
-      <MyComponent 
+      <MyComponent
         title="点击事件示例"
         @click="handleComponentClick"
       />
@@ -53,6 +57,7 @@ import { ref } from "vue";
 import MyComponent from "@/components/demo/MyComponent.vue";
 
 const clickMessage = ref("");
+const value = ref(3);
 
 const handleComponentClick = (message: string) => {
   clickMessage.value = message;
