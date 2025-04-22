@@ -35,6 +35,12 @@
       "style": {
         "navigationBarTitleText": "页面跳转目标"
       }
+    },
+    {
+      "path": "pages/demo/component",
+      "style": {
+        "navigationBarTitleText": "组件开发示例"
+      }
     }
   ],
   "globalStyle": {

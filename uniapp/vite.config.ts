@@ -31,6 +31,7 @@ export default defineConfig(async ({ mode }: ConfigEnv): Promise<UserConfig> => 
           NutResolver()
         ]
       }),
+      // https://github.com/dcloudio/uni-app/blob/next/packages/vite-plugin-uni/src/index.ts
       uni(),
     ],
   };

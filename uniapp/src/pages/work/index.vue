@@ -1,25 +1,9 @@
 <template>
   <view class="work p-4 bg-gray-100">
-    <template v-for="(item, index) in gridList" :key="index">
-      <nut-card :title="item.title" class="mb-4 rounded-lg shadow-sm">
-        <nut-grid clickable :column-num="4" class="gap-2">
-          <nut-grid-item
-            v-for="(child, index) in item.children"
-            :key="index"
-            :v-has-perm="child.prem"
-            use-slot
-            link-type="navigateTo"
-            :url="child.url"
-            class="p-2 bg-gray-50 hover:bg-gray-100"
-          >
-            <view class="text text-center font-medium text-gray-700">{{ child.title }}</view>
-          </nut-grid-item>
-        </nut-grid>
-      </nut-card>
-    </template>
-    
+    <nut-button type="primary" block class="mt-4! mb-4!">按钮1</nut-button>
+
     <!-- UnoCSS 示例 -->
-    <view class="mt-6 p-4 bg-blue-50 rounded-lg">
+    <view class="bg-blue-50 rounded-lg">
       <view class="text-xl font-bold text-blue-500 text-center">UnoCSS 样式示例</view>
     </view>
     
@@ -56,21 +40,12 @@
 <script lang="ts" setup>
 import { reactive } from "vue";
 
-const gridList = reactive([
-  {
-    title: "系统管理",
-    children: [
-      {
-        title: "用户管理",
-        url: "/pages/work/user/index",
-        prem: "sys:user:query",
-      },
-    ],
-  },
-]);
 </script>
 
 <style lang="scss" scoped>
+.a {
+  margin-bottom: 16px;
+}
 /* stylelint-disable selector-type-no-unknown */
 page {
   background: #f8f8f8;

@@ -13,6 +13,14 @@
         </view>
       </view>
       
+      <!-- 组件示例 -->
+      <view class="p-4 bg-white rounded-lg shadow" @tap="navigateTo('component')">
+        <view class="text-lg font-bold mb-2">组件开发示例</view>
+        <view class="text-gray-500 text-sm">
+          演示组件开发的基础知识，包括props、插槽、样式覆盖等
+        </view>
+      </view>
+      
       <!-- 预留更多示例入口 -->
       <view class="p-4 bg-gray-100 rounded-lg text-center text-gray-500">
         更多示例正在开发中...

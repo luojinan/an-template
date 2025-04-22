@@ -27,7 +27,7 @@ const debounce = <T extends (...args: any[]) => any>(fn: T, delay: number) => {
  */
 export function setImageUrl(url?: string) {
   if (!!url && !url.startsWith('http')) {
-    return `https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/${url}`
+    return `https://dsjedu-assets.oss-cn-shanghai.aliyuncs.com/${url}?x-oss-process=image/format,webp`
   }
   // 直接返回原始URL
   return url

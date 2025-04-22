@@ -7,9 +7,9 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    MyComponent: typeof import('./src/components/demo/MyComponent.vue')['default']
     NutAvatar: typeof import('nutui-uniapp/components/avatar/avatar.vue')['default']
     NutButton: typeof import('nutui-uniapp/components/button/button.vue')['default']
-    NutCard: typeof import('nutui-uniapp/components/card/card.vue')['default']
     NutCell: typeof import('nutui-uniapp/components/cell/cell.vue')['default']
     NutCellGroup: typeof import('nutui-uniapp/components/cellgroup/cellgroup.vue')['default']
     NutGrid: typeof import('nutui-uniapp/components/grid/grid.vue')['default']
