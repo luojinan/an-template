@@ -5,15 +5,15 @@
     <!-- 基础跳转 -->
     <view class="mb-8 p-4 bg-gray-100 rounded-lg">
       <view class="text-lg font-bold mb-4">基础跳转</view>
-      <nut-button type="primary" block @click="navigateToPage" customClass="mb-2">普通跳转 (navigateTo)</nut-button>
-      <nut-button type="primary" block @click="redirectToPage" customClass="mb-2">重定向跳转 (redirectTo)</nut-button>
-      <nut-button type="primary" block @click="navigateBack" customClass="mb-2">返回上一页 (navigateBack)</nut-button>
+      <nut-button type="primary" block @click="navigateToPage" class="mb-2!">普通跳转 (navigateTo)</nut-button>
+      <nut-button type="primary" block @click="redirectToPage" class="mb-2!">重定向跳转 (redirectTo)</nut-button>
+      <nut-button type="primary" block @click="navigateBack" class="mb-2!">返回上一页 (navigateBack)</nut-button>
     </view>
 
     <!-- 带参数跳转 -->
     <view class="mb-8 p-4 bg-gray-100 rounded-lg">
       <view class="text-lg font-bold mb-4">带参数跳转</view>
-      <nut-button type="primary" block @click="navigateWithParams" customClass="mb-2">带参数跳转</nut-button>
+      <nut-button type="primary" block @click="navigateWithParams" class="mb-2!">带参数跳转</nut-button>
     </view>
   </view>
 </template>
@@ -75,9 +75,6 @@ const navigateWithParams = async () => {
 </script>
 
 <style lang="scss">
-.mb-2 {
-  margin-top: 20px;
-}
 .container {
   padding: 20px;
 }

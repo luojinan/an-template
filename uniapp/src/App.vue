@@ -14,13 +14,5 @@ onHide(() => {
 </script>
 
 <style lang="scss">
-:root {
-  --primary-color: #165dff;
-  --primary-color-light: #94bfff;
-  --primary-color-dark: #0e3c9b;
-}
-
-page {
-  background: #f8f8f8;
-}
+@import "nutui-uniapp/styles/index.scss";
 </style>

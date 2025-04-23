@@ -1,7 +1,6 @@
 <template>
   <div class="p-5">
     <nut-cell custom-class="cell">
-      <!-- rate 组件渲染不出来 -->
       <nut-rate v-model="value" />
     </nut-cell>
     <h1 class="text-2xl font-bold mb-2 text-center">组件开发示例</h1>
