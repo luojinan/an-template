@@ -1,6 +1,6 @@
 # AN Admin Template
 
-前端项目模板-管理后台
+前端项目模板 - 管理后台
 
 ```bash
 npx degit luojinan/an-template/admin-vue your-project-name
@@ -12,9 +12,17 @@ npx degit luojinan/an-template/admin-vue your-project-name
 2. 安装依赖
 3. git init
 
+- 🤖 自动化部署，基于 edgeone page 的 cdn 服务 push 后自动部署
+- 🔍 接口文档 油猴脚本脚本工具，有油猴插件的浏览器打开 [点击安装](https://raw.gitmirror.com/luojinan/an-monkey-tool/main/dist/an-tools-api.user.js)，提供根据接口文档复制出代码中的 request 函数名
+- 🧑‍💻 AI rules，`.cursor/rules/admin-page-template.mdc` 让 AI 了解如何使用 ProTable、ProForm 快速创建 CURD 页面
+
+prompt 示例：
+
+> @.cursor/rules/admin-page-template.mdc 新增一个页面，在 src/views 目录下新增一个目录为 “课程管理”，里面会有多个子目录，本次新增目录为 “课程列表页面”，参考接口定义 @xxxx，实现功能包括增删改查功能
+
 ## 项目简介
 
-[vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) 是基于 Vue3 + Vite5+ TypeScript5 + Element-Plus + Pinia 等主流技术栈构建的免费开源的后台管理前端模板（配套 [后端源码](https://gitee.com/youlaiorg/youlai-boot)）。
+[vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) 是基于 Vue3 + Vite5+ TypeScript5 + Element-Plus + Pinia 等主流技术栈构建的免费开源的后台管理前端模板 (配套 [后端源码](https://gitee.com/youlaiorg/youlai-boot))。
 
 ## 项目文档
 

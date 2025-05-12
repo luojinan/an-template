@@ -1,3 +1,5 @@
+import request from './request'
+
 /**
  * Check if an element has a class
  * @param {HTMLElement} ele
@@ -14,8 +16,7 @@ export function hasClass(ele: HTMLElement, cls: string) {
  * @param {string} cls
  */
 export function addClass(ele: HTMLElement, cls: string) {
-  if (!hasClass(ele, cls))
-    ele.className += ` ${cls}`
+  if (!hasClass(ele, cls)) { ele.className += ` ${cls}` }
 }
 
 /**
@@ -43,4 +44,23 @@ export function isExternal(path: string) {
 
 export function generateUniqueId() {
   return Date.now() + Math.random().toString(36).substr(2, 9)
+}
+
+/**
+ * 上传文件
+ *
+ * @param file
+ */
+export const uploadOss = (file: File, apiUrl?: string) => {
+  const url = apiUrl || '/api/v1/file/uploadOss'
+  const formData = new FormData()
+  formData.append('file', file)
+  return request<any, string>({
+    url,
+    method: 'post',
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
 }

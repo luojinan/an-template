@@ -146,9 +146,6 @@ const cardData = ref<CardProp[]>([
             >
             <div>
               <p>{{ greetings }}</p>
-              <p class="text-sm text-gray">
-                今日天气晴朗，气温在15℃至25℃之间，东南风。
-              </p>
             </div>
           </div>
         </el-col>
@@ -161,7 +158,7 @@ const cardData = ref<CardProp[]>([
 
     <el-card shadow="never">
       <el-empty
-        description="欢迎来到鼎时家"
+        description="欢迎来到MZY"
       >
         <template #image>
           <img :src="imgSrc" alt="本地图片">

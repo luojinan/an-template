@@ -186,7 +186,7 @@ onMounted(() => {
     <!-- ICP备案 -->
     <div class="absolute bottom-0 w-full text-center text-12px">
       <p>
-        Copyright © 2021 - 2025 上海鼎时家教育科技有限公司.
+        Copyright © 2021 - 2025 上海MZY教育科技有限公司.
         <a
           href="https://beian.miit.gov.cn/#/Integrated/index"
           target="_blank"

@@ -1,6 +1,6 @@
 import type { ProFormColumn, ProTableColumn } from '@/components/ProComponent'
-import { getApiV1DictBytypecodeOptions, getNewApiV1InstitutionOptions, getTeacherInfoOptions } from '@/proApi'
 import { useUserStore } from '@/store'
+import { getApiV1DictBytypecodeOptions } from '@/utils/proApi/system'
 
 const userStore = useUserStore()
 
@@ -67,8 +67,6 @@ export const formColumns: ProFormColumn[] = [
               formItem.valueEnum = [
                 { label: '选项', value: '1' },
               ]
-              const { list } = await getTeacherInfoOptions({ institutionId: '264', pageSize: '9999', pageNum: '1' })
-              formItem.valueEnum = list.map((item: any) => ({ label: item.displayName, value: `${item.id}` }))
             },
             watch(newValue, oldValue, data, items, formItemTool) {
               const [input2Form] = formItemTool.getFieldConfig(['input2'])
@@ -88,13 +86,13 @@ export const formColumns: ProFormColumn[] = [
             prop: 'institutionId',
             valueEnum: [],
             initFn: async (formItem) => {
-              formItem.valueEnum = await getNewApiV1InstitutionOptions()
+              formItem.valueEnum = [{ label: '选项', value: '1' }]
             },
             rules: [{ required: true, trigger: 'blur' }],
             watch: async (value, old, formdata, formconfig, formItemTool) => {
               const [teacherIdForm] = formItemTool.getFieldConfig(['institutionId', 'teacherId'])
               if (!userStore.user.dept.isInstitution && value) {
-                const { list } = await getTeacherInfoOptions({ institutionId: value, pageSize: '9999', pageNum: '1' })
+                const list = [{ label: '选项', value: '1' }]
                 teacherIdForm.valueEnum = list.map((item: any) => ({ label: item.displayName, value: `${item.id}` }))
               }
               else {

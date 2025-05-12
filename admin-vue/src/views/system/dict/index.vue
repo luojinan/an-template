@@ -43,7 +43,7 @@ function handleQuery() {
   loading.value = true
   DictAPI.getDictTypePage(queryParams)
     .then((data) => {
-      dictTypeList.value = data.list
+      dictTypeList.value = data.records
       total.value = data.total
     })
     .finally(() => {
@@ -331,8 +331,8 @@ onMounted(() => {
       @close="closeDictDialog"
     >
       <dict-item
-        v-model:typeCode="selectedDictType.typeCode"
-        v-model:typeName="selectedDictType.typeName"
+        v-model:type-code="selectedDictType.typeCode"
+        v-model:type-name="selectedDictType.typeName"
       />
     </el-dialog>
   </div>

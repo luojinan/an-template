@@ -1,8 +1,16 @@
 <script setup lang="ts">
-import RoleAPI from '@/api/role'
-import MenuAPI from '@/api/menu'
+import { onMounted, reactive, ref } from 'vue'
+import { ElForm, ElMessage, ElMessageBox, ElTree } from 'element-plus'
+import { getApiV1MenusOptions, getApiV1RolesByroleidForm, getApiV1RolesByroleidMenuids, getApiV1RolesPage, postApiV1Roles, putApiV1RolesByid, putApiV1RolesByroleidMenus } from '@/utils/proApi/system'
 
-import type { RoleForm, RolePageVO, RoleQuery } from '@/api/role/model'
+import type { RoleForm } from '@/utils/proApi/types/systemTypes'
+import request from '@/utils/request'
+
+interface OptionType {
+  label: string
+  value: number
+  children?: OptionType[]
+}
 
 defineOptions({
   name: 'Role',
@@ -17,19 +25,20 @@ const loading = ref(false)
 const ids = ref<number[]>([])
 const total = ref(0)
 
-const queryParams = reactive<RoleQuery>({
-  pageNum: 1,
-  pageSize: 10,
+const queryParams = reactive({
+  pageNum: '1',
+  pageSize: '10',
+  keywords: '',
 })
 
-const roleList = ref<RolePageVO[]>()
+const roleList = ref<RoleForm[]>([])
 
 const dialog = reactive({
   title: '',
   visible: false,
 })
 
-const formData = reactive<RoleForm>({
+const formData = reactive<Partial<RoleForm>>({
   sort: 1,
   status: 1,
   code: '',
@@ -56,10 +65,10 @@ let checkedRole: CheckedRole = reactive({})
 /** 查询 */
 function handleQuery() {
   loading.value = true
-  RoleAPI.getPage(queryParams)
+  getApiV1RolesPage(queryParams)
     .then((data) => {
-      roleList.value = data.list
-      total.value = data.total
+      roleList.value = data.records || []
+      total.value = data.total || 0
     })
     .finally(() => {
       loading.value = false
@@ -68,7 +77,7 @@ function handleQuery() {
 /** 重置查询 */
 function resetQuery() {
   queryFormRef.value.resetFields()
-  queryParams.pageNum = 1
+  queryParams.pageNum = '1'
   handleQuery()
 }
 
@@ -82,9 +91,10 @@ function openDialog(roleId?: number) {
   dialog.visible = true
   if (roleId) {
     dialog.title = '修改角色'
-    RoleAPI.getFormData(roleId).then((data) => {
-      Object.assign(formData, data)
-    })
+    getApiV1RolesByroleidForm({ roleId })
+      .then((data) => {
+        Object.assign(formData, data)
+      })
   }
   else {
     dialog.title = '新增角色'
@@ -98,7 +108,8 @@ function handleSubmit() {
       loading.value = true
       const roleId = formData.id
       if (roleId) {
-        RoleAPI.update(roleId, formData)
+        // 修复这里的API调用，需要传入正确的参数
+        putApiV1RolesByid(formData as RoleForm)
           .then(() => {
             ElMessage.success('修改成功')
             closeDialog()
@@ -107,7 +118,7 @@ function handleSubmit() {
           .finally(() => (loading.value = false))
       }
       else {
-        RoleAPI.add(formData)
+        postApiV1Roles(formData as RoleForm)
           .then(() => {
             ElMessage.success('新增成功')
             closeDialog()
@@ -149,17 +160,20 @@ function handleDelete(roleId?: number) {
     type: 'warning',
   }).then(() => {
     loading.value = true
-    RoleAPI.deleteByIds(roleIds)
-      .then(() => {
-        ElMessage.success('删除成功')
-        resetQuery()
-      })
+    // 接口文档自动生成的定义有误，手动编写
+    request({
+      url: `/api/v1/roles/${roleIds}`,
+      method: 'delete',
+    }).then(() => {
+      ElMessage.success('删除成功')
+      resetQuery()
+    })
       .finally(() => (loading.value = false))
   })
 }
 
 /** 打开分配菜单弹窗 */
-async function openMenuDialog(row: RolePageVO) {
+async function openMenuDialog(row: any) {
   const roleId = row.id
   if (roleId) {
     checkedRole = {
@@ -170,13 +184,19 @@ async function openMenuDialog(row: RolePageVO) {
     loading.value = true
 
     // 获取所有的菜单
-    menuList.value = await MenuAPI.getOptions()
+    try {
+      const menuOptions = await getApiV1MenusOptions()
+      menuList.value = menuOptions
+    }
+    catch (error) {
+      console.error('获取菜单选项失败', error)
+    }
 
     // 回显角色已拥有的菜单
-    RoleAPI.getRoleMenuIds(roleId)
+    getApiV1RolesByroleidMenuids({ roleId })
       .then((data) => {
         const checkedMenuIds = data
-        checkedMenuIds.forEach(menuId =>
+        checkedMenuIds.forEach((menuId: number) =>
           menuRef.value.setChecked(menuId, true, false),
         )
       })
@@ -195,7 +215,7 @@ function handleRoleMenuSubmit() {
       .map((node: any) => node.value)
 
     loading.value = true
-    RoleAPI.updateRoleMenus(roleId, checkedMenuIds)
+    putApiV1RolesByroleidMenus({ roleId }, checkedMenuIds)
       .then(() => {
         ElMessage.success('分配权限成功')
         menuDialogVisible.value = false
@@ -215,7 +235,7 @@ onMounted(() => {
 <template>
   <div class="app-container">
     <div class="search-container">
-      <el-form ref="queryFormRef" :model="queryParams" :inline="true">
+      <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="keywords" label="关键字">
           <el-input
             v-model="queryParams.keywords"
@@ -233,7 +253,7 @@ onMounted(() => {
             <i-ep-refresh />重置
           </el-button>
         </el-form-item>
-      </el-form>
+      </ElForm>
     </div>
 
     <el-card shadow="never" class="table-container">
@@ -321,7 +341,7 @@ onMounted(() => {
       width="500px"
       @close="closeDialog"
     >
-      <el-form
+      <ElForm
         ref="roleFormRef"
         :model="formData"
         :rules="rules"
@@ -363,7 +383,7 @@ onMounted(() => {
             style="width: 100px"
           />
         </el-form-item>
-      </el-form>
+      </ElForm>
 
       <template #footer>
         <div class="dialog-footer">
@@ -384,7 +404,7 @@ onMounted(() => {
       width="800px"
     >
       <el-scrollbar v-loading="loading" max-height="600px">
-        <el-tree
+        <ElTree
           ref="menuRef"
           node-key="value"
           show-checkbox
@@ -394,7 +414,7 @@ onMounted(() => {
           <template #default="{ data }">
             {{ data.label }}
           </template>
-        </el-tree>
+        </ElTree>
       </el-scrollbar>
 
       <template #footer>

@@ -13,12 +13,24 @@ import type {
 
 export type IObject = Record<string, any>
 
-export interface ToolOperatBtn<T> {
+// 删除操作按钮 参数只有id没有整条数据
+export interface DeleteOperatBtn {
+  auths?: string[]
+  name: 'delete'
+  text: string
+  onClick?: (ids: string) => void
+}
+
+// 其他操作按钮
+export interface OtherOperatBtn<T> {
   auths?: string[]
   name: string
   text: string
   onClick?: (params: T) => void
 }
+
+// 操作按钮联合类型
+export type ToolOperatBtn<T> = DeleteOperatBtn | OtherOperatBtn<T>
 
 export interface ValueEnum {
   value: any
@@ -39,19 +51,7 @@ export interface ProTableColumn<T = IObject> {
   // 初始化数据函数
   initFn?: (item: ProTableColumn<T>) => void
   // 模板
-  valueType?:
-    | 'image'
-    | 'select'
-    | 'url'
-    | 'switch'
-    | 'input'
-    | 'price'
-    | 'percent'
-    | 'icon'
-    | 'date'
-    | 'tool'
-    | 'custom'
-    | 'date-picker'
+  valueType?: keyof AttrsByValueType | 'image' | 'tool'
   // 组件可选项(适用于select,radio,checkbox组件)
   valueEnum?: ValueEnum[]
   // image模板相关参数
@@ -68,11 +68,11 @@ export interface ProTableColumn<T = IObject> {
 // pagination组件属性
 export type Pagination = boolean
   | Partial<
-        Omit<
-          PaginationProps,
+    Omit<
+      PaginationProps,
           'v-model:page-size' | 'v-model:current-page' | 'total' | 'currentPage'
-        >
-      >
+    >
+  >
 
 interface AttrsByValueType {
   'input': InputProps

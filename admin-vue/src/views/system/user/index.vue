@@ -4,9 +4,9 @@ import type { UploadInstance } from 'element-plus'
 import { genFileId } from 'element-plus'
 import UserAPI from '@/api/user'
 import DeptAPI from '@/api/dept'
-import RoleAPI from '@/api/role'
 import { useUserStore } from '@/store'
 import type { UserForm, UserPageVO, UserQuery } from '@/api/user/model'
+import { getApiV1RolesOptions } from '@/utils/proApi/system'
 
 defineOptions({
   name: 'User',
@@ -87,7 +87,7 @@ function handleQuery() {
   UserAPI.getPage(queryParams)
     .then((data) => {
       console.log('handleQuery', data)
-      pageData.value = data.list
+      pageData.value = data.records
       total.value = data.total
     })
     .finally(() => {
@@ -134,16 +134,14 @@ function resetPassword(row: { [key: string]: any }) {
 
 /** 加载角色下拉数据源 */
 async function loadRoleOptions() {
-  RoleAPI.getOptions().then((data) => {
-    roleList.value = data
-  })
+  const data = await getApiV1RolesOptions()
+  roleList.value = data
 }
 
 /** 加载部门下拉数据源 */
 async function loadDeptOptions() {
-  DeptAPI.getOptions().then((data) => {
-    deptList.value = data
-  })
+  const data = await DeptAPI.getOptions()
+  deptList.value = data
 }
 
 /**

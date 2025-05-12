@@ -34,8 +34,3 @@ const fontColor = computed(() => {
     <router-view v-else />
   </el-config-provider>
 </template>
-
-<style lang="scss">
-@import "nutui-uniapp/styles/index.scss";
-
-</style>

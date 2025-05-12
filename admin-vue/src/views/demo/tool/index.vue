@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { UploadRequestOptions } from 'element-plus'
+import { ref } from 'vue'
 import { ProTable } from '@/components/ProComponent'
 import type { ProTableColumn } from '@/components/ProComponent'
-import { postApiV1FileGetwxassets } from '@/proApi'
-import request from '@/utils/request'
+import { postApiV1FileGetwxassets } from '@/utils/proApi/admin'
+import { uploadOss } from '@/utils'
 
 // 表格顶部新镇按钮
 const tableRef = ref()
@@ -35,23 +36,9 @@ async function fetchTableData() {
   }
 }
 
-// Uploads a file to OSS
-async function uploadFileToOSS(file: File) {
-  const formData = new FormData()
-  formData.append('file', file)
-  return request<any, string>({
-    url: '/api/v1/file/uploadWxAssets',
-    method: 'post',
-    data: formData,
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  })
-}
-
 // Handles file upload request
 async function onUploadRequest(options: UploadRequestOptions) {
-  await uploadFileToOSS(options.file)
+  await uploadOss(options.file, '/api/v1/file/uploadWxAssets')
   tableRef.value.fetchPageData()
   copyToClipboard('上传成功')
 }

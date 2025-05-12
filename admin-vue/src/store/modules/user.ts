@@ -1,3 +1,5 @@
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
 import AuthAPI from '@/api/auth'
 import UserAPI from '@/api/user'
 import { resetRouter } from '@/router'
@@ -6,12 +8,21 @@ import { store } from '@/store'
 import type { LoginData } from '@/api/auth/model'
 import type { UserInfo } from '@/api/user/model'
 import { TOKEN_KEY } from '@/enums/CacheEnum'
-import type { UserInfoVO } from '@/proApi/apiTypes'
+import type { UserInfoVO } from '@/utils/proApi/types/systemTypes'
 
 export const useUserStore = defineStore('user', () => {
   const user = ref<UserInfoVO>({
     roles: [],
     perms: [],
+    userId: '',
+    username: '',
+    nickname: '',
+    avatar: '',
+    dept: {
+      id: 0,
+      name: '',
+      isInstitution: false,
+    },
   })
 
   /**
@@ -82,7 +93,7 @@ export const useUserStore = defineStore('user', () => {
   }
 
   function hasPerms(perms: string[]) {
-    if(!perms.length) {
+    if (!perms.length) {
       return true // 不传目标权限码，则认为不要求权限
     }
     return user.value.perms.some(perm => perms.includes(perm))
@@ -94,7 +105,7 @@ export const useUserStore = defineStore('user', () => {
     getUserInfo,
     logout,
     resetToken,
-    hasPerms
+    hasPerms,
   }
 })
 

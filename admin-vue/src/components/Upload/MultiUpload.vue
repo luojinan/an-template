@@ -7,7 +7,8 @@ import type {
   UploadRequestOptions,
   UploadUserFile,
 } from 'element-plus'
-import FileAPI from '@/api/file'
+import { ref, watch } from 'vue'
+import { uploadOss } from '@/utils'
 
 const props = defineProps({
   /**
@@ -55,8 +56,7 @@ watch(
       && filePaths.length === newVal.length
       && filePaths.every(x => newVal.every(({ url }) => x === url))
       && newVal.every(y => filePaths.includes(y.url))
-    )
-      return
+    ) { return }
     fileList.value = newVal
   },
   { immediate: true },
@@ -91,7 +91,7 @@ async function handleUpload(options: UploadRequestOptions): Promise<any> {
   let data = null
   if (props.uploadResType === 'ossUrl') {
     // 上传API调用
-    data = await FileAPI.uploadOss(options.file)
+    data = await uploadOss(options.file)
   }
   else {
     data = await getBase64(options.file)

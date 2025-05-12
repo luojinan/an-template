@@ -11,9 +11,7 @@ import {
 } from '@/store'
 import defaultSettings from '@/settings'
 import { DeviceEnum } from '@/enums/DeviceEnum'
-import CalendarDrawer from '@/components/CalendarDrawer/CalendarDrawer.vue'
-import { putApiV1UsersChangepassword } from '@/proApi'
-import { getApiV1DictBytypecodeOptions, getApiV1UsersGetwxacodeunlimit } from '@/utils/proProApi/admin'
+import { getApiV1DictBytypecodeOptions, getApiV1UsersGetwxacodeunlimit, putApiV1UsersChangepassword } from '@/utils/proApi/system'
 import { ProForm } from '@/components/ProComponent'
 
 const appStore = useAppStore()
@@ -27,11 +25,6 @@ const router = useRouter()
 const isMobile = computed(() => appStore.device === DeviceEnum.MOBILE)
 
 const { isFullscreen, toggle } = useFullscreen()
-
-const showCalendar = ref(false)
-function onShowCalendar() {
-  showCalendar.value = true
-}
 
 /**
  * 注销
@@ -138,8 +131,6 @@ async function onQrcodeSubmit(data: any) {
         </el-button>
       </template>
     </el-popover>
-
-    <CalendarDrawer v-model:open="showCalendar" />
 
     <ProForm
       ref="passwordFormRef"

@@ -1,0 +1,805 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# 后台管理系统标准页面模板规则
+
+## 项目目录结构说明
+```
+src/
+  ├── components/         # 组件目录
+  │   └── ProComponent/   # Pro系列组件
+  ├── utils/proApi/    # API接口目录
+  │   ├── admin.ts        # 后台管理接口
+  │   └── types/            # 类型定义目录
+  │       └── adminTypes.ts # 后台管理接口类型定义
+  └── views/              # 页面目录
+      └── [模块名称]/      # 具体业务模块目录
+```
+
+## API接口说明
+所有接口函数位于 `@/utils/proApi/admin.ts`，由 `scripts/tsapi.js` 脚本自动生成。
+
+## 类型定义说明
+所有类型定义位于 `@/utils/proApi/types/xxxTypes.ts`，由 `scripts/tsapi.js` 脚本自动生成。
+
+## 增删改查目录结构规范
+
+当需要新建一个基础的增删改查页面时，应遵循以下目录结构：
+
+```
+页面目录/
+  ├── index.vue          # 页面主文件
+  └── config/            # 配置文件目录
+      └── column.ts      # 表格和表单配置文件
+```
+
+## 表单验证规则编写规范
+
+### required 规则简化配置
+当设置 required 为 true 时，只需配置 required 和 trigger 属性，不需要手动指定 message 属性。系统会自动生成错误提示信息。
+
+```typescript
+// ✅ 推荐: 简化的规则写法
+rules: [{ required: true, trigger: 'blur' }]
+
+// ❌ 不推荐: 冗余的规则写法
+rules: [{ required: true, message: '请输入xxx', trigger: 'blur' }]
+```
+
+### 验证触发时机选择
+- 对于输入框、文本域等，使用 'blur' 触发验证
+- 对于选择框、单选框、复选框、上传组件等，使用 'change' 触发验证
+
+```typescript
+// 输入框
+{
+  label: '字段名称',
+  prop: 'fieldName',
+  valueType: 'input',
+  rules: [{ required: true, trigger: 'blur' }]
+}
+
+// 选择框
+{
+  label: '字段名称',
+  prop: 'fieldName',
+  valueType: 'select',
+  rules: [{ required: true, trigger: 'change' }]
+}
+```
+
+### 复杂验证规则
+当需要自定义验证逻辑或错误消息时，仍可以使用完整的规则配置：
+
+```typescript
+rules: [
+  { required: true, trigger: 'blur' },
+  { min: 3, max: 20, message: '长度在3到20个字符之间', trigger: 'blur' },
+  { pattern: /^[A-Za-z0-9]+$/, message: '只能包含字母和数字', trigger: 'blur' }
+]
+```
+
+### 自定义验证器
+使用自定义验证器时，必须指定错误消息：
+
+```typescript
+rules: [
+  { required: true, trigger: 'blur' },
+  {
+    validator: (rule, value, callback) => {
+      if (value && value.length < 6) {
+        callback(new Error('长度不能小于6个字符'))
+      } else {
+        callback()
+      }
+    },
+    trigger: 'blur'
+  }
+]
+```
+
+## 文件内容规范
+
+### config/column.ts
+
+```typescript
+import type { ProFormColumn, ProTableColumn } from '@/components/ProComponent'
+// 导入对应的接口类型定义
+import type { YourModuleVO, YourModuleForm } from '@/utils/proApi/types/adminTypes'
+
+// 表格列配置
+// 使用从 types/adminTypes.ts 中找到的列表类型 YourModuleVO
+export const tableColumns: ProTableColumn<YourModuleVO>[] = [
+  // 基础字段配置
+  { label: 'ID', prop: 'id', width: 50 },
+  // 根据 YourModuleVO 类型定义配置其他业务字段...
+]
+
+// 表单配置
+// 使用从 types/adminTypes.ts 中找到的表单类型 YourModuleForm
+export const formColumns: ProFormColumn<YourModuleForm>[] = [
+  { label: 'ID', prop: 'id', hidden: true },
+  // 根据 YourModuleForm 类型定义配置其他表单字段...
+]
+```
+
+### index.vue
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { ElMessage } from 'element-plus'
+import { formColumns, tableColumns } from './config/column'
+import type { ProTableColumn } from '@/components/ProComponent'
+import { ProTable, ProForm } from '@/components/ProComponent'
+import { deleteApiV1[模块名称]Byids, getApiV1[模块名称]Page, postApiV1[模块名称], putApiV1[模块名称]Byid } from '@/utils/proApi/admin'
+
+// 工具栏配置
+const toolbar = [
+  {
+    name: 'add',
+    text: '新增',
+    type: 'success',
+    onClick: handleAddClick,
+  },
+]
+
+// 表格列配置
+const cols: ProTableColumn<T>[] = [
+  ...tableColumns,
+  {
+    label: '操作',
+    fixed: 'right',
+    width: 80,
+    valueType: 'tool',
+    operat: [
+      {
+        name: 'edit',
+        text: '编辑',
+        onClick: handleEditClick,
+      },
+      {
+        name: 'delete',
+        text: '删除',
+        onClick: handleDeleteClick,
+      },
+    ],
+  },
+]
+
+const tableRef = ref()
+const formRef = ref()
+const open = ref(false)
+
+// CRUD 操作处理
+async function handleEditClick(row: T) {
+  open.value = true
+  formRef.value?.setFormData(row)
+}
+
+async function handleDeleteClick(ids: string) {
+  await deleteApiV1[模块名称]Byids({ ids })
+  ElMessage.success('删除成功')
+  tableRef.value?.fetchPageData()
+}
+
+function handleAddClick() {
+  formRef.value?.resetFormData()
+  open.value = true
+}
+
+async function onSubmit(data: T) {
+  if (data.id)
+    await putApiV1[模块名称]Byid({ id: data.id }, data)
+  else
+    await postApiV1[模块名称](mdc:data)
+
+  open.value = false
+  ElMessage.success('操作成功')
+  tableRef.value?.fetchPageData()
+}
+
+function getList(params: any) {
+  return getApiV1[模块名称]Page(params)
+}
+</script>
+
+<template>
+  <div class="app-container">
+    <ProTable
+      ref="tableRef"
+      :columns="cols"
+      :toolbar="toolbar"
+      :request="getList"
+      :search="false"
+    />
+
+    <ProForm
+      ref="formRef"
+      v-model:open="open"
+      type="drawer"
+      :drawer-props="{ title: '表单标题' }"
+      :columns="formColumns"
+      :on-submit="onSubmit"
+    >
+      <!-- 自定义插槽 -->
+      <template #customSlotName="scope">
+        <!-- 
+          scope包含以下属性：
+          - formData: 整个表单数据对象
+          - prop: 当前表单项的属性名
+          - disabled: 表单项是否禁用
+        -->
+        <el-component v-model="scope.formData[scope.prop]" />
+        
+        <!-- 或者对于需要类型转换的情况 -->
+        <el-component
+          :model-value="convertValueForDisplay(scope.formData[scope.prop])"
+          @update:model-value="val => scope.formData[scope.prop] = convertValueForStorage(val)"
+        />
+      </template>
+    </ProForm>
+  </div>
+</template>
+```
+
+## 列表页面规范
+
+### 操作列配置规范
+- **操作列宽度**：所有页面的操作列宽度统一设置为 80，确保页面风格一致。
+- **操作列位置**：操作列应固定在右侧（通过 fixed: 'right' 属性），方便用户操作。
+- **操作列按钮**：根据需要设置编辑、删除等操作按钮，保持命名和图标一致性。
+
+### 时间列配置规范
+- **时间列宽度**：所有时间相关的列（如创建时间、更新时间、有效期等可能为年月日时分秒格式的列）宽度统一设置为 160，确保有足够空间展示完整的时间信息。
+- **时间格式化**：建议根据实际需求对时间进行格式化展示，可以使用 formatFn 进行自定义格式化。
+
+## 使用说明
+
+### 1. 页面结构
+- 使用 ProTable 组件实现数据表格展示
+- 使用 ProForm 组件实现表单操作
+- 集成基础的增删改查功能
+
+### 2. 配置文件
+
+#### tableColumns: 定义表格展示字段
+- **基础属性**:
+  - `label`: 列标题
+  - `prop`: 字段名
+  - `width`: 列宽
+  - `type`: 列类型，可选 'default' | 'selection' | 'index' | 'expand'
+  - `columnKey`: 列的key值
+  - `showOverflowTooltip`: 是否显示溢出提示
+
+- **展示控制**:
+  - `hideInSearch`: 是否在搜索表单中隐藏
+  - `hideInTable`: 是否在表格中隐藏
+
+- **数据展示**:
+  - `valueType`: 展示类型，支持 'image' | 'select' | 'url' | 'switch' | 'input' | 'price' | 'percent' | 'icon' | 'date' | 'tool' | 'custom' | 'date-picker'
+  - `valueEnum`: 选项数据，格式为 `{ value: any, label: string, tagType?: 'primary' | 'success' | 'info' | 'warning' | 'danger' }[]`
+
+- **格式化**:
+  - `formatFn`: `(val: any, allData: T) => string`，自定义格式化函数
+
+- **交互**:
+  - `onClick`: `(params: T) => void`，点击事件处理
+  - `operat`: 操作按钮配置，支持数组或函数形式
+
+- **图片相关**:
+  - `imageWidth`: 图片宽度
+  - `imageHeight`: 图片高度
+
+- **过滤相关**:
+  - `filterJoin`: 过滤值拼接符
+
+- **初始化**:
+  - `initFn`: `(item: ProTableColumn<T>) => void`，初始化数据函数
+
+#### formColumns: 定义表单字段
+- **基础属性**:
+  - `label`: 标签文本
+  - `prop`: 字段名
+  - `tips`: 提示信息
+  - `key`: 唯一标识
+  - `addonAfter`: 后缀文本
+
+- **组件类型**:
+  - `valueType`: 组件类型，支持 'input' | 'select' | 'radio' | 'checkbox' | 'tree-select' | 'date-picker' | 'time-picker' | 'input-number' | 'text' | 'upload' | 'formList' | 'custom' | 'cascader' | 'group'
+
+- **组件属性**:
+  - `attrs`: 根据valueType不同对应不同的ElementPlus组件属性
+  - `formTtemAttrs`: ElFormItem的组件属性
+
+- **数据配置**:
+  - `valueEnum`: 选项数据，格式为 `{ value: any, label: string, tagType?: string }[]`
+  - `initialValue`: 初始值
+  - `slotName`: 自定义插槽名称（当valueType为custom时使用）
+
+- **验证规则**:
+  - `rules`: ElementPlus的FormItemRule[]类型验证规则
+  - 当 required 为 true 时，只需配置 required 和 trigger 属性，无需手动指定 message 属性
+
+- **显示控制**:
+  - `hidden`: 是否隐藏（类似v-show）
+  - `unMounted`: 是否销毁（类似v-if）
+
+- **数据处理**:
+  - `transform`: `(value: any, itemConfig: ProFormColumn<T>) => any`，获取表单值时的转换函数
+  - `convertValue`: `(value: any, alldata: T) => any`，设置表单值时的转换函数
+
+- **监听处理**:
+  - `watch`: `(newValue: any, oldValue: any, data: T, items: ProFormColumn<T>[], formItemTool: IObject) => void`，监听函数
+  - `computed`: `(data: T) => any`，计算属性函数
+
+- **子表单**:
+  - `columns`: 子表单配置，用于嵌套表单场景
+
+- **初始化**:
+  - `initFn`: `(item: ProFormColumn<T>) => void`，初始化数据函数
+
+### 3. 数据交互
+- 使用自动生成的API函数处理数据请求
+- 支持表格数据刷新和分页
+- 提供完整的错误处理和用户提示
+
+### 4. 代码规范
+- 使用 TypeScript 确保类型安全
+- 遵循组件化和模块化原则
+- 保持代码结构清晰和可维护
+
+## 注意事项
+
+### 1. 类型定义
+- 为业务数据创建专门的类型定义
+- 确保 ProTable 和 ProForm 使用正确的泛型类型
+- 相关的字段类型定义位于 `@/utils/proApi/apiType.ts` 中，请根据用户指定的请求函数名称找到对应的类型定义
+- 在使用接口函数时，建议导入并使用对应的类型定义，以获得更好的类型提示和类型安全性
+
+### 2. API 集成
+- 所有接口函数都由脚本自动生成，位于 `@/utils/proApi/admin.ts` 目录下
+- 接口函数命名规范：
+  - 列表查询：`getApiV1[模块名称]Page`
+  - 新增：`postApiV1[模块名称]`
+  - 修改：`putApiV1[模块名称]Byid`
+  - 删除：`deleteApiV1[模块名称]Byids`
+- 使用时将[模块名称]替换为实际的模块名称
+- 相关的字段类型定义位于 `@/utils/proApi/apiType.ts` 中，请根据接口函数名称找到对应的类型定义
+
+### 3. 组件复用
+- 充分利用 ProComponent 提供的功能
+- 根据业务需求扩展组件配置
+
+### 4. 字典配置说明
+
+#### 字典类型定义
+- 在 `@/utils/proApi/types/adminTypes.ts` 中定义字典类型
+- 使用 `getApiV1DictBytypecodeOptions` 获取字典选项
+
+#### ProTable 字典配置
+- 基础配置：
+  ```typescript
+  {
+    label: '字典字段',
+    prop: 'dictField',
+    valueType: 'select',
+    valueEnum: [],
+    initFn: async (formItem) => {
+      formItem.valueEnum = await getApiV1DictBytypecodeOptions({ typeCode: 'yourDictType' })
+    }
+  }
+  ```
+- 支持标签样式：
+  ```typescript
+  {
+    valueEnum: [
+      { label: '启用', value: 1, tagType: 'success' },
+      { label: '禁用', value: 0, tagType: 'info' }
+    ]
+  }
+  ```
+
+#### ProForm 字典配置
+- 基础配置：
+  ```typescript
+  {
+    label: '字典字段',
+    valueType: 'select',
+    prop: 'dictField',
+    valueEnum: [],
+    initFn: async (formItem) => {
+      formItem.valueEnum = await getApiV1DictBytypecodeOptions({ typeCode: 'yourDictType' })
+    },
+    rules: [{ required: true, trigger: 'blur' }]
+  }
+  ```
+- 联动配置：
+  ```typescript
+  {
+    watch: async (value, old, formdata, formconfig, formItemTool) => {
+      const [relatedField] = formItemTool.getFieldConfig(['relatedField'])
+      if (value) {
+        relatedField.valueEnum = await getApiV1DictBytypecodeOptions({ typeCode: value })
+      }
+      else {
+        relatedField.valueEnum = []
+      }
+      // 重置关联字段
+      if (old) formdata.relatedField = ''
+    }
+  }
+  ```
+
+## 自定义表单项规范
+
+### 使用插槽自定义表单项
+
+当内置的表单组件不满足需求时，可以使用自定义插槽来实现复杂的表单项。以下是使用自定义插槽的步骤：
+
+#### 1. 在column.ts中配置自定义表单项
+
+```typescript
+// 在formColumns中配置
+{
+  label: '表单项标签',
+  prop: 'fieldName',
+  valueType: 'custom', // 关键：设置为custom类型
+  slotName: 'customSlotName', // 定义插槽名称
+  rules: [{ required: true, message: '请输入/选择xxx', trigger: 'change' }],
+}
+```
+
+#### 2. 在index.vue中实现自定义插槽
+
+```vue
+<ProForm
+  ref="formRef"
+  v-model:open="open"
+  type="drawer"
+  :drawer-props="{ title: '表单标题' }"
+  :columns="formColumns"
+  :on-submit="onSubmit"
+>
+  <!-- 自定义插槽 -->
+  <template #customSlotName="scope">
+    <!-- 
+      scope包含以下属性：
+      - formData: 整个表单数据对象
+      - prop: 当前表单项的属性名
+      - disabled: 表单项是否禁用
+    -->
+    <el-component v-model="scope.formData[scope.prop]" />
+    
+    <!-- 或者对于需要类型转换的情况 -->
+    <el-component
+      :model-value="convertValueForDisplay(scope.formData[scope.prop])"
+      @update:model-value="val => scope.formData[scope.prop] = convertValueForStorage(val)"
+    />
+  </template>
+</ProForm>
+```
+
+### 自定义表单项示例
+
+#### 评分组件示例
+
+```typescript
+// column.ts中的配置
+{
+  label: '评分',
+  prop: 'rating',
+  valueType: 'custom',
+  slotName: 'ratingSlot',
+  rules: [{ required: true, message: '请选择评分', trigger: 'change' }],
+}
+```
+
+```vue
+<!-- index.vue中的实现 -->
+<ProForm
+  ref="formRef"
+  v-model:open="open"
+  type="drawer"
+  :drawer-props="{ title: '表单标题' }"
+  :columns="formColumns"
+  :on-submit="onSubmit"
+>
+  <template #ratingSlot="scope">
+    <!-- 当rating是字符串类型但组件需要数字类型时 -->
+    <el-rate
+      :model-value="Number(scope.formData.rating)"
+      @update:model-value="val => scope.formData.rating = String(val)"
+      :max="5"
+    />
+    
+    <!-- 如果数据类型匹配，应优先使用v-model -->
+    <!-- <el-rate v-model="scope.formData.rating" :max="5" /> -->
+  </template>
+</ProForm>
+```
+
+#### 颜色选择器示例
+
+```typescript
+// column.ts中的配置
+{
+  label: '颜色',
+  prop: 'color',
+  valueType: 'custom',
+  slotName: 'colorPicker',
+  rules: [{ required: true, message: '请选择颜色', trigger: 'change' }],
+}
+```
+
+```vue
+<!-- index.vue中的实现 -->
+<template #colorPicker="scope">
+  <el-color-picker v-model="scope.formData.color" show-alpha />
+</template>
+```
+
+### 注意事项
+
+1. **数据绑定**：确保正确绑定和更新 `scope.formData[scope.prop]` 的值
+2. **类型转换**：如需要，可以在插槽中进行类型转换
+3. **验证规则**：在column配置中仍然需要定义验证规则
+4. **命名规范**：插槽名称应当具有描述性，建议使用 `字段名+Slot` 的命名方式
+
+### 数据绑定最佳实践
+
+在自定义表单项中进行数据绑定时，应遵循以下最佳实践：
+
+1. **优先使用v-model**：当组件支持v-model且数据类型匹配时，应直接使用v-model进行双向绑定
+
+```vue
+<template #colorPicker="scope">
+  <el-color-picker v-model="scope.formData.color" />
+</template>
+```
+
+2. **处理数据类型不匹配情况**：当组件期望的数据类型与表单存储的数据类型不同时，需要使用`:model-value`和`@update:model-value`进行手动绑定和转换
+
+```vue
+<template #ratingSlot="scope">
+  <el-rate
+    :model-value="Number(scope.formData.rating)"
+    @update:model-value="val => scope.formData.rating = String(val)"
+    :max="5"
+  />
+</template>
+```
+
+3. **使用计算属性处理复杂转换**：对于需要复杂转换逻辑的情况，可以使用计算属性或辅助函数
+
+```vue
+<template #customSlot="scope">
+  <el-component
+    :model-value="getDisplayValue(scope.formData.fieldName)"
+    @update:model-value="val => updateValue(val, scope)"
+  />
+</template>
+
+<script setup>
+// 计算属性实现
+function getDisplayValue(value) {
+  return /* 复杂的转换逻辑 */
+}
+
+function updateValue(value, scope) {
+  scope.formData[scope.prop] = /* 复杂的转换逻辑 */
+}
+</script>
+```
+
+4. **遵循组件API设计**：使用组件时应查阅其文档，遵循推荐的绑定方式和属性设置
+
+## 图片上传配置规范
+
+当表单中需要上传图片时，应使用以下配置规范，确保上传功能的一致性和可维护性。
+
+### 标准图片上传配置
+
+```typescript
+{
+  label: '图片',
+  prop: 'imageUrl',
+  valueType: 'upload',
+  attrs: {
+    limit: 1, // 限制上传数量
+    accept: 'image/*', // 限制只能上传图片
+  },
+  transform: (val) => {
+    // 将组件数据格式转换为API所需格式
+    return {
+      imageUrl: val?.[0]?.url,
+    }
+  },
+  convertValue: (val) => {
+    // 将API返回的数据格式转换为组件所需格式
+    if (!val) { return [] }
+    return [{ url: val }]
+  },
+  rules: [{ required: true, trigger: 'change' }],
+  tips: '请上传图片，只支持图片格式文件',
+}
+```
+
+### 属性说明
+
+- **valueType**: 必须设置为 'upload'，表示使用上传组件
+- **attrs**: 上传组件的属性配置
+  - **limit**: 限制上传文件数量，单图片上传通常设置为1
+  - **accept**: 限制上传文件类型，图片上传应设置为'image/*'
+- **transform**: 数据提交转换函数，用于将组件内部数组格式转换为API所需的单一URL格式
+- **convertValue**: 数据回显转换函数，用于将API返回的单一URL格式转换为组件所需的数组格式
+- **rules**: 验证规则，建议trigger设置为'change'而非'blur'，更适合上传组件的交互方式
+- **tips**: 提示文本，说明上传限制和要求
+
+### 多图片上传配置
+
+当需要支持多图片上传时，只需调整limit属性和数据转换函数：
+
+```typescript
+{
+  label: '图片集',
+  prop: 'imageUrls',
+  valueType: 'upload',
+  attrs: {
+    limit: 5, // 可上传多张图片
+    accept: 'image/*',
+  },
+  transform: (val) => {
+    // 将数组格式转换为逗号分隔的字符串或保持数组格式(取决于API要求)
+    return {
+      imageUrls: val?.map(item => item.url).join(',') // 或直接返回数组: val?.map(item => item.url)
+    }
+  },
+  convertValue: (val) => {
+    // 将API返回的格式转换回组件所需格式
+    if (!val) { return [] }
+    
+    // 处理字符串格式
+    if (typeof val === 'string') {
+      return val.split(',').map(url => ({ url }))
+    }
+    
+    // 处理数组格式
+    if (Array.isArray(val)) {
+      return val.map(url => ({ url }))
+    }
+    
+    return []
+  },
+  rules: [{ required: true, message: '请上传图片', trigger: 'change' }],
+  tips: '请上传图片集，最多支持5张图片',
+}
+```
+
+### 上传组件功能说明
+
+系统使用的上传组件基于ElementPlus的上传组件进行封装，主要功能包括：
+
+1. **文件上传**: 支持单个或多个文件上传
+2. **文件预览**: 支持图片预览
+3. **文件删除**: 支持删除已上传文件
+4. **文件限制**: 支持对文件类型和大小进行限制
+
+上传组件内部使用`FileAPI.uploadOss`方法上传文件到服务器，返回文件URL。
+
+### 最佳实践
+
+1. **单图上传**: 对于头像、封面图等单一图片场景，推荐使用标准图片上传配置
+2. **多图上传**: 对于图片集、轮播图等多图场景，推荐使用多图片上传配置
+3. **触发验证**: 上传组件的验证触发方式应设置为'change'而非'blur'
+4. **提示信息**: 应提供清晰的上传限制和要求提示
+5. **转换函数**: 应根据后端API的数据格式要求，正确实现transform和convertValue函数
+6. **图片尺寸**: 对于对图片尺寸有特殊要求的场景，应在tips中说明要求
+
+## 复杂表单分组管理
+
+当表单项较多时，将所有表单项平铺在一起会导致表单结构复杂，难以理解和维护。此时，应考虑使用group方式对表单进行逻辑分组，提高可读性和可维护性。
+
+### Group配置说明
+
+Group配置允许将相关的表单字段组织到一起，并在UI上以分隔标题的形式展示。
+
+#### Group基本结构
+
+```typescript
+{
+  valueType: 'group',        // 表示这是一个分组
+  key: 'groupKey',           // 分组的唯一标识，用于Vue的key属性
+  attrs: {
+    dividerTitle: '分组标题', // 在UI上显示的分组标题
+  },
+  columns: formFieldsArray,   // 该分组包含的表单字段数组
+}
+```
+
+### 实施步骤
+
+1. **定义分组字段数组**：为每个逻辑分组创建单独的字段数组
+2. **配置主表单**：使用group组合各个分组
+
+### 完整示例
+
+```typescript
+import type { ProFormColumn, ProTableColumn } from '@/components/ProComponent'
+import type { YourModuleAddVO, YourModuleEditVO } from '@/utils/proApi/types/adminTypes'
+
+// 基本信息分组
+const basicInfoColumns: ProFormColumn<YourModuleAddVO & YourModuleEditVO>[] = [
+  { label: 'ID', prop: 'id', hidden: true },
+  {
+    label: '名称',
+    prop: 'name',
+    valueType: 'input',
+    rules: [{ required: true, trigger: 'blur' }],
+  },
+  // 其他基本信息字段...
+]
+
+// 详细配置分组
+const detailColumns: ProFormColumn<YourModuleAddVO & YourModuleEditVO>[] = [
+  {
+    label: '类型',
+    prop: 'type',
+    valueType: 'select',
+    valueEnum: [],
+    initFn: async (item) => {
+      item.valueEnum = await getApiV1DictBytypecodeOptions({ typeCode: 'TypeCode' })
+    },
+    rules: [{ required: true, trigger: 'change' }],
+  },
+  // 其他详细配置字段...
+]
+
+// 主表单配置
+export const formColumns: ProFormColumn<YourModuleAddVO & YourModuleEditVO>[] = [
+  {
+    valueType: 'group',
+    attrs: {
+      dividerTitle: '基本信息',
+    },
+    key: 'group1',
+    columns: basicInfoColumns,
+  },
+  {
+    valueType: 'group',
+    attrs: {
+      dividerTitle: '详细配置',
+    },
+    key: 'group2',
+    columns: detailColumns,
+  },
+]
+```
+
+### 适用场景
+
+在以下场景中，推荐使用group方式组织表单：
+
+1. **字段数量多**：表单包含10个以上字段时
+2. **功能复杂**：表单包含多个功能模块时
+3. **逻辑关联**：表单字段有明确的逻辑分类时
+4. **数据结构复杂**：表单涉及多个数据维度时
+
+### 最佳实践
+
+1. **合理分组**：每个分组应具有明确的功能边界和内在逻辑关联
+2. **分组命名**：分组标题应简洁明了，能清晰表达该组的功能
+3. **分组大小**：每个分组包含的字段数量建议在2-7个之间，过多或过少都不利于理解
+4. **分组顺序**：按照用户填写的自然顺序排列分组，通常从基本信息开始
+5. **类型命名**：为每个分组的字段数组使用有意义的命名，如`basicInfoColumns`、`detailSettingColumns`等
+6. **保持一致性**：在项目中统一使用group方式，确保表单风格一致
+7. **响应式考虑**：在不同屏幕尺寸下，确保分组标题仍然清晰可见
+
+### 注意事项
+
+1. 每个group必须有唯一的key属性，用于Vue的虚拟DOM渲染
+2. dividerTitle应简洁明了，建议不超过6个字
+3. 分组不应过多，建议控制在2-5个之间
+4. group的使用不会影响表单的数据结构和提交逻辑

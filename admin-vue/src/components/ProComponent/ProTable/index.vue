@@ -15,7 +15,7 @@ defineOptions({
 
 // ProTable 组件接收的参数
 const props = defineProps<{
-  request: (params: any) => Promise<{ list: T[], total: number } | T[]>
+  request: (params: any) => Promise<{ records: T[], total: number } | T[]>
   columns: ProTableColumn<R extends T ? R : T>[]
   rowKey?: string
   title?: string
@@ -215,7 +215,7 @@ async function fetchPageData(formData?: IObject, isRestart = false) {
 
     if (showPagination) {
       pagination.total = data.total
-      pageData.value = data.list
+      pageData.value = data.records
     }
     else {
       pageData.value = data
