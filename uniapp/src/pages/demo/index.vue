@@ -20,6 +20,14 @@
           演示组件开发的基础知识，包括props、插槽、样式覆盖等
         </view>
       </view>
+
+      <!-- CSS导入示例 -->
+      <view class="demo-card" @tap="navigateTo('css-import')">
+        <view class="demo-card-title">CSS导入示例</view>
+        <view class="demo-card-desc">
+          演示如何在Vue3中使用import方式引入外部CSS文件，实现样式模块化
+        </view>
+      </view>
       
       <!-- 预留更多示例入口 -->
       <view class="p-4 bg-gray-100 rounded-lg text-center text-gray-500">
@@ -47,6 +55,9 @@ const navigateTo = async (page: string) => {
 </script>
 
 <style lang="scss">
+// 导入外部CSS文件
+@import './styles/demo-card.css';
+
 // 添加点击效果
 .shadow {
   transition: all 0.3s;

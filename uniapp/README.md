@@ -75,4 +75,5 @@ css 建议尽可能使用 [unocss](https://www.cnblogs.com/haoxianrui/p/18684753
 2. 使用 `uni.xx()` 代替 `wx.xx()`
 3. 自定义组件，`definedoption` `virtualHost` 设置为true才可以让外部class、style生效，同样需要注意权重，外部class权重都比内部低...
 4. 自定义组件 VSCode import 跳转问题，悬浮类型定义，设置 tsconfig 路径别名
-5. TODO: webview 集成，除了 首页、支付、登录 等依赖微信小程序内置功能的页面使用 uniapp 开发外，其他页面理论上都应该用 webview，在 H5项目 开发而不是 uniapp项目
+5. TODO: 环境变量相关配置移除、stylelint移除？
+6. TODO: webview 集成，除了 首页、支付、登录 等依赖微信小程序内置功能的页面使用 uniapp 开发外，其他页面理论上都应该用 webview，在 H5项目 开发而不是 uniapp项目

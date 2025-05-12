@@ -43,17 +43,6 @@ import { reactive } from "vue";
 </script>
 
 <style lang="scss" scoped>
-.a {
-  margin-bottom: 16px;
-}
-/* stylelint-disable selector-type-no-unknown */
-page {
-  background: #f8f8f8;
-}
-/* stylelint-enable selector-type-no-unknown */
 
-.work {
-  /* UnoCSS 已替代这里的内边距 */
-  /* padding: 40rpx 0; */
-}
+
 </style>
