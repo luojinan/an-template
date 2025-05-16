@@ -1,0 +1,120 @@
+---
+description: AI rules derived by SpecStory from the project AI interaction history
+globs: *
+---
+
+## AI Coding Assistant Rules File
+
+## TECH STACK
+
+*   **Vue.js:** Version detection is automatic.  The default version used by `unplugin-vue-components` will adapt to your project.
+*   **Vite:** Used as the build tool.
+*   **unplugin-vue-components:**  Version 0.14.0-beta.1 or later.  New default configuration discovered 2025-05-16.
+
+## PROJECT DOCUMENTATION & CONTEXT SYSTEM
+
+*   All documentation should follow the markdown format.
+*   Chinese translations of key configurations are recommended.
+*   Chinese translation of `unplugin-vue-components/vite` default configuration added 2025-05-16.
+
+
+## CODING STANDARDS
+
+*   Consistent use of JavaScript (or Typescript) is mandatory.
+
+## WORKFLOW & RELEASE RULES
+
+*   Commit messages should be clear and concise.
+
+## DEBUGGING
+
+*   Use the browser's developer tools for debugging.
+
+
+## unplugin-vue-components Configuration
+
+The default configuration for `unplugin-vue-components/vite` is as follows:
+
+```javascript
+Components({
+  // relative paths to the directory to search for components.
+  dirs: ['src/components'],
+
+  // valid file extensions for components.
+  extensions: ['vue'],
+
+  // Glob patterns to match file names to be detected as components.
+  // When specified, the `dirs`, `extensions`, and `directoryAsNamespace` options will be ignored.
+  // If you want to exclude components being registered, use negative globs with leading `!`.
+  globs: ['src/components/*.{vue}'],
+
+  // search for subdirectories
+  deep: true,
+
+  // resolvers for custom components
+  resolvers: [],
+
+  // generate `components.d.ts` global declarations,
+  // also accepts a path for custom filename
+  // default: `true` if package typescript is installed
+  dts: false, // Note: This defaults to true if 'typescript' is installed in the project.
+
+  // Allow subdirectories as namespace prefix for components.
+  directoryAsNamespace: false,
+
+  // Collapse same prefixes (camel-sensitive) of folders and components
+  // to prevent duplication inside namespaced component name.
+  // works when `directoryAsNamespace: true`
+  collapseSamePrefixes: false,
+
+  // Subdirectory paths for ignoring namespace prefixes.
+  // works when `directoryAsNamespace: true`
+  globalNamespaces: [],
+
+  // auto import for directives
+  // default: `true` for Vue 3, `false` for Vue 2
+  // Babel is needed to do the transformation for Vue 2, it's disabled by default for performance concerns.
+  // To install Babel, run: `npm install -D @babel/parser`
+  directives: true, // This is true for Vue 3 by default.  Setting to true enables automatic directive importing. See detailed explanation below.
+
+  // Transform path before resolving
+  importPathTransform: v => v,
+
+  // Allow for components to override other components with the same name
+  allowOverrides: false,
+
+  // Filters for transforming targets (components to insert the auto import)
+  // Note these are NOT about including/excluding components registered - use `globs` or `excludeNames` for that
+  include: [/\.vue$/, /\.vue\?vue/, /\.vue\.[tj]sx?\?vue/],
+  exclude: [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/, /[\\/]\.nuxt[\\/]/],
+
+  // Filters for component names that will not be imported
+  // Use for globally imported async components or other conflicts that the plugin cannot detect
+  excludeNames: [/^Async.+/],
+
+  // Vue version of project. It will detect automatically if not specified.
+  // Acceptable value: 2 | 2.7 | 3
+  version: 2.7, // This will be auto-detected. The example shows 2.7, but it will adapt to your project's Vue version.
+
+  // Only provide types of components in library (registered globally)
+  types: []
+})
+```
+
+**Explanation of `directives: true`:**
+
+When the `directives` option is set to `true`, it enables automatic importing of directives.  This means the plugin will scan your templates for used directives and automatically import them, eliminating the need for manual imports in `<script setup>` or the `directives` option of the component.  For Vue 3, this is the default behavior. For Vue 2, Babel is required and must be installed (`npm install -D @babel/parser`).  A user requested that this feature be disabled if only using the plugin for custom resolvers. Further clarification is needed.
+
+The `resolvers` option can be overridden in your `vite.config.ts` file for custom component resolution.  A Chinese translation of this configuration is also available in the project documentation.  User requested configuration modification to disable automatic directives and default component inclusion, only using NutUIResolver.  Further clarification needed on how to achieve this while maintaining the plugin's functionality.
+
+
+```javascript
+//Example of modified configuration per user request (requires further clarification and testing):
+
+Components({
+  resolvers: [NutUIResolver()], //Only using NutUIResolver
+  directives: false, //Disabling automatic directives import
+  dirs: [], //Removing default component directory search
+  globs: [], //Removing default glob pattern
+})
+```
