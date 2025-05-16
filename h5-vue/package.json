@@ -22,7 +22,6 @@
     "@types/node": "^22.14.0",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vue/tsconfig": "^0.7.0",
-    "add": "^2.0.6",
     "npm-run-all2": "^7.0.2",
     "typescript": "~5.8.0",
     "unplugin-vue-components": "^28.5.0",
