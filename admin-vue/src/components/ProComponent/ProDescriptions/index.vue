@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElDescriptions, ElDescriptionsItem, ElIcon, ElImage, ElMessage, ElTag } from 'element-plus'
 import type { IObject, ProTableColumn } from '../type'
 
 defineOptions({
@@ -34,10 +34,10 @@ const copyToClipboard = async (text: string) => {
 </script>
 
 <template>
-  <el-descriptions
+  <ElDescriptions
     v-bind="$attrs"
   >
-    <el-descriptions-item v-for="column in afTerColumns" :key="column.prop" :label="column.label">
+    <ElDescriptionsItem v-for="column in afTerColumns" :key="column.prop" :label="column.label">
       <template v-if="!dataSourse[column.prop!]">
         -
       </template>
@@ -48,7 +48,7 @@ const copyToClipboard = async (text: string) => {
               v-for="(item, index) in dataSourse[column.prop]"
               :key="item"
             >
-              <el-image
+              <ElImage
                 :src="item"
                 :preview-src-list="dataSourse[column.prop]"
                 :initial-index="index"
@@ -59,7 +59,7 @@ const copyToClipboard = async (text: string) => {
             </template>
           </template>
           <template v-else>
-            <el-image
+            <ElImage
               :src="dataSourse[column.prop]"
               :preview-src-list="[dataSourse[column.prop]]"
               hide-on-click-modal
@@ -71,30 +71,30 @@ const copyToClipboard = async (text: string) => {
       </template>
       <template v-else-if="column.valueEnum">
         <span>
-          <el-tag :type="column.valueEnum.find(item => item.value === dataSourse[column.prop!])?.tagType">
+          <ElTag :type="column.valueEnum.find(item => item.value === dataSourse[column.prop!])?.tagType">
             {{ column.valueEnum.find(item => item.value === dataSourse[column.prop!])?.label || dataSourse[column.prop!] }}
-          </el-tag>
-          <el-icon v-if="column.copyable" color="#409efc" class="ml-1 cursor-pointer" @click="copyToClipboard(dataSourse[column.prop!])">
+          </ElTag>
+          <ElIcon v-if="column.copyable" color="#409efc" class="ml-1 cursor-pointer" @click="copyToClipboard(dataSourse[column.prop!])">
             <CopyDocument />
-          </el-icon>
+          </ElIcon>
         </span>
       </template>
       <template v-else-if="column.formatFn">
         <span>
           {{ column.formatFn(dataSourse[column.prop!], dataSourse) }}
-          <el-icon v-if="column.copyable" color="#409efc" class="ml-1 cursor-pointer" @click="copyToClipboard(column.formatFn(dataSourse[column.prop!], dataSourse))">
+          <ElIcon v-if="column.copyable" color="#409efc" class="ml-1 cursor-pointer" @click="copyToClipboard(column.formatFn(dataSourse[column.prop!], dataSourse))">
             <CopyDocument />
-          </el-icon>
+          </ElIcon>
         </span>
       </template>
       <template v-else>
         <span>
           {{ dataSourse[column.prop!] }}
-          <el-icon v-if="column.copyable" color="#409efc" class="ml-1 cursor-pointer" @click="copyToClipboard(dataSourse[column.prop!])">
+          <ElIcon v-if="column.copyable" color="#409efc" class="ml-1 cursor-pointer" @click="copyToClipboard(dataSourse[column.prop!])">
             <CopyDocument />
-          </el-icon>
+          </ElIcon>
         </span>
       </template>
-    </el-descriptions-item>
-  </el-descriptions>
+    </ElDescriptionsItem>
+  </ElDescriptions>
 </template>

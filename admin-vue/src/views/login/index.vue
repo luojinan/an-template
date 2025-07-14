@@ -2,6 +2,8 @@
 import type { FormInstance } from 'element-plus'
 import type { LocationQuery, LocationQueryValue } from 'vue-router'
 import { useRoute } from 'vue-router'
+import { computed, onMounted, ref } from 'vue'
+import { ElButton, ElCard, ElForm, ElFormItem, ElImage, ElInput, ElSwitch, ElTag, ElTooltip } from 'element-plus'
 import { useSettingsStore, useUserStore } from '@/store'
 import AuthAPI from '@/api/auth'
 import type { LoginData } from '@/api/auth/model'
@@ -125,64 +127,64 @@ onMounted(() => {
   <div class="wh-full flex-center flex-col login-container">
     <!-- 顶部 -->
     <div class="absolute-lt flex-x-end p-3 w-full">
-      <el-switch v-model="isDark" inline-prompt active-icon="Moon" inactive-icon="Sunny" @change="toggleTheme" />
+      <ElSwitch v-model="isDark" inline-prompt active-icon="Moon" inactive-icon="Sunny" @change="toggleTheme" />
     </div>
     <!-- 登录表单 -->
-    <el-card class="!border-none !bg-transparent !rounded-4% w-100 <sm:w-85">
+    <ElCard class="!border-none !bg-transparent !rounded-4% w-100 <sm:w-85">
       <div class="text-center relative">
         <h2>{{ defaultSettings.title }}</h2>
-        <el-tag class="ml-2 absolute-rt">
+        <ElTag class="ml-2 absolute-rt">
           {{ defaultSettings.version }}
-        </el-tag>
+        </ElTag>
       </div>
 
-      <el-form ref="loginFormRef" :model="loginData" :rules="loginRules" class="login-form">
+      <ElForm ref="loginFormRef" :model="loginData" :rules="loginRules" class="login-form">
         <!-- 用户名 -->
-        <el-form-item prop="username">
+        <ElFormItem prop="username">
           <div class="flex-y-center w-full">
             <div class="i-svg:user mx-2" />
-            <el-input
+            <ElInput
               ref="username" v-model="loginData.username" :placeholder="login.username" name="username"
               size="large" class="h-[48px]"
             />
           </div>
-        </el-form-item>
+        </ElFormItem>
 
         <!-- 密码 -->
-        <el-tooltip :visible="isCapslock" content="login.capsLock" placement="right">
-          <el-form-item prop="password">
+        <ElTooltip :visible="isCapslock" content="login.capsLock" placement="right">
+          <ElFormItem prop="password">
             <div class="flex-y-center w-full">
               <div class="i-svg:lock mx-2" />
-              <el-input
+              <ElInput
                 v-model="loginData.password" :placeholder="login.password" type="password" name="password"
                 size="large" class="h-[48px] pr-2" show-password @keyup="checkCapslock" @keyup.enter="handleLogin"
               />
             </div>
-          </el-form-item>
-        </el-tooltip>
+          </ElFormItem>
+        </ElTooltip>
 
         <!-- 验证码 -->
-        <el-form-item prop="captchaCode">
+        <ElFormItem prop="captchaCode">
           <div class="flex-y-center w-full">
             <div class="i-svg:captcha mx-2" />
-            <el-input
+            <ElInput
               v-model="loginData.captchaCode" auto-complete="off" size="large" class="flex-1"
               :placeholder="login.captchaCode" @keyup.enter="handleLogin"
             />
 
-            <el-image
+            <ElImage
               :src="captchaBase64" class="rounded-tr-md rounded-br-md cursor-pointer h-[48px]"
               @click="getCaptcha"
             />
           </div>
-        </el-form-item>
+        </ElFormItem>
 
         <!-- 登录按钮 -->
-        <el-button :loading="loading" type="primary" size="large" class="w-full" @click.prevent="handleLogin">
+        <ElButton :loading="loading" type="primary" size="large" class="w-full" @click.prevent="handleLogin">
           {{ login.login }}
-        </el-button>
-      </el-form>
-    </el-card>
+        </ElButton>
+      </ElForm>
+    </ElCard>
     <!-- ICP备案 -->
     <div class="absolute bottom-0 w-full text-center text-12px">
       <p>

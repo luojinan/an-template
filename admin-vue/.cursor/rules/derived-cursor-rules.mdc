@@ -1,0 +1,708 @@
+---
+description: AI rules derived by SpecStory from the project AI interaction history
+globs: *
+---
+
+## AI Coding Assistant Rules
+
+## PROJECT DOCUMENTATION & CONTEXT SYSTEM
+
+This section outlines the project's documentation structure, style guides, and version control.  New documentation, such as the `edgeone.json` file for caching configuration (2025-04-19), should be added to the project's root directory.  All documentation should follow the markdown format and include relevant metadata (e.g., author, date, version).  Version updates related to caching configuration are tracked here.  Version 1.0 of the caching configuration was added on 2025-04-19.
+
+## TECH STACK
+
+This section lists all technologies, libraries, and tools used in the project.
+
+-   TypeScript
+-   Vite
+-   Axios
+-   Unplugin Auto Import
+-   Unplugin Icons
+-   UnoCSS
+-   Element Plus (added 2025-05-08)
+-   WangEditor (added 2025-06-09)
+
+## CODING STANDARDS
+
+This section defines coding style, naming conventions, and best practices.  All code must adhere to these standards.  Code should be well-commented and easy to understand.  Function and variable names should be descriptive.  All directory names must be in English (2025-05-08).
+
+## WORKFLOW & RELEASE RULES
+
+This section outlines the project's workflow, including branching strategies, code review process, and release procedures.  All code changes must be reviewed before merging into the main branch.  Releases should follow a versioning scheme (e.g., semantic versioning).  The removal of the `vite-plugin-zip-dist` plugin (2025-04-19) simplifies the build process.  API calls in `system/role/index.vue` should use methods from `proApi/admin` instead of `RoleAPI` (2025-05-09).  All API calls should consistently use the `proApi/admin` module (2025-05-09).  The script `scripts/tsapi.js` has been updated to support multiple API documentation sources and generate separate output files (2025-05-09).  A configuration object `API_CONFIGS` is used to define multiple API sources with their respective output paths (2025-05-09). Type definitions are merged into a single file (`../src/utils/proApi/types/adminTypes.ts`) to avoid duplication (2025-05-09).  The `scripts/tsapi.js` script now generates separate type definition files for each API source (2025-05-09). A common types file (`../src/utils/proApi/types/commonTypes.ts`) is used for shared definitions (2025-05-09). When the name of the operation is "delete", the `onClick` type definition should be `(ids: string) => void` (2025-05-12). The Node.js script should sort type definitions alphabetically by field name (2025-05-19).  The `scripts/tsapi.js` script has been updated to sort type definitions alphabetically by field name (2025-05-19).  Further investigation is needed to address issues with the sorting not being reflected in the final output. Enable/disable operations must include confirmation prompts (2025-05-19).  A new "Design" button should be added to the toolbar, using the `postApiV1SurveytemplatesDesign` API and opening a `ProForm` with a `formList` valueType (2025-05-19). Adjust existing coupon field configurations according to the coupon list field definitions (2025-06-15). Further details about the coupon list field definitions are required to implement this rule. In ProTable configurations, all fields except 'keywords' should have `hideInSearch: true` to simplify the search interface (2025-06-15). For the fields "customerName?: string", "passName?: string", "isNewContract?: string", and "referrer?: string", control their searchability using `hideInSearch` in the ProTable configuration (2025-06-15).
+
+## DEBUGGING
+
+This section describes debugging techniques, tools, and best practices.  Use of the debugger should be prioritized over print statements.  Thorough testing is required before any release.
+
+## API & INTEGRATIONS
+
+This section details all API integrations and external services used in the project. The `baseURL` can be an absolute path (confirmed 2025-04-16), but using relative paths with a proxy in development is recommended to avoid cross-origin issues.  Production environments should consider security implications when using absolute paths, including proper HTTPS certificate configuration.  Addressing HTTPS certificate validation issues (2025-04-19) may require modifying proxy configurations to disable certificate validation temporarily for development.
+
+## CACHING STRATEGY
+
+This section details the caching strategy for front-end static resources.  The `edgeone.json` file (added 2025-04-19) configures caching headers.  HTML files use `max-age=3600, must-revalidate` for 1-hour caching with mandatory revalidation.  JS, assets, and fonts utilize `public, max-age=31536000, immutable` for one-year caching, leveraging contenthash filenames to avoid revalidation.  `immutable` signifies resources never change, while `public` allows all caching servers to cache assets.  The use of `must-revalidate` ensures that cached resources are validated before serving, preventing outdated content delivery.  `no-cache` forces revalidation on each request.
+
+## CURSOR RULES: ADMIN SYSTEM PAGE TEMPLATE
+
+This section defines rules for creating CRUD pages in the admin system.  All new CRUD pages must adhere to these rules.
+
+### Directory Structure
+
+When creating a new CRUD page, the following directory structure must be followed:
+
+```
+page-directory/
+  ├── index.vue          # Main page file
+  └── config/            # Configuration files
+      └── column.ts      # Table and form configuration
+```
+
+### File Content Specifications
+
+#### `config/column.ts`
+
+```typescript
+import type { ProFormColumn, ProTableColumn } from '@/components/ProComponent'
+// Import corresponding interface type definitions
+import type { YourModuleVO, YourModuleForm } from '@/utils/proApi/types/adminTypes'
+
+// Table column configuration
+// Use the list type YourModuleVO found in types/adminTypes.ts
+export const tableColumns: ProTableColumn<YourModuleVO>[] = [
+  // Basic field configuration
+  { label: 'ID', prop: 'id', width: 50 },
+  // Configure other business fields based on YourModuleVO type definition...
+  // Add dictionary lookup for fields as needed using getApiV1DictBytypecodeOptions
+]
+
+// Form configuration
+// Use the form type YourModuleForm found in types/adminTypes.ts
+export const formColumns: ProFormColumn<YourModuleForm>[] = [
+  { label: 'ID', prop: 'id', hidden: true },
+  // Configure other form fields based on YourModuleForm type definition...
+  // Add dictionary lookup for fields as needed using getApiV1DictBytypecodeOptions
+]
+```
+
+#### `index.vue`
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { ElMessage } from 'element-plus'
+import { formColumns, tableColumns } from './config/column'
+import type { ProTableColumn } from '@/components/ProComponent'
+import { ProTable, ProForm } from '@/components/ProComponent'
+import { deleteApiV1[模块名称]Byids, getApiV1[模块名称]Page, postApiV1[模块名称], putApiV1[模块名称]Byid } from '@/utils/proApi/admin'
+
+// Toolbar configuration
+const toolbar = [
+  {
+    name: 'add',
+    text: 'Add',
+    type: 'success',
+    onClick: handleAddClick,
+  },
+]
+
+// Table column configuration
+const cols: ProTableColumn<T>[] = [
+  ...tableColumns,
+  {
+    label: 'Operation',
+    fixed: 'right',
+    width: 80, // Updated width for operation column (2025-05-09)
+    valueType: 'tool',
+    operat: [
+      {
+        name: 'edit',
+        text: 'Edit',
+        onClick: handleEditClick,
+      },
+      {
+        name: 'delete',
+        text: 'Delete',
+        onClick: handleDeleteClick,
+      },
+    ],
+  },
+]
+
+const tableRef = ref()
+const formRef = ref()
+const open = ref(false)
+
+// CRUD operation handling
+async function handleEditClick(row: T) {
+  open.value = true
+  formRef.value?.setFormData(row)
+}
+
+async function handleDeleteClick(ids: string) {
+  await deleteApiV1[模块名称]Byids({ ids })
+  ElMessage.success('Delete successful')
+  tableRef.value?.fetchPageData()
+}
+
+function handleAddClick() {
+  formRef.value?.resetFormData()
+  open.value = true
+}
+
+async function onSubmit(data: T) {
+  if (data.id)
+    await putApiV1[模块名称]Byid({ id: data.id }, data)
+  else
+    await postApiV1[模块名称](data)
+
+  open.value = false
+  ElMessage.success('Operation successful')
+  tableRef.value?.fetchPageData()
+}
+
+function getList(params: any) {
+  return getApiV1[模块名称]Page(params)
+}
+</script>
+
+<template>
+  <div class="app-container">
+    <ProTable
+      ref="tableRef"
+      :columns="cols"
+      :toolbar="toolbar"
+      :request="getList"
+      :search="false"
+    />
+
+    <ProForm
+      ref="formRef"
+      v-model:open="open"
+      type:="drawer"
+      :drawer-props="{ title: 'Form Title' }"
+      :columns="formColumns"
+      :on-submit="onSubmit"
+    />
+  </div>
+</template>
+```
+
+### Usage Instructions
+
+1.  **Page Structure:** Uses `ProTable` and `ProForm` components. Integrates basic CRUD functionality.
+2.  **Configuration Files:** `tableColumns` and `formColumns` define table and form fields.
+3.  **Data Interaction:** Uses auto-generated API functions. Supports table data refresh and pagination. Includes error handling and user prompts.
+4.  **Code Style:** Uses TypeScript, follows component-based and modular principles.
+
+### Considerations
+
+1.  **Type Definitions:** Create type definitions for business data. Ensure `ProTable` and `ProForm` use correct generic types.  Type definitions are located in `@/utils/proApi/types/adminTypes.ts`.
+2.  **API Integration:** API functions are auto-generated in `@/utils/proApi/admin.ts` by `scripts/tsapi.js`.  Follow naming conventions (e.g., `getApiV1[module-name]Page`, `postApiV1[module-name]`).
+3.  **Component Reuse:** Utilize `ProComponent` features. Extend component configurations as needed.
+4.  **Dictionary Configuration:** Dictionary type definitions are in `@/utils/proApi/types/adminTypes.ts`. Use `getApiV1DictBytypecodeOptions` to retrieve dictionary options.  Configuration examples are provided for both `ProTable` and `ProForm`.
+5. **Upload Form Item Configuration:**  The following configuration should be used for upload form items:
+
+```typescript
+/**
+ * Image upload configuration example
+ */
+{
+  label: 'Image',
+  prop: 'imageUrl',
+  valueType: 'upload',
+  attrs: {
+    limit: 1,
+    accept: 'image/*',
+  },
+  transform: (val) => {
+    return {
+      imageUrl: val?.[0]?.url,
+    }
+  },
+  convertValue: (val) => {
+    if (!val) { return [] }
+    return [{ url: val }]
+  },
+  rules: [{ required: true, message: 'Please upload an image', trigger: 'change' }],
+  tips: 'Please upload an image, only image files are supported',
+}
+```
+6. **Form Grouping:** When dealing with a large number of form fields, consider using the `group` valueType in your `ProForm` configuration.  This improves readability and user experience.  Each group should be defined using the following structure:
+
+```typescript
+{
+  valueType: 'group',
+  attrs: {
+    dividerTitle: 'Group Title',
+  },
+  key: 'group-key', // Unique key for the group
+  columns: [ /* Array of ProFormColumn for this group */ ],
+}
+```
+
+### ProForm Rules Simplification (2025-05-09)
+
+When using `required: true` in ProForm `rules`, only `required` and `trigger` properties are needed. The `message` property is automatically handled.  Example: `rules: [{ required: true, trigger: 'blur' }]`
+
+
+## PROJECT STRUCTURE
+
+This section describes the overall project directory structure.  The addition of a "course-management" module under the `views` directory is noted (2025-05-08). A new "card-management" module with a "card-list-page" subdirectory was added on 2025-05-08.  The user requested that all directory names be in English (2025-05-08).  Further clarification is needed on how to handle existing Chinese names. The "课程管理" and "卡管理" modules have been renamed to "course-management" and "card-management" respectively (2025-05-08).  The "课程列表页面" and "卡列表页面" subdirectories have been renamed to "course-list-page" and "card-list-page" respectively (2025-05-08).  The directory names are now all in English (2025-05-08).  All rules are now in English (2025-05-14).  Code comments in the project may remain in Chinese. A new "survey-management" module with a "survey-template-list" subdirectory has been added (2025-05-19). A new "goods-management" module with a "goods-list-page" subdirectory should be added (2025-06-15). A new "goods-management" module with a "goods-category-list" subdirectory should be added (2025-06-15). A new "marketingCentre" module with a "contract-list-page" subdirectory should be added (2025-06-15).
+
+```
+src/
+  ├── components/         # Component directory
+  │   └── ProComponent/   # Pro series components
+  ├── utils/proApi/    # API interface directory
+  │   ├── admin.ts        # Backend management API
+  │   └── types/adminTypes.ts     # Interface type definitions
+  └── views/              # Page directory
+      └── course-management/          # Renamed from 课程管理 2025-05-08
+          └── course-list-page/ # Renamed from 课程列表页面 2025-05-08
+      └── card-management/          # Added 2025-05-08
+          └── card-list-page/ # Added and renamed from 卡列表页面 2025-05-08
+      └── survey-management/       # Added 2025-05-19
+          └── survey-template-list/ # Added 2025-05-19
+      └── goods-management/ # Added 2025-06-15
+          └── goods-list-page/ # Added 2025-06-15
+      └── goods-management/          # Added 2025-06-15
+          └── goods-category-list/
+      └── marketingCentre/ # Added 2025-06-15
+          └── contract-list-page/ # Added 2025-06-15
+
+```
+
+## API INTERFACE SPECIFICATIONS
+
+All API functions are located in `@/utils/proApi/admin.ts` and are auto-generated by the `scripts/tsapi.js` script.  The script now supports multiple API sources, defined in the `API_CONFIGS` object (2025-05-09).  The script now generates separate API files for each configured source (2025-05-09).
+
+## TYPE DEFINITION SPECIFICATIONS
+
+All type definitions are located in `@/utils/proApi/types/adminTypes.ts` and are auto-generated by the `scripts/tsapi.js` script.  Type definitions from multiple API sources are merged into this single file (2025-05-09). The script now generates separate type definition files for each API source (2025-05-09), with a common types file for shared definitions (2025-05-09).  The type definitions are now sorted alphabetically by field name (2025-05-19).  A further investigation is needed to address the issue where the sorting is not reflected in the final output.
+
+## CURSOR RULES: CARD MANAGEMENT MODULE
+
+This section details the rules for creating the card-management module, specifically the card-list-page. All new card-management pages must adhere to these rules.  The user requested that all directory names be in English (2025-05-08).  All rules are now in English (2025-05-14).
+
+### Directory Structure
+
+The directory structure for the card-list-page should be:
+
+```
+src/views/card-management/card-list-page/
+  ├── index.vue
+  └── config/
+      └── column.ts
+```
+
+### File Content Specifications
+
+#### `config/column.ts`
+
+```typescript
+import type { ProFormColumn, ProTableColumn } from '@/components/ProComponent'
+import type { PassPageVO, PassAddVO, PassEditVO } from '@/utils/proApi/types/adminTypes'
+import { getApiV1DictBytypecodeOptions } from '@/utils/proApi/admin'
+
+// Table column configuration
+export const tableColumns: ProTableColumn<PassPageVO>[] = [
+  { label: 'ID', prop: 'id', width: 220, hideInSearch: true },
+  { label: 'Card Name', prop: 'name', hideInSearch: true },
+  { 
+    label: 'Card Type', 
+    prop: 'type', 
+    valueType: 'select',
+    valueEnum: [],
+    initFn: async (item) => {
+       item.valueEnum = await getApiV1DictBytypecodeOptions({ typeCode: 'CardType' })
+     },
+     hideInSearch: true
+  },
+  { label: 'Purchase Price', prop: 'purchasePrice', hideInSearch: true },
+  { label: 'Available Amount', prop: 'availableAmount', hideInTable: true, hideInSearch: true },
+  { label: 'Available Times', prop: 'availableTimes', hideInTable: true, hideInSearch: true },
+  { 
+    label: 'Available Amount/Times', 
+    prop: 'available' as any,
+    formatFn: (_, row) => {
+      if (row.type === 'punch') {
+        return `${row.availableTimes} times`
+      } else {
+        return `¥${row.availableAmount}`
+      }
+    },
+    hideInSearch: true
+  },
+  { 
+    label: 'Valid Period', 
+    prop: 'validTime' as any,
+    formatFn: (_, row) => {
+      const start = new Date(row.validStartTime).toLocaleDateString()
+      const end = new Date(row.validEndTime).toLocaleDateString()
+      return `${start} to ${end}`
+    },
+    hideInSearch: true
+  },
+  { label: 'Created Time', prop: 'createTime', width: 150, hideInSearch: true },
+  { label: 'Updated Time', prop: 'updateTime', width: 150, hideInSearch: true }
+]
+
+// Form configuration
+export const formColumns: ProFormColumn<PassAddVO | PassEditVO | Record<string, any>>[] = [
+  { label: 'ID', prop: 'id' as any, hidden: true },
+  { 
+    label: 'Card Name', 
+    prop: 'name',
+    valueType: 'input',
+    rules: [{ required: true, trigger: 'blur' }]
+  },
+  { 
+    label: 'Card Type', 
+    prop: 'type',
+    valueType: 'select',
+    valueEnum: [],
+    initFn: async (item) => {
+       item.valueEnum = await getApiV1DictBytypecodeOptions({ typeCode: 'CardType' })
+     },
+    rules: [{ required: true, trigger: 'change' }],
+    watch: (newValue, oldValue, data, items) => {
+      // 根据卡类型控制显示额度或次数字段
+      const availableAmountItem = items.find(item => item.prop === 'availableAmount')
+      const availableTimesItem = items.find(item => item.prop === 'availableTimes')
+      
+      if (availableAmountItem && availableTimesItem) {
+        if (newValue === 'punch') {
+          availableAmountItem.unMounted = true
+          availableTimesItem.unMounted = false
+        } else {
+          availableAmountItem.unMounted = false
+          availableTimesItem.unMounted = true
+        }
+      }
+    }
+  },
+  { 
+    label: 'Purchase Price', 
+    prop: 'purchasePrice',
+    valueType: 'input-number',
+    attrs: {
+      min: 0,
+      precision: 2,
+      step: 0.01
+    },
+    rules: [{ required: true, trigger: 'blur' }]
+  },
+  { 
+    label: 'Available Amount', 
+    prop: 'availableAmount',
+    valueType: 'input-number',
+    attrs: {
+      min: 0,
+      precision: 2,
+      step: 0.01
+    },
+    rules: [{ required: true, trigger: 'blur' }],
+    unMounted: true
+  },
+  { 
+    label: 'Available Times', 
+    prop: 'availableTimes',
+    valueType: 'input-number',
+    attrs: {
+      min: 0,
+      precision: 0,
+      step: 1
+    },
+    rules: [{ required: true, trigger: 'blur' }]
+  },
+  { 
+    label: 'Valid Period', 
+    prop: 'validTime' as any,
+    valueType: 'date-picker',
+    attrs: {
+      type: 'daterange',
+      rangeSeparator: 'to',
+      startPlaceholder: 'Start Date',
+      endPlaceholder: 'End Date',
+      valueFormat: 'x'
+    },
+    rules: [{ required: true, trigger: 'change' }],
+    convertValue: (value, alldata) => {
+      if (alldata.validStartTime && alldata.validEndTime) {
+        return [alldata.validStartTime, alldata.validEndTime]
+      }
+      return value
+    },
+    transform: (value) => {
+      if (Array.isArray(value) && value.length === 2) {
+        return {
+          validStartTime: value[0],
+          validEndTime: value[1]
+        }
+      }
+      return {}
+    }
+  },
+  {
+    label: 'Scope',
+    prop: 'scope',
+    valueType: 'select',
+    valueEnum: [],
+    initFn: async (item) => {
+       item.valueEnum = await getApiV1DictBytypecodeOptions({ typeCode: 'CardScope' })
+     },
+    rules: [{ required: true, message: 'Please select a scope', trigger: 'change' }],
+    watch: (newValue, oldValue, data, items) => {
+       // 根据使用范围控制显示课程选择字段
+       const courseIdsItem = items.find(item => item.prop === 'courseIds')
+       if (courseIdsItem) {
+         courseIdsItem.unMounted = newValue !== 'course'
+       }
+     },
+  },
+  {
+    label: 'Applicable Courses',
+    prop: 'courseIds',
+    valueType: 'select',
+    attrs: {
+      multiple: true,
+      filterable: true,
+    },
+    valueEnum: [],
+    initFn: async (item) => {
+       // TODO: 这里需要调用获取课程列表的接口
+       item.valueEnum = []
+     },
+    rules: [{ required: true, message: 'Please select applicable courses', trigger: 'change' }],
+    unMounted: true,
+  },
+]
+```
+
+#### `index.vue`
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { ElMessage } from 'element-plus'
+import { formColumns, tableColumns } from './config/column'
+import type { ProTableColumn } from '@/components/ProComponent'
+import { ProTable, ProForm } from '@/components/ProComponent'
+import { deleteApiV1PassByid, getApiV1PassPage, postApiV1Pass, putApiV1Pass } from '@/utils/proApi/admin'
+import type { PassPageVO } from '@/utils/proApi/types/adminTypes'
+
+// Toolbar configuration
+const toolbar = [
+  {
+    name: 'add',
+    text: 'Add',
+    type: 'success',
+    onClick: handleAddClick,
+  },
+]
+
+// Table column configuration
+const cols: ProTableColumn<PassPageVO>[] = [
+  ...tableColumns,
+  {
+    label: 'Operation',
+    fixed: 'right',
+    width: 80, // Updated width for operation column (2025-05-09)
+    valueType: 'tool',
+    operat: [
+      {
+        name: 'edit',
+        text: 'Edit',
+        onClick: handleEditClick,
+      },
+      {
+        name: 'delete',
+        text: 'Delete',
+        onClick: handleDeleteClick,
+      },
+    ],
+  },
+]
+
+const tableRef = ref()
+const formRef = ref()
+const open = ref(false)
+
+// CRUD operation handling
+async function handleEditClick(row: PassPageVO) {
+  open.value = true
+  // 获取详细数据并回显
+  formRef.value?.setFormData(row)
+}
+
+async function handleDeleteClick(row: PassPageVO) {
+  try {
+    await deleteApiV1PassByid({ id: row.id })
+    ElMessage.success('Delete successful')
+    tableRef.value?.fetchPageData()
+  } catch (error) {
+    console.error('Delete failed', error)
+    ElMessage.error('Delete failed')
+  }
+}
+
+function handleAddClick() {
+  formRef.value?.resetFormData()
+  open.value = true
+}
+
+async function onSubmit(data: any) {
+  try {
+    if (data.id) {
+      // 编辑
+      await putApiV1Pass(data)
+    } else {
+      // 新增
+      await postApiV1Pass(data)
+    }
+    
+    open.value = false
+    ElMessage.success('Operation successful')
+    tableRef.value?.fetchPageData()
+  } catch (error) {
+    console.error('Save failed', error)
+    ElMessage.error('Save failed')
+  }
+}
+
+function getList(params: any) {
+  return getApiV1PassPage(params).then(res => {
+    return {
+      list: res.records,
+      total: res.total
+    }
+  })
+}
+</script>
+
+<template>
+  <div class="app-container">
+    <ProTable
+      ref="tableRef"
+      :columns="cols"
+      :toolbar="toolbar"
+      :request="getList"
+      :search="true"
+      :search-columns="[{prop:'type',hideInSearch:false},{prop:'name',hideInSearch:false}]"
+    />
+    
+    <ProForm
+      ref="formRef"
+      v-model:open="open"
+      type="drawer"
+      :drawer-props="{ title: 'Card Information' }"
+      :columns="formColumns"
+      :on-submit="onSubmit"
+    />
+  </div>
+</template>
+```
+
+### Usage Instructions
+
+1.  **Page Structure:** Uses `ProTable` and `ProForm` components. Integrates basic CRUD functionality.
+2.  **Configuration Files:** `tableColumns` and `formColumns` define table and form fields.
+3.  **Data Interaction:** Uses auto-generated API functions. Supports table data refresh and pagination. Includes error handling and user prompts.
+4.  **Code Style:** Uses TypeScript, follows component-based and modular principles.
+
+### Considerations
+
+1.  **Type Definitions:** Create type definitions for business data. Ensure `ProTable` and `ProForm` use correct generic types.  Type definitions are located in `@/utils/proApi/types/adminTypes.ts`.
+2.  **API Integration:** API functions are auto-generated in `@/utils/proApi/admin.ts` by `scripts/tsapi.js`.  Follow naming conventions (e.g., `getApiV1[module-name]Page`, `postApiV1[module-name]`).
+3.  **Component Reuse:** Utilize `ProComponent` features. Extend component configurations as needed.
+4.  **Dictionary Configuration:** Dictionary type definitions are in `@/utils/proApi/types/adminTypes.ts`. Use `getApiV1DictBytypecodeOptions` to retrieve dictionary options.  Configuration examples are provided for both `ProTable` and `ProForm`.
+
+
+## CURSOR RULES: COURSE MANAGEMENT MODULE
+
+This section details the rules for creating the course-management module, specifically the course-list-page. All new course-management pages must adhere to these rules. The user requested that all directory names be in English (2025-05-08).  The "查看详情" functionality should be removed from the course-list-page (2025-05-09).  The following form field adjustments are needed (2025-05-09): 1. Start/end time should use a date-range picker; 2. Main/secondary training goals should use input textareas; 3. Course status should use radio buttons. The course image upload should use the `upload` valueType, with a limit of 1 image and accepting only image/* files.  The `transform` and `convertValue` functions should handle the image URL. (2025-05-09)  The ProForm configuration should be grouped using the `group` valueType to improve understanding.  Groups should be created for basic information, course settings, and operational settings (2025-05-09).  When the form contains many fields, use the `group` valueType to organize them into logical sections for better readability and user experience (2025-05-09). The "训练目标" and "课程描述" groups have been merged into the "课程设置" group (2025-05-09).  The "全部" option should not be included in valueEnum (2025-05-09).  The "次要训练目标" field should be a multi-select dropdown with data from the "SecondaryTrainingGoal" dictionary (2025-05-10).  The "所属门店" field should be a select with filterable option, populated using `getApiV1DeptOptions()` (2025-05-11). All rules are now in English (2025-05-14). Code comments in the project may remain in Chinese.
+
+### Directory Structure
+
+The directory structure for the card-list-page should be:
+
+```
+src/views/card-management/card-list-page/
+  ├── index.vue
+  └── config/
+      └── column.ts
+```
+
+### File Content Specifications
+
+#### `config/column.ts`
+
+```typescript
+import type { ProFormColumn, ProTableColumn } from '@/components/ProComponent'
+import type { CourseAddVO, CourseDetailVO, CourseEditVO } from '@/utils/proApi/types/adminTypes'
+import { getApiV1DictBytypecodeOptions, getApiV1DeptOptions } from '@/utils/proApi/system'
+
+// Table column configuration
+export const tableColumns: ProTableColumn<CourseDetailVO>[] = [
+  { label: 'ID', prop: 'id', width: 80, hideInSearch: true },
+  { label: 'Course Chinese Name', prop: 'chineseName', hideInSearch: true },
+  { label: 'Course English Name', prop: 'englishName', hideInSearch: true },
+  {
+    label: 'Course Image',
+    prop: 'imageUrl',
+    valueType: 'image',
+    imageWidth: 80,
+    imageHeight: 80,
+    hideInSearch: true,
+  },
+  { label: 'Store', prop: 'storeId', hideInSearch: true },
+  { 
+    label: 'Course Type',
+    prop: 'type',
+    valueType: 'select',
+    valueEnum: [],
+    initFn: async (item) => {
+       const options = await getApiV1DictBytypecodeOptions({ typeCode: 'CourseType' })
+       item.valueEnum = options
+     },
+     hideInSearch: true
+  },
+  { 
+    label: 'Class Size', 
+    prop: 'size', 
+    hideInSearch: true,
+    valueType: 'select',
+    valueEnum: [],
+    initFn: async (item) => {
+       item.valueEnum = await getApiV1DictBytypecodeOptions({ typeCode: 'CourseSize' })
+     },
+     hideInSearch: true
+  },
+  { label: 'Price', prop: 'price', hideInSearch: true },
+  {
+    label: 'Course Status',
+    prop: 'status',
+    valueType: 'select',
+    valueEnum: [],
+    initFn: async (item) => {
+       const options = await getApiV1DictBytypecodeOptions({ typeCode: 'CourseStatus' })
+       const optionsWithTag = options.map((option: { label: string; value: string }) => {
+         if (option.value === '1') {
+           return { ...option, tagType: 'success' }
+         }
+         else if (option.value === '0') {
+           return { ...option, tagType: 'info' }
+         }
+         return option
+       })
+       item.valueEnum = optionsWithTag
+     },
+     hideInSearch: true
+  },
+  { label: 'Main Training Goal', prop: 'mainTrainingGoal', hideInSearch: true },
+  { label: 'Sort Number', prop: 'sortNumber', hideInSearch: true },
+  {
+    label: 'Difficulty Rating',
+    prop: 'difficultyRate',
+    hideInSearch: true,
+    valueType

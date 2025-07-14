@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ElDropdown, ElDropdownItem, ElDropdownMenu, ElMessage } from 'element-plus'
 import { SizeEnum } from '@/enums/SizeEnum'
 import { useAppStore } from '@/store/modules/app'
 
@@ -18,19 +19,19 @@ function handleSizeChange(size: string) {
 </script>
 
 <template>
-  <el-dropdown trigger="click" @command="handleSizeChange">
+  <ElDropdown trigger="click" @command="handleSizeChange">
     <div>
       <div class="i-svg:size" />
     </div>
     <template #dropdown>
-      <el-dropdown-menu>
-        <el-dropdown-item
+      <ElDropdownMenu>
+        <ElDropdownItem
           v-for="item of sizeOptions" :key="item.value" :disabled="appStore.size == item.value"
           :command="item.value"
         >
           {{ item.label }}
-        </el-dropdown-item>
-      </el-dropdown-menu>
+        </ElDropdownItem>
+      </ElDropdownMenu>
     </template>
-  </el-dropdown>
+  </ElDropdown>
 </template>

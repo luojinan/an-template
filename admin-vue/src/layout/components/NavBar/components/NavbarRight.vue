@@ -2,7 +2,7 @@
 import { useRoute, useRouter } from 'vue-router'
 import { computed, ref, watch } from 'vue'
 import { useFullscreen } from '@vueuse/core'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElButton, ElIcon, ElMessage, ElMessageBox, ElPopover, ElTooltip } from 'element-plus'
 import {
   useAppStore,
   useSettingsStore,
@@ -90,9 +90,9 @@ async function onQrcodeSubmit(data: any) {
       </div>
 
       <!-- 布局大小 -->
-      <el-tooltip content="sizeSelect.tooltip" effect="dark" placement="bottom">
+      <ElTooltip content="sizeSelect.tooltip" effect="dark" placement="bottom">
         <size-select class="setting-item" />
-      </el-tooltip>
+      </ElTooltip>
     </template>
 
     <!-- 设置 -->
@@ -103,7 +103,7 @@ async function onQrcodeSubmit(data: any) {
     </template>
 
     <!-- 用户头像 -->
-    <el-popover
+    <ElPopover
       :width="200"
       trigger="hover"
       popper-style="box-shadow: rgb(14 18 22 / 35%) 0px 10px 38px -10px, rgb(14 18 22 / 20%) 0px 10px 20px -15px; padding: 10px 10px 16px; border-radius: 10px;"
@@ -121,16 +121,16 @@ async function onQrcodeSubmit(data: any) {
           <div class="i-svg:lock mx-2" /> 修改密码
         </div>
         <div class="flex-y-center rounded mb-6px py-4px cursor-pointer hover:bg-black hover:bg-opacity-10" @click="onShowQrcode">
-          <el-icon class="mx-2">
+          <ElIcon class="mx-2">
             <Share />
-          </el-icon>
+          </ElIcon>
           小程序邀请码
         </div>
-        <el-button plain class="w-full" @click="logout">
+        <ElButton plain class="w-full" @click="logout">
           退出登录
-        </el-button>
+        </ElButton>
       </template>
-    </el-popover>
+    </ElPopover>
 
     <ProForm
       ref="passwordFormRef"

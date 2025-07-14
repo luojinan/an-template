@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import { ElIcon, ElInput, ElPopover, ElScrollbar, ElTabPane, ElTabs, ElTooltip } from 'element-plus'
 
 const props = defineProps({
   modelValue: {
@@ -96,9 +97,9 @@ onClickOutside(iconSelectRef, () => (popoverVisible.value = false), {
 
 <template>
   <div ref="iconSelectRef" :style="`width:${width}`">
-    <el-popover :visible="popoverVisible" :width="width" placement="bottom-end">
+    <ElPopover :visible="popoverVisible" :width="width" placement="bottom-end">
       <template #reference>
-        <el-input
+        <ElInput
           v-model="selectedIcon"
           class="reference"
           readonly
@@ -109,16 +110,16 @@ onClickOutside(iconSelectRef, () => (popoverVisible.value = false), {
             <template
               v-if="selectedIcon && selectedIcon.startsWith('el-icon-')"
             >
-              <el-icon>
+              <ElIcon>
                 <component :is="selectedIcon.replace('el-icon-', '')" />
-              </el-icon>
+              </ElIcon>
             </template>
             <template v-else>
               <div :class="`i-svg:${selectedIcon}`" />
             </template>
           </template>
           <template #suffix>
-            <el-icon
+            <ElIcon
               :style="{
                 transform: popoverVisible ? 'rotate(180deg)' : 'rotate(0)',
                 transition: 'transform .5s',
@@ -126,22 +127,22 @@ onClickOutside(iconSelectRef, () => (popoverVisible.value = false), {
               @click="popoverVisible = !popoverVisible"
             >
               <ArrowDown />
-            </el-icon>
+            </ElIcon>
           </template>
-        </el-input>
+        </ElInput>
       </template>
 
       <!-- 下拉选择弹窗 -->
       <div ref="popoverContentRef">
-        <el-input
+        <ElInput
           v-model="searchText"
           placeholder="搜索图标"
           clearable
           @input="filterIcons"
         />
-        <el-tabs v-model="activeTab" @tab-click="handleTabClick">
-          <el-tab-pane label="SVG 图标" name="svg">
-            <el-scrollbar height="300px">
+        <ElTabs v-model="activeTab" @tab-click="handleTabClick">
+          <ElTabPane label="SVG 图标" name="svg">
+            <ElScrollbar height="300px">
               <ul class="icon-container">
                 <li
                   v-for="icon in filteredSvgIcons"
@@ -149,15 +150,15 @@ onClickOutside(iconSelectRef, () => (popoverVisible.value = false), {
                   class="icon-item"
                   @click="selectIcon(icon)"
                 >
-                  <el-tooltip :content="icon" placement="bottom" effect="light">
+                  <ElTooltip :content="icon" placement="bottom" effect="light">
                     <div :class="`i-svg:${icon}`" />
-                  </el-tooltip>
+                  </ElTooltip>
                 </li>
               </ul>
-            </el-scrollbar>
-          </el-tab-pane>
-          <el-tab-pane label="Element 图标" name="element">
-            <el-scrollbar height="300px">
+            </ElScrollbar>
+          </ElTabPane>
+          <ElTabPane label="Element 图标" name="element">
+            <ElScrollbar height="300px">
               <ul class="icon-container">
                 <li
                   v-for="icon in filteredEpIcons"
@@ -165,16 +166,16 @@ onClickOutside(iconSelectRef, () => (popoverVisible.value = false), {
                   class="icon-item"
                   @click="selectIcon(icon)"
                 >
-                  <el-icon>
+                  <ElIcon>
                     <component :is="icon" />
-                  </el-icon>
+                  </ElIcon>
                 </li>
               </ul>
-            </el-scrollbar>
-          </el-tab-pane>
-        </el-tabs>
+            </ElScrollbar>
+          </ElTabPane>
+        </ElTabs>
       </div>
-    </el-popover>
+    </ElPopover>
   </div>
 </template>
 

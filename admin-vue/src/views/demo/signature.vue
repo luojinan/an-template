@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
+import { ElButton, ElMessage } from 'element-plus'
 import FileAPI from '@/api/file'
 
 const imgUrl = ref('')
@@ -50,8 +52,7 @@ function onEventMove(event: MouseEvent | TouchEvent) {
 }
 
 function onEventEnd() {
-  if (painting)
-    painting = false // 停止绘制
+  if (painting) { painting = false } // 停止绘制
 }
 
 onMounted(() => {
@@ -67,8 +68,7 @@ async function handleToFile() {
   }
   const file = dataURLtoFile(canvas.value.toDataURL(), '签名.png')
 
-  if (!file)
-    return
+  if (!file) { return }
   const data = await FileAPI.upload(file)
   handleClearSign()
   imgUrl.value = data.url
@@ -103,16 +103,14 @@ function handleSaveImg() {
 // 转为file格式，可传递给后端
 function dataURLtoFile(dataurl: string, filename: string) {
   const arr: string[] = dataurl.split(',')
-  if (!arr.length)
-    return
+  if (!arr.length) { return }
 
   const mime = arr[0].match(/:(.*?);/)
   if (mime) {
     const bstr = atob(arr[1])
     let n = bstr.length
     const u8arr = new Uint8Array(n)
-    while (n--)
-      u8arr[n] = bstr.charCodeAt(n)
+    while (n--) { u8arr[n] = bstr.charCodeAt(n) }
 
     return new File([u8arr], filename, { type: mime[1] })
   }
@@ -140,15 +138,15 @@ function paint(
   <div class="canvas-dom">
     <h3>基于canvas实现的签名组件</h3>
     <header>
-      <el-button type="primary" @click="handleSaveImg">
+      <ElButton type="primary" @click="handleSaveImg">
         保存为图片
-      </el-button>
-      <el-button @click="handleToFile">
+      </ElButton>
+      <ElButton @click="handleToFile">
         保存到后端
-      </el-button>
-      <el-button @click="handleClearSign">
+      </ElButton>
+      <ElButton @click="handleClearSign">
         清空签名
-      </el-button>
+      </ElButton>
     </header>
     <canvas
       ref="canvas"

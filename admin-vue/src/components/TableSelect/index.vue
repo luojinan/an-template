@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useResizeObserver } from '@vueuse/core'
+import { ElButton, ElIcon, ElInput, ElPopover } from 'element-plus'
 import type { PopoverProps } from 'element-plus'
 
 // 对象类型
@@ -39,8 +40,7 @@ const tableSelectRef = ref()
 const popoverWidth = ref(width)
 useResizeObserver(tableSelectRef, (entries) => {
   // 没有指定width时跟随表单宽度
-  if (width === '100%')
-    popoverWidth.value = `${entries[0].contentRect.width}px`
+  if (width === '100%') { popoverWidth.value = `${entries[0].contentRect.width}px` }
 })
 
 // 列表操作
@@ -73,7 +73,7 @@ const popoverContentRef = ref()
 
 <template>
   <div ref="tableSelectRef" class="w-full">
-    <el-popover
+    <ElPopover
       :visible="popoverVisible"
       :width="popoverWidth"
       popper-class="max-h-4/5 overflow-y-auto"
@@ -85,32 +85,32 @@ const popoverContentRef = ref()
         <!-- TODO: 点击其他地方时关闭 -->
         <div @click="popoverVisible = !popoverVisible">
           <slot>
-            <el-input
+            <ElInput
               class="reference"
               :model-value="text"
               :readonly="true"
               :placeholder="placeholder"
             >
               <template #suffix>
-                <el-icon
+                <ElIcon
                   :style="{
                     transform: popoverVisible ? 'rotate(180deg)' : 'rotate(0)',
                     transition: 'transform .5s',
                   }"
                 >
                   <ArrowDown />
-                </el-icon>
+                </ElIcon>
               </template>
-            </el-input>
+            </ElInput>
           </slot>
         </div>
       </template>
       <!-- 弹出框内容 -->
       <div ref="popoverContentRef">
         <div class="feedback">
-          <el-button size="small" @click="popoverVisible = false">
+          <ElButton size="small" @click="popoverVisible = false">
             关 闭
-          </el-button>
+          </ElButton>
         </div>
         <ProTable
           ref="tableRef"
@@ -119,7 +119,7 @@ const popoverContentRef = ref()
           @selection-change="onSelectChange"
         />
       </div>
-    </el-popover>
+    </ElPopover>
   </div>
 </template>
 

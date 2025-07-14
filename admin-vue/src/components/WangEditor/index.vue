@@ -1,28 +1,27 @@
 <script setup lang="ts">
-import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
+import '@wangeditor-next/editor/dist/css/style.css'
+import { Editor, Toolbar } from '@wangeditor-next/editor-for-vue'
+import type { IEditorConfig, IToolbarConfig } from '@wangeditor-next/editor'
+import { onBeforeUnmount, ref, shallowRef, watch } from 'vue'
+import { uploadOss } from '@/utils'
 
-// API 引用
+const { needClear } = defineProps<{ needClear?: boolean }>()
 
-const props = defineProps({
-  modelValue: {
-    type: [String],
-    default: '',
-  },
-})
+// 上传图片回调函数类型
+type InsertFnType = (_url: string, _alt: string, _href: string) => void
 
-const emit = defineEmits(['update:modelValue'])
-
-const modelValue = useVModel(props, 'modelValue', emit)
+// 双向绑定
+const modelValue = defineModel<string>()
 
 const editorRef = shallowRef() // 编辑器实例，必须用 shallowRef
-const mode = ref('default') // 编辑器模式
-const toolbarConfig = ref({ excludeKeys: ['insertVideo', 'redo', 'group-indent', 'todo', 'bulletedList', 'insertTable', 'numberedList', 'group-more-style', 'group-video', 'codeBlock', 'blockquote'] }) // 工具条配置
+
+// 工具栏配置
+const toolbarConfig = ref<Partial<IToolbarConfig>>({ excludeKeys: ['insertVideo', 'redo', 'group-indent', 'todo', 'bulletedList', 'insertTable', 'numberedList', 'group-more-style', 'group-video', 'codeBlock', 'blockquote'] }) // 工具条配置
+
 // 编辑器配置
-const editorConfig = ref({
+const editorConfig = ref<Partial<IEditorConfig>>({
   placeholder: '请输入内容...',
-  // maxLength: 1000,
   MENU_CONF: {
-    uploadVideo: null,
     fontFamily: {
       fontFamilyList: [
         // 元素支持两种形式
@@ -38,8 +37,11 @@ const editorConfig = ref({
       ],
     },
     uploadImage: {
-      fieldName: 'your-fileName',
-      base64LimitSize: 10 * 1024 * 1024, // 10M 以下插入 base64
+      customUpload(file: File, insertFn: InsertFnType) {
+        uploadOss(file).then((url) => {
+          insertFn(url, file.name, url)
+        })
+      },
     },
   },
 })
@@ -48,46 +50,39 @@ function handleCreated(editor: any) {
   editorRef.value = editor // 记录 editor 实例，重要！
 }
 
-function handleChange(editor: any) {
-  modelValue.value = editor.getHtml()
-}
-function destroy() {
-  const editor = editorRef.value
-  editor.setHtml('')
-}
-
-// 组件销毁时，也及时销毁编辑器
+// 组件销毁时，也及时销毁编辑器，重要！
 onBeforeUnmount(() => {
   const editor = editorRef.value
   if (editor == null) { return }
-  editor.setHtml('')
   editor.destroy()
 })
-// defineExpose({ destroy })
+
+watch(() => needClear, (newVal) => {
+  if (newVal) {
+    // 弹窗内使用editor问题 https://github.com/wangeditor-team/wangEditor/issues/5855#issuecomment-2146526159
+    editorRef.value.destroy() // clear 无效 改为使用v-if重新渲染，并手动销毁
+  }
+})
 </script>
 
 <template>
   <div class="editor-wrapper">
     <!-- 工具栏 -->
     <Toolbar
-      id="toolbar-container"
       :editor="editorRef"
       :default-config="toolbarConfig"
-      :mode="mode"
+      mode="default"
     />
     <!-- 编辑器 -->
     <Editor
-      id="editor-container"
+      v-if="!needClear"
       v-model="modelValue"
       :default-config="editorConfig"
-      :mode="mode"
-      @on-change="handleChange"
+      mode="default"
       @on-created="handleCreated"
     />
   </div>
 </template>
-
-<style src="@wangeditor/editor/dist/css/style.css"></style>
 
 <style lang="scss">
 .editor-wrapper{

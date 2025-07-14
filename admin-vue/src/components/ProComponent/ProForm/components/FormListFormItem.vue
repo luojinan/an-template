@@ -2,6 +2,7 @@
 import { Delete } from '@element-plus/icons-vue'
 import { cloneDeep } from 'lodash-es'
 import { ref, useId, watch } from 'vue'
+import { ElButton } from 'element-plus'
 import type { ProFormColumn } from '../../type'
 import ProFormItem from '../FormItem.vue'
 
@@ -9,7 +10,7 @@ defineProps<{
   attrs?: any
 }>()
 const column = defineModel<ProFormColumn>('column', { required: true })
-const itemData = defineModel<any>('itemData', { required: true })
+const itemData = defineModel<any>('itemData', { required: true, default: () => [] })
 const realColumns = ref<ProFormColumn[][]>([])
 
 function removeFormList(index: number) {
@@ -58,7 +59,7 @@ function addFormListItem() {
     </div>
     <div v-if="itemData.length === realColumns.length" class="flex flex-wrap gap-x-[6px]">
       <template v-for="(formListItemColumn, formIndex) in formListItem" :key="`${formListItemColumn.prop}`">
-        <ProFormItem v-model:itemData="itemData[index][formListItemColumn.prop]" v-model:column="formListItem[formIndex]" :form-item-prop="`${column.prop}.${index}.`" :form-props="attrs" :form-data="itemData[index]" :form-items="formListItem">
+        <ProFormItem v-model:item-data="itemData[index][formListItemColumn.prop]" v-model:column="formListItem[formIndex]" :form-item-prop="`${column.prop}.${index}.`" :form-props="attrs" :form-data="itemData[index]" :form-items="formListItem">
           <template v-if="formListItemColumn.valueType == 'custom'" #[formListItemColumn.slotName!]="scope">
             <slot :name="formListItemColumn.slotName ?? formListItemColumn.prop" :form-data="itemData[index]" v-bind="scope" :column="formListItemColumn" />
           </template>

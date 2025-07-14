@@ -1,6 +1,7 @@
 <!-- 混合布局菜单(top) -->
 <script lang="ts" setup>
 import type { RouteRecordRaw } from 'vue-router'
+import { ElIcon, ElMenu, ElMenuItem, ElScrollbar } from 'element-plus'
 import { useAppStore, usePermissionStore } from '@/store'
 import variables from '@/styles/variables.module.scss'
 
@@ -51,18 +52,18 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-scrollbar>
-    <el-menu
+  <ElScrollbar>
+    <ElMenu
       mode="horizontal" :default-active="activePath" :background-color="variables['menu-background']"
       :text-color="variables['menu-text']" :active-text-color="variables['menu-active-text']"
       @select="handleMenuSelect"
     >
-      <el-menu-item v-for="route in mixTopMenus" :key="route.path" :index="route.path">
+      <ElMenuItem v-for="route in mixTopMenus" :key="route.path" :index="route.path">
         <template #title>
           <template v-if="route.meta && route.meta.icon">
-            <el-icon v-if="route.meta.icon.startsWith('el-icon')" class="sub-el-icon">
+            <ElIcon v-if="route.meta.icon.startsWith('el-icon')" class="sub-el-icon">
               <component :is="route.meta.icon.replace('el-icon-', '')" />
-            </el-icon>
+            </ElIcon>
             <div v-else :class="`i-svg:${route.meta.icon}`" />
           </template>
           <span v-if="route.path === '/'"> 首页 </span>
@@ -72,7 +73,7 @@ onMounted(() => {
             </span>
           </template>
         </template>
-      </el-menu-item>
-    </el-menu>
-  </el-scrollbar>
+      </ElMenuItem>
+    </ElMenu>
+  </ElScrollbar>
 </template>

@@ -1,6 +1,8 @@
 <!-- 左侧边菜单：包括左侧布局(left)、顶部布局(all)、混合布局(left) -->
 <script lang="ts" setup>
 import path from 'path-browserify'
+import { useRoute } from 'vue-router'
+import { ElMenu } from 'element-plus'
 import { useAppStore, useSettingsStore } from '@/store'
 import { isExternal } from '@/utils/index'
 import variables from '@/styles/variables.module.scss'
@@ -28,11 +30,9 @@ const layout = computed(() => settingsStore.layout)
  * @param routePath 路由路径 /user
  */
 function resolvePath(routePath: string) {
-  if (isExternal(routePath))
-    return routePath
+  if (isExternal(routePath)) { return routePath }
 
-  if (isExternal(props.basePath))
-    return props.basePath
+  if (isExternal(props.basePath)) { return props.basePath }
 
   // 完整绝对路径 = 父级路径(/system) + 路由路径(/user)
   const fullPath = path.resolve(props.basePath, routePath)
@@ -41,7 +41,7 @@ function resolvePath(routePath: string) {
 </script>
 
 <template>
-  <el-menu
+  <ElMenu
     :default-active="currentRoute.path"
     :collapse="!appStore.sidebar.opened"
     :background-color="variables['menu-background']"
@@ -59,5 +59,5 @@ function resolvePath(routePath: string) {
       :base-path="resolvePath(route.path)"
       :is-collapse="!appStore.sidebar.opened"
     />
-  </el-menu>
+  </ElMenu>
 </template>

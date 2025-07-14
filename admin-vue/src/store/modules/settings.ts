@@ -1,4 +1,5 @@
 import Color from 'color'
+import { useStorage } from '@vueuse/core'
 import defaultSettings from '@/settings'
 import { ThemeEnum } from '@/enums/ThemeEnum'
 
@@ -7,7 +8,7 @@ type SettingsValue = boolean | string
 export const useSettingsStore = defineStore('setting', () => {
   // 存储约课的参数
   const ykList = ref([] as any)
-  const isShow=ref('')
+  const isShow = ref('')
   // 是否显示设置
   const settingsVisible = ref(false)
   // 是否显示标签视图
@@ -25,10 +26,7 @@ export const useSettingsStore = defineStore('setting', () => {
   // 布局模式：left-左侧模式(默认) top-顶部模式 mix-混合模式
   const layout = useStorage<string>('layout', defaultSettings.layout)
   // 主题颜色
-  const themeColor = useStorage<string>(
-    'themeColor',
-    defaultSettings.themeColor,
-  )
+  const themeColor = ref(defaultSettings.themeColor)
   // 主题：light-亮色(默认) dark-暗色
   const theme = useStorage<string>('theme', defaultSettings.theme)
   // 是否开启水印
@@ -41,10 +39,8 @@ export const useSettingsStore = defineStore('setting', () => {
     [theme, themeColor],
     ([newTheme, newThemeColor], [oldTheme, oldThemeColor]) => {
       if (newTheme !== oldTheme) {
-        if (newTheme === ThemeEnum.DARK)
-          document.documentElement.classList.add('dark')
-        else
-          document.documentElement.classList.remove('dark')
+        if (newTheme === ThemeEnum.DARK) { document.documentElement.classList.add('dark') }
+        else { document.documentElement.classList.remove('dark') }
       }
 
       if (newThemeColor !== oldThemeColor) {
@@ -81,8 +77,7 @@ export const useSettingsStore = defineStore('setting', () => {
     value: SettingsValue
   }) {
     const setting = settingsMap[key]
-    if (setting)
-      setting.value = value
+    if (setting) { setting.value = value }
   }
 
   /**
@@ -92,10 +87,10 @@ export const useSettingsStore = defineStore('setting', () => {
     theme.value = val
   }
 
-   /**
+  /**
    * 切换主题
    */
-   function setList(val:[]) {
+  function setList(val: []) {
     ykList.value = val
   }
 

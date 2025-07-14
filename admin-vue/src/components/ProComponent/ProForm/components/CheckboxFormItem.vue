@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const modelValue = defineModel<any>('modelValue', { required: true })
+import { ElCheckbox, ElCheckboxGroup } from 'element-plus'
+
 defineProps<{
   attrs?: any
   valueEnum?: Array<{
@@ -8,12 +9,13 @@ defineProps<{
     [key: string]: any
   }>
 }>()
+const modelValue = defineModel<any>('modelValue', { required: true })
 </script>
 
 <template>
-  <el-checkbox-group v-model="modelValue" v-bind="attrs">
+  <ElCheckboxGroup v-model="modelValue" v-bind="attrs">
     <template v-for="option in valueEnum" :key="option.value">
-      <el-checkbox v-bind="option" />
+      <ElCheckbox v-bind="option" />
     </template>
-  </el-checkbox-group>
+  </ElCheckboxGroup>
 </template>

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { ElTooltip } from 'element-plus'
 import { LayoutEnum } from '@/enums/LayoutEnum'
 
 const props = defineProps({
@@ -14,7 +15,7 @@ function updateValue(layout: string) {
 
 <template>
   <div class="flex flex-wrap justify-around w-full h-12">
-    <el-tooltip content="左侧模式" placement="bottom">
+    <ElTooltip content="左侧模式" placement="bottom">
       <div
         class="layout-item left"
         :class="{ 'is-active': modelValue === LayoutEnum.LEFT }"
@@ -23,9 +24,9 @@ function updateValue(layout: string) {
         <div />
         <div />
       </div>
-    </el-tooltip>
+    </ElTooltip>
 
-    <el-tooltip content="顶部模式" placement="bottom">
+    <ElTooltip content="顶部模式" placement="bottom">
       <div
         class="layout-item top"
         :class="{ 'is-active': modelValue === LayoutEnum.TOP }"
@@ -34,9 +35,9 @@ function updateValue(layout: string) {
         <div />
         <div />
       </div>
-    </el-tooltip>
+    </ElTooltip>
 
-    <el-tooltip content="混合模式" placement="bottom">
+    <ElTooltip content="混合模式" placement="bottom">
       <div
         class="layout-item mix"
         :class="{ 'is-active': modelValue === LayoutEnum.MIX }"
@@ -45,7 +46,7 @@ function updateValue(layout: string) {
         <div />
         <div />
       </div>
-    </el-tooltip>
+    </ElTooltip>
   </div>
 </template>
 

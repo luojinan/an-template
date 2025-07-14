@@ -1,6 +1,8 @@
 <!--  线 + 柱混合图 -->
 <script setup lang="ts">
 import * as echarts from 'echarts'
+import { markRaw, onActivated, onMounted, ref } from 'vue'
+import { ElCard, ElTooltip } from 'element-plus'
 
 const props = defineProps({
   id: {
@@ -166,24 +168,23 @@ onMounted(() => {
 })
 
 onActivated(() => {
-  if (chart.value)
-    chart.value.resize()
+  if (chart.value) { chart.value.resize() }
 })
 </script>
 
 <template>
-  <el-card>
+  <ElCard>
     <template #header>
       <div class="title">
         业绩柱状图
-        <el-tooltip effect="dark" content="点击试试下载" placement="bottom">
+        <ElTooltip effect="dark" content="点击试试下载" placement="bottom">
           <i-ep-download class="download" @click="downloadEchart" />
-        </el-tooltip>
+        </ElTooltip>
       </div>
     </template>
 
     <div :id="id" :class="className" :style="{ height, width }" />
-  </el-card>
+  </ElCard>
 </template>
 
 <style lang="scss" scoped>

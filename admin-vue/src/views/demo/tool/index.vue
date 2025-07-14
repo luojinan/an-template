@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { UploadRequestOptions } from 'element-plus'
+import { ElIcon, ElMessage, ElUpload, type UploadRequestOptions } from 'element-plus'
 import { ref } from 'vue'
 import { ProTable } from '@/components/ProComponent'
 import type { ProTableColumn } from '@/components/ProComponent'
@@ -32,7 +32,7 @@ async function fetchTableData() {
   const assets = await postApiV1FileGetwxassets()
   return {
     total: assets.length,
-    list: assets.map((asset: string) => ({ url: asset, img: asset })),
+    records: assets.map((asset: string) => ({ url: asset, img: asset })),
   }
 }
 
@@ -59,18 +59,18 @@ function copyToClipboard(text: string) {
 
 <template>
   <div class="app-container">
-    <el-upload
+    <ElUpload
       drag
       :http-request="onUploadRequest"
       multiple
     >
-      <el-icon class="el-icon--upload">
+      <ElIcon class="el-icon--upload">
         <upload-filled />
-      </el-icon>
+      </ElIcon>
       <div class="el-upload__text">
         拖拽上传 / <em>点击上传</em>
       </div>
-    </el-upload>
+    </ElUpload>
 
     <ProTable
       ref="tableRef"

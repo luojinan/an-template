@@ -1,0 +1,134 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# API 调用和组件使用标准
+
+## API 错误处理
+
+### 错误处理标准
+
+系统中的所有 API 调用函数 (位于 `utils/proApi/*.ts` 文件中) 已经在底层通过 `request.ts` 实现了统一的错误处理，包括：
+
+- 网络错误处理
+- 状态码错误处理
+- 业务错误处理 (非 200 状态码)
+- Token 失效处理
+
+因此，在调用 API 函数时，**不需要**使用 try-catch 包裹，除非有特殊的自定义错误处理需求。
+
+### 正确示例
+
+```typescript
+// ✅ 推荐：直接调用 API 函数，无需 try-catch
+async function handleEditClick(row: T) {
+  open.value = true
+  loading.value = true
+
+  const data = await getApiV1RecordById({ id: row.id })
+  formRef.value?.setFormData(data)
+
+  loading.value = false
+}
+
+async function handleDeleteClick(row: T) {
+  await deleteApiV1RecordById({ id: row.id })
+  ElMessage.success('删除成功')
+  tableRef.value?.fetchPageData()
+}
+```
+
+### 不推荐示例
+
+```typescript
+// ❌ 不推荐：不必要的 try-catch 包裹
+async function handleEditClick(row: T) {
+  open.value = true
+  loading.value = true
+
+  try {
+    const data = await getApiV1RecordById({ id: row.id })
+    formRef.value?.setFormData(data)
+  }
+  catch (error) {
+    console.error('获取详情失败', error)
+    ElMessage.error('获取详情失败') // 重复处理错误，request.ts 中已经处理过
+  }
+  finally {
+    loading.value = false
+  }
+}
+```
+
+### 需要 try-catch 的特殊情况
+
+只有在以下情况下，才需要使用 try-catch：
+
+1. 需要针对特定错误进行特殊处理 (例如，错误后跳转到特定页面)
+2. 需要在出错后继续执行后续代码，而不是直接中断
+3. 需要捕获错误但不显示默认错误提示
+
+```typescript
+// 特殊情况示例：错误后需要特殊处理
+async function handleImportData() {
+  try {
+    await importApiV1Data(formData)
+    ElMessage.success('导入成功')
+  }
+  catch (error) {
+    // 特殊处理：不使用默认错误提示，而是自定义提示
+    ElMessageBox.alert('导入失败，请检查文件格式是否正确', '导入失败', {
+      type: 'error',
+      callback: () => {
+        // 导入失败后的特殊处理
+      }
+    })
+  }
+}
+```
+
+## ProTable 组件默认属性
+
+### search 属性
+
+`ProTable` 组件的 `search` 属性默认值为 `true`，因此在需要启用搜索功能时，不需要显式设置 `:search="true"`。
+
+### 正确示例
+
+```vue
+<!-- ✅ 推荐：使用默认 search 属性 -->
+<ProTable
+  ref="tableRef"
+  :columns="cols"
+  :toolbar="toolbar"
+  :request="getList"
+/>
+```
+
+### 不推荐示例
+
+```vue
+<!-- ❌ 不推荐：冗余设置默认属性 -->
+<ProTable
+  ref="tableRef"
+  :columns="cols"
+  :toolbar="toolbar"
+  :request="getList"
+  :search="true"
+/>
+```
+
+### 禁用搜索
+
+仅当需要禁用搜索功能时，才需要显式设置 `:search="false"`。
+
+```vue
+<ProTable
+  ref="tableRef"
+  :columns="cols"
+  :toolbar="toolbar"
+  :request="getList"
+  :search="false"
+/>
+```

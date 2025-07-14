@@ -1,12 +1,14 @@
 <script setup lang="ts">
-const modelValue = defineModel<any>('modelValue', { required: true })
+import MultiUpload from '@/components/Upload/MultiUpload.vue'
+
 defineProps<{
   attrs?: any
 }>()
+const modelValue = defineModel<any>('modelValue', { required: true })
 </script>
 
 <template>
-  <multi-upload
+  <MultiUpload
     v-model="modelValue"
     v-bind="attrs"
   />

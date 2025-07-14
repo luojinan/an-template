@@ -1,8 +1,10 @@
 <script setup lang="ts">
-const modelValue = defineModel<any>('modelValue', { required: true })
+import { ElInput } from 'element-plus'
+
 defineProps<{
   attrs?: any
 }>()
+const modelValue = defineModel<any>('modelValue', { required: true })
 </script>
 
 <template>

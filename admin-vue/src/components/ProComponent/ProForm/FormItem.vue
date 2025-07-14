@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ElFormItem } from 'element-plus'
+import { ElDivider, ElFormItem, ElIcon, ElTooltip } from 'element-plus'
 import type { ProFormColumn } from '../type'
 import { formItemComponentMap } from './components'
 import FormListFormItem from './components/FormListFormItem.vue'
+import { computed, watch } from 'vue'
 
 defineOptions({
   name: 'ProFormItem',
@@ -11,14 +12,20 @@ defineOptions({
 const props = defineProps<{
   formProps?: any
   formData: any
-  formItems: any
+  formItems: ProFormColumn<any>[]
   formItemProp?: string
 }>()
 
 const column = defineModel<ProFormColumn>('column', { required: true })
 const itemData = defineModel<any>('itemData', { required: true })
+const open = defineModel<any>('open')
 
 const prepareFuncs: Array<() => void> = []
+
+// 工具函数：安全获取嵌套属性
+function getNested(obj: any, pathArr: string[]) {
+  return pathArr.reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined), obj)
+}
 
 const formItemTool = {
   getFieldConfig: (prop: string | string[]) => {
@@ -32,11 +39,41 @@ function initFormItem() {
   if (column.value.valueType === 'group') { return }
 
   column.value.initFn && column.value.initFn(column.value)
-  // 初始化watch
-  if (column.value.watch !== undefined) {
+  
+  // 初始化基于 dependency 的 watch
+  if (column.value.dependency && column.value.watchCallback) {
+    prepareFuncs.push(() => {
+      // 生成 getter 数组
+      // TODO: 为了独立formlist 的item数据，使props.formdata 拿到的list[index] 数据，无法获取最外层的数据
+      // formlist item既要能监听list[index]内的数据，也要监听外部的数据
+      const sources = column.value.dependency!.map((dep: string | string[]) => {
+        if (Array.isArray(dep)) {
+          return () => getNested(props.formData, dep) // 嵌套路径
+        } else {
+          return () => props.formData[dep] // 普通 key
+        }
+      })
+
+      watch(
+        sources,
+        (newVals, oldVals) => {
+          column.value.watchCallback && column.value.watchCallback(newVals, {
+            oldVals,
+            formData: props.formData,
+            formItems: props.formItems,
+            formItem: column.value,
+        })
+        },
+        { immediate: true },
+      )
+    })
+  }
+  
+  // 初始化原有的 watch（保持向后兼容）
+  if (column.value.watch && !column.value.dependency) {
     prepareFuncs.push(() => {
       watch(
-        () => props.formData[column.value.prop],
+        () => props.formData[column.value.prop as string],
         (newValue, oldValue) => {
           column.value.watch && column.value.watch(newValue, oldValue, props.formData, props.formItems, formItemTool)
         },
@@ -76,26 +113,23 @@ const newRules = computed(() => {
   })
 })
 
-const hideInForm = computed(() => {
-  return column.value?.hideInForm?.({ formData: props.formData })
-})
 // 添加一个获取组件的方法
 const getFormItemComponent = (type: string | undefined) => {
   return formItemComponentMap[type as keyof typeof formItemComponentMap]
 }
-// 由watch push column 和 delect column 会让formitem(遍历而来)销毁重建，而重新触发init
-watch(hideInForm, (val) => {
-  console.log('watch', val)
-  initFormItem()
-}, {
-  immediate: true,
-})
+
+const closeDrawer = () => {
+  open.value = false
+}
+
+// 初始化表单项
+initFormItem()
 </script>
 
 <template>
   <!-- formList 不用elform包裹 没有label -->
-  <template v-if="column.valueType === 'formList' && !hideInForm">
-    <FormListFormItem v-model:itemData="itemData" v-model:column="column">
+  <template v-if="column.valueType === 'formList'">
+    <FormListFormItem v-model:item-data="itemData" v-model:column="column">
       <template v-for="(formListItemColumn, formIndex) in column?.columns?.filter?.(i => i.valueType === 'custom')" :key="formListItemColumn.slotName" #[formListItemColumn.slotName]="scope">
         <slot :name="formListItemColumn.slotName ?? formListItemColumn.prop" :form-data="itemData[formIndex]" v-bind="scope" :column="formListItemColumn" />
       </template>
@@ -104,26 +138,26 @@ watch(hideInForm, (val) => {
 
   <template v-else>
     <ElFormItem
-      v-if="!column.hidden && !column.unMounted && (!column?.hideInForm?.({ formData }))"
+      v-if="!column.hidden && !column.unMounted"
       v-bind="column.formTtemAttrs"
       :label="column.label ? `${column.label}${column?.valueType === 'text' ? ' : ' : ''}` : undefined"
-      :prop="`${formItemProp || ''}${column.prop}`"
+      :prop="`${formItemProp || ''}${String(column.prop)}`"
       class="pro-form-item"
       :rules="newRules"
     >
       <template v-if="column.tips" #label>
         <span>
           {{ column.label }}
-          <el-tooltip
+          <ElTooltip
             placement="bottom"
             effect="light"
             :content="column.tips"
             :raw-content="true"
           >
-            <el-icon style="vertical-align: -0.15em" size="16">
+            <ElIcon style="vertical-align: -0.15em" size="16">
               <QuestionFilled />
-            </el-icon>
-          </el-tooltip>
+            </ElIcon>
+          </ElTooltip>
         </span>
       </template>
 
@@ -136,12 +170,12 @@ watch(hideInForm, (val) => {
         :value-enum="column.valueEnum"
       />
       <template v-else-if="column.valueType === 'group'">
-        <el-divider>{{ column?.attrs?.dividerTitle || '' }}</el-divider>
+        <ElDivider>{{ column?.attrs?.dividerTitle || '' }}</ElDivider>
 
         <template v-for="(groupColumn, index) in column.columns" :key="index">
           <ProFormItem
-            v-model:column="column.columns[index]"
-            v-model:item-data="formData[groupColumn.prop]"
+            v-model:column="column.columns![index]"
+            v-model:item-data="formData[groupColumn.prop as string]"
             :form-props="formProps"
             :form-data="formData"
             :form-items="formItems"
@@ -162,8 +196,11 @@ watch(hideInForm, (val) => {
           :attrs="column.attrs"
         />
       </template>
-      <template v-if="column.addonAfter">
-        <span class="ml-2">{{ column.addonAfter }}</span>
+      <template v-if="typeof column.addonAfter === 'function'">
+        <component :is="column.addonAfter" :close-drawer="closeDrawer" />
+      </template>
+      <template v-else-if="column.addonAfter === 'string'">
+        <span>{{ column.addonAfter }}</span>
       </template>
     </ElFormItem>
   </template>
@@ -171,12 +208,14 @@ watch(hideInForm, (val) => {
 
 <style scoped lang="scss">
 .pro-form-item {
-  margin-bottom: 18px;
+  // element ui 中form-item form-item 会设置为0px，而formgrop的实现就是嵌套form-item，偶现element css优先级在pro-form-item上
+  margin-bottom: 18px !important;
   vertical-align: baseline;
 
   // 用于撑开搜索表单
   :deep(.el-form-item__content) {
     width: 180px;
+    gap: 0 10px;
   }
 
   .el-card {

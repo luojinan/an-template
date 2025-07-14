@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ElIcon } from 'element-plus'
+
 const props = defineProps<{
   icon?: string
   title?: string
@@ -11,9 +13,9 @@ const iconComponent = computed(() => props.icon?.replace('el-icon-', ''))
 <template>
   <!-- 菜单图标 -->
   <template v-if="icon">
-    <el-icon v-if="isElIcon" class="el-icon">
+    <ElIcon v-if="isElIcon" class="el-icon">
       <component :is="iconComponent" />
-    </el-icon>
+    </ElIcon>
     <div v-else :class="`i-svg:${icon}`" />
   </template>
   <template v-else>

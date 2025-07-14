@@ -1,12 +1,14 @@
 <script setup lang="ts">
-const modelValue = defineModel<any>('modelValue', { required: true })
+import { ElDatePicker } from 'element-plus'
+
 defineProps<{
   attrs?: any
 }>()
+const modelValue = defineModel<any>('modelValue', { required: true })
 </script>
 
 <template>
-  <el-date-picker
+  <ElDatePicker
     v-model="modelValue"
     :style="{ width: '100%', flex: 1 }"
     clearable

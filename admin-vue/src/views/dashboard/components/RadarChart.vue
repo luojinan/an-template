@@ -1,6 +1,8 @@
 <!-- 雷达图 -->
 <script setup lang="ts">
 import * as echarts from 'echarts'
+import { markRaw, onActivated, onMounted, ref } from 'vue'
+import { ElCard } from 'element-plus'
 
 const props = defineProps({
   id: {
@@ -95,16 +97,15 @@ onMounted(() => {
 })
 
 onActivated(() => {
-  if (chart.value)
-    chart.value.resize()
+  if (chart.value) { chart.value.resize() }
 })
 </script>
 
 <template>
-  <el-card>
+  <ElCard>
     <template #header>
       订单状态雷达图
     </template>
     <div :id="id" :class="className" :style="{ height, width }" />
-  </el-card>
+  </ElCard>
 </template>

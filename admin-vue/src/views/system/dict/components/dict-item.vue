@@ -1,5 +1,6 @@
 <!-- 字典数据 -->
 <script setup lang="ts">
+import { ElButton, ElCard, ElDialog, ElForm, ElFormItem, ElInput, ElInputNumber, ElMessage, ElMessageBox, ElRadio, ElRadioGroup, ElTable, ElTableColumn, ElTag } from 'element-plus'
 import DictAPI from '@/api/dict'
 import type { DictForm, DictPageVO, DictQuery } from '@/api/dict/model'
 
@@ -184,84 +185,84 @@ onMounted(() => {
   <div class="app-container">
     <div class="search-container">
       <!-- 搜索表单 -->
-      <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-        <el-form-item label="关键字" prop="name">
-          <el-input
+      <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
+        <ElFormItem label="关键字" prop="name">
+          <ElInput
             v-model="queryParams.name"
             placeholder="字典名称"
             clearable
           />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="handleQuery">
+        </ElFormItem>
+        <ElFormItem>
+          <ElButton type="primary" @click="handleQuery">
             <i-ep-search />搜索
-          </el-button>
-          <el-button @click="resetQuery">
+          </ElButton>
+          <ElButton @click="resetQuery">
             <i-ep-refresh />重置
-          </el-button>
-        </el-form-item>
-      </el-form>
+          </ElButton>
+        </ElFormItem>
+      </ElForm>
     </div>
-    <el-card shadow="never">
+    <ElCard shadow="never">
       <template #header>
-        <el-button
+        <ElButton
           v-hasPerm="['sys:dict:add']"
           type="success"
           @click="openDialog()"
         >
           <i-ep-plus />新增
-        </el-button>
-        <el-button
+        </ElButton>
+        <ElButton
           v-hasPerm="['sys:dict:delete']"
           type="danger"
           :disabled="ids.length === 0"
           @click="handleDelete()"
         >
           <i-ep-delete />删除
-        </el-button>
+        </ElButton>
       </template>
 
       <!-- 数据表格 -->
-      <el-table
+      <ElTable
         v-loading="loading"
         :data="dictList"
         border
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="50" />
-        <el-table-column label="字典名称" prop="name" />
-        <el-table-column label="字典值" prop="value" />
-        <el-table-column label="状态" align="center">
+        <ElTableColumn type="selection" width="50" />
+        <ElTableColumn label="字典名称" prop="name" />
+        <ElTableColumn label="字典值" prop="value" />
+        <ElTableColumn label="状态" align="center">
           <template #default="scope">
-            <el-tag v-if="scope.row.status === 1" type="success">
+            <ElTag v-if="scope.row.status === 1" type="success">
               启用
-            </el-tag>
-            <el-tag v-else type="info">
+            </ElTag>
+            <ElTag v-else type="info">
               禁用
-            </el-tag>
+            </ElTag>
           </template>
-        </el-table-column>
-        <el-table-column fixed="right" label="操作" align="center">
+        </ElTableColumn>
+        <ElTableColumn fixed="right" label="操作" align="center">
           <template #default="scope">
-            <el-button
+            <ElButton
               v-hasPerm="['sys:dict:edit']"
               type="primary"
               link
               @click="openDialog(scope.row.id)"
             >
               <i-ep-edit />编辑
-            </el-button>
-            <el-button
+            </ElButton>
+            <ElButton
               v-hasPerm="['sys:dict:delete']"
               type="primary"
               link
               @click.stop="handleDelete(scope.row.id)"
             >
               <i-ep-delete />删除
-            </el-button>
+            </ElButton>
           </template>
-        </el-table-column>
-      </el-table>
+        </ElTableColumn>
+      </ElTable>
 
       <pagination
         v-if="total > 0"
@@ -270,61 +271,61 @@ onMounted(() => {
         v-model:limit="queryParams.pageSize"
         @pagination="handleQuery"
       />
-    </el-card>
+    </ElCard>
 
     <!-- 表单弹窗 -->
-    <el-dialog
+    <ElDialog
       v-model="dialog.visible"
       :title="dialog.title"
       width="500px"
       @close="closeDialog"
     >
-      <el-form
+      <ElForm
         ref="dataFormRef"
         :model="formData"
         :rules="rules"
         label-width="100px"
       >
-        <el-form-item label="字典名称">
+        <ElFormItem label="字典名称">
           {{ typeName }}
-        </el-form-item>
-        <el-form-item label="字典名称" prop="name">
-          <el-input v-model="formData.name" placeholder="请输入字典名称" />
-        </el-form-item>
-        <el-form-item label="字典值" prop="value">
-          <el-input v-model="formData.value" placeholder="字典值" />
-        </el-form-item>
-        <el-form-item label="排序" prop="sort">
-          <el-input-number
+        </ElFormItem>
+        <ElFormItem label="字典名称" prop="name">
+          <ElInput v-model="formData.name" placeholder="请输入字典名称" />
+        </ElFormItem>
+        <ElFormItem label="字典值" prop="value">
+          <ElInput v-model="formData.value" placeholder="字典值" />
+        </ElFormItem>
+        <ElFormItem label="排序" prop="sort">
+          <ElInputNumber
             v-model="formData.sort"
             controls-position="right"
             :min="0"
           />
-        </el-form-item>
-        <el-form-item label="状态" prop="status">
-          <el-radio-group v-model="formData.status">
-            <el-radio :label="1">
+        </ElFormItem>
+        <ElFormItem label="状态" prop="status">
+          <ElRadioGroup v-model="formData.status">
+            <ElRadio :label="1">
               正常
-            </el-radio>
-            <el-radio :label="0">
+            </ElRadio>
+            <ElRadio :label="0">
               停用
-            </el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="formData.remark" type="textarea" />
-        </el-form-item>
-      </el-form>
+            </ElRadio>
+          </ElRadioGroup>
+        </ElFormItem>
+        <ElFormItem label="备注" prop="remark">
+          <ElInput v-model="formData.remark" type="textarea" />
+        </ElFormItem>
+      </ElForm>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleSubmit">
+          <ElButton type="primary" @click="handleSubmit">
             确 定
-          </el-button>
-          <el-button @click="closeDialog">
+          </ElButton>
+          <ElButton @click="closeDialog">
             取 消
-          </el-button>
+          </ElButton>
         </div>
       </template>
-    </el-dialog>
+    </ElDialog>
   </div>
 </template>

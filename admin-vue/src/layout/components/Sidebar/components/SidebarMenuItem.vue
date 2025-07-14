@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import path from 'path-browserify'
 import type { RouteRecordRaw } from 'vue-router'
+import { ElMenuItem, ElSubMenu } from 'element-plus'
 import { isExternal } from '@/utils/index'
 
 defineOptions({
@@ -60,8 +61,7 @@ function hasOneShowingChild(
   })
 
   // 如果只有一个子路由, 返回 true
-  if (showingChildren.length === 1)
-    return true
+  if (showingChildren.length === 1) { return true }
 
   // 如果没有子路由，显示父级路由
   if (showingChildren.length === 0) {
@@ -77,11 +77,9 @@ function hasOneShowingChild(
  * @param routePath 路由路径
  */
 function resolvePath(routePath: string) {
-  if (isExternal(routePath))
-    return routePath
+  if (isExternal(routePath)) { return routePath }
 
-  if (isExternal(props.basePath))
-    return props.basePath
+  if (isExternal(props.basePath)) { return props.basePath }
 
   // 完整路径(/system/user) = 父级路径(/system) + 路由路径(user)
   const fullPath = path.resolve(props.basePath, routePath)
@@ -100,7 +98,7 @@ function resolvePath(routePath: string) {
       "
     >
       <AppLink v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
-        <el-menu-item
+        <ElMenuItem
           :index="resolvePath(onlyOneChild.path)"
           class="submenu-item"
           :class="{ 'submenu-title-noDropdown': !isNest }"
@@ -109,12 +107,12 @@ function resolvePath(routePath: string) {
             :icon="onlyOneChild.meta.icon || (item.meta && item.meta.icon)"
             :title="onlyOneChild.meta.title"
           />
-        </el-menu-item>
+        </ElMenuItem>
       </AppLink>
     </template>
 
     <!-- 显示具有多个子路由的父菜单项 -->
-    <el-sub-menu v-else :index="resolvePath(item.path)" teleported>
+    <ElSubMenu v-else :index="resolvePath(item.path)" teleported>
       <template #title>
         <SidebarMenuItemTitle
           v-if="item.meta"
@@ -130,7 +128,7 @@ function resolvePath(routePath: string) {
         :item="child"
         :base-path="resolvePath(child.path)"
       />
-    </el-sub-menu>
+    </ElSubMenu>
   </div>
 </template>
 
@@ -196,7 +194,7 @@ function resolvePath(routePath: string) {
 
 .submenu-item.is-active {
   margin-right: 10px;
-  color: #fff;
+  color: #fff !important;
   background-color: $menu-active-text;
   border-radius: 0 50px 50px 0;
 
@@ -206,6 +204,6 @@ function resolvePath(routePath: string) {
 }
 
 .el-menu-item:hover {
-  background-color: $menu-hover;
+  background-color: $menu-hover !important;
 }
 </style>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ElConfigProvider, ElWatermark } from 'element-plus'
 import { useAppStore, useSettingsStore } from '@/store'
 import defaultSettings from '@/settings'
 import { ThemeEnum } from '@/enums/ThemeEnum'
@@ -20,17 +21,17 @@ const fontColor = computed(() => {
 </script>
 
 <template>
-  <el-config-provider :locale="locale" :size="size">
+  <ElConfigProvider :locale="locale" :size="size">
     <!-- 开启水印 -->
-    <el-watermark
+    <ElWatermark
       v-if="watermarkEnabled"
       :font="{ color: fontColor }"
       :content="defaultSettings.watermarkContent"
       class="wh-full"
     >
       <router-view />
-    </el-watermark>
+    </ElWatermark>
     <!-- 关闭水印 -->
     <router-view v-else />
-  </el-config-provider>
+  </ElConfigProvider>
 </template>

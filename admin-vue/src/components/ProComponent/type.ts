@@ -8,6 +8,7 @@ import type {
   InputProps,
   PaginationProps,
   RadioProps,
+  SwitchProps,
   TimePickerDefaultProps,
 } from 'element-plus'
 
@@ -34,7 +35,7 @@ export type ToolOperatBtn<T> = DeleteOperatBtn | OtherOperatBtn<T>
 
 export interface ValueEnum {
   value: any
-  label: string
+  label?: string
   tagType?: 'primary' | 'success' | 'info' | 'warning' | 'danger'
 }
 
@@ -89,6 +90,7 @@ interface AttrsByValueType {
   'custom': IObject
   'cascader': CascaderProps
   'group': IObject
+  'switch': SwitchProps
 }
 
 /**
@@ -119,7 +121,7 @@ export type ProFormColumn<T = any> = {
     // 键名
     prop?: keyof T
     key?: string
-    addonAfter?: string
+    addonAfter?: string | ((props: { 'close-drawer'?: () => void }) => any)
     // 验证规则
     rules?: FormItemRule[]
     // 初始值
@@ -139,12 +141,13 @@ export type ProFormColumn<T = any> = {
     transform?: (value: any, itemConfig: ProFormColumn<T>) => any
     // setformData 时对数据做的处理 v-model change时不会触发
     convertValue?: (value: any, alldata: T) => any
-    // 监听函数
+    // 监听函数-废弃
     watch?: (newValue: any, oldValue: any, data: T, items: ProFormColumn<T>[], formItemTool: IObject) => void
+    watchCallback?: (newVals: any[], options: {oldVals: any[], formData: T, formItems: ProFormColumn<T>[], formItem: ProFormColumn<T>}) => void
+    // 依赖字段配置，用于自动注册 watch
+    dependency?: (string | string[])[]
     // 计算属性函数
     computed?: (data: T) => any
-    // 监听收集函数
-    // watchEffect?: (data: T) => void
     // 初始化数据函数扩展
     initFn?: (item: ProFormColumn<T>) => void
   };

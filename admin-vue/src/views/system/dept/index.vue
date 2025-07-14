@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ElButton, ElCard, ElDialog, ElForm, ElFormItem, ElInput, ElInputNumber, ElMessage, ElMessageBox, ElOption, ElRadio, ElRadioGroup, ElSelect, ElTable, ElTableColumn, ElTag, ElTreeSelect } from 'element-plus'
 import DeptAPI from '@/api/dept'
 import type { DeptForm, DeptQuery, DeptVO } from '@/api/dept/model'
 
@@ -162,58 +163,58 @@ onMounted(() => {
 <template>
   <div class="app-container">
     <div class="search-container">
-      <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-        <el-form-item label="关键字" prop="keywords">
-          <el-input
+      <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
+        <ElFormItem label="关键字" prop="keywords">
+          <ElInput
             v-model="queryParams.keywords"
             placeholder="部门名称"
             @keyup.enter="handleQuery"
           />
-        </el-form-item>
+        </ElFormItem>
 
-        <el-form-item label="部门状态" prop="status">
-          <el-select
+        <ElFormItem label="部门状态" prop="status">
+          <ElSelect
             v-model="queryParams.status"
             placeholder="全部"
             clearable
             class="!w-[100px]"
           >
-            <el-option :value="1" label="正常" />
-            <el-option :value="0" label="禁用" />
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button class="filter-item" type="primary" @click="handleQuery">
+            <ElOption :value="1" label="正常" />
+            <ElOption :value="0" label="禁用" />
+          </ElSelect>
+        </ElFormItem>
+        <ElFormItem>
+          <ElButton class="filter-item" type="primary" @click="handleQuery">
             <i-ep-search />
             搜索
-          </el-button>
-          <el-button @click="resetQuery">
+          </ElButton>
+          <ElButton @click="resetQuery">
             <i-ep-refresh />重置
-          </el-button>
-        </el-form-item>
-      </el-form>
+          </ElButton>
+        </ElFormItem>
+      </ElForm>
     </div>
 
-    <el-card shadow="never" class="table-container">
+    <ElCard shadow="never" class="table-container">
       <template #header>
-        <el-button
+        <ElButton
           v-hasPerm="['sys:dept:add']"
           type="success"
           @click="openDialog(0, undefined)"
         >
           <i-ep-plus />新增
-        </el-button>
-        <el-button
+        </ElButton>
+        <ElButton
           v-hasPerm="['sys:dept:delete']"
           type="danger"
           :disabled="ids.length === 0"
           @click="handleDelete()"
         >
           <i-ep-delete />删除
-        </el-button>
+        </ElButton>
       </template>
 
-      <el-table
+      <ElTable
         v-loading="loading"
         :data="deptList"
         row-key="id"
@@ -221,24 +222,24 @@ onMounted(() => {
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55" align="center" />
-        <el-table-column prop="name" label="部门名称" min-width="200" />
-        <el-table-column prop="status" label="状态" width="100">
+        <ElTableColumn type="selection" width="55" align="center" />
+        <ElTableColumn prop="name" label="部门名称" min-width="200" />
+        <ElTableColumn prop="status" label="状态" width="100">
           <template #default="scope">
-            <el-tag v-if="scope.row.status == 1" type="success">
+            <ElTag v-if="scope.row.status == 1" type="success">
               正常
-            </el-tag>
-            <el-tag v-else type="info">
+            </ElTag>
+            <ElTag v-else type="info">
               禁用
-            </el-tag>
+            </ElTag>
           </template>
-        </el-table-column>
+        </ElTableColumn>
 
-        <el-table-column prop="sort" label="排序" width="100" />
+        <ElTableColumn prop="sort" label="排序" width="100" />
 
-        <el-table-column label="操作" fixed="right" align="left" width="200">
+        <ElTableColumn label="操作" fixed="right" align="left" width="200">
           <template #default="scope">
-            <el-button
+            <ElButton
               v-hasPerm="['sys:dept:add']"
               type="primary"
               link
@@ -246,8 +247,8 @@ onMounted(() => {
               @click.stop="openDialog(scope.row.id, undefined)"
             >
               <i-ep-plus />新增
-            </el-button>
-            <el-button
+            </ElButton>
+            <ElButton
               v-hasPerm="['sys:dept:edit']"
               type="primary"
               link
@@ -255,8 +256,8 @@ onMounted(() => {
               @click.stop="openDialog(scope.row.parentId, scope.row.id)"
             >
               <i-ep-edit />编辑
-            </el-button>
-            <el-button
+            </ElButton>
+            <ElButton
               v-hasPerm="['sys:dept:delete']"
               type="primary"
               link
@@ -264,26 +265,26 @@ onMounted(() => {
               @click.stop="handleDelete(scope.row.id)"
             >
               <i-ep-delete />删除
-            </el-button>
+            </ElButton>
           </template>
-        </el-table-column>
-      </el-table>
-    </el-card>
+        </ElTableColumn>
+      </ElTable>
+    </ElCard>
 
-    <el-dialog
+    <ElDialog
       v-model="dialog.visible"
       :title="dialog.title"
       width="600px"
       @closed="closeDialog"
     >
-      <el-form
+      <ElForm
         ref="deptFormRef"
         :model="formData"
         :rules="rules"
         label-width="80px"
       >
-        <el-form-item label="上级部门" prop="parentId">
-          <el-tree-select
+        <ElFormItem label="上级部门" prop="parentId">
+          <ElTreeSelect
             v-model="formData.parentId"
             placeholder="选择上级部门"
             :data="deptOptions"
@@ -291,40 +292,40 @@ onMounted(() => {
             check-strictly
             :render-after-expand="false"
           />
-        </el-form-item>
-        <el-form-item label="部门名称" prop="name">
-          <el-input v-model="formData.name" placeholder="请输入部门名称" />
-        </el-form-item>
-        <el-form-item label="显示排序" prop="sort">
-          <el-input-number
+        </ElFormItem>
+        <ElFormItem label="部门名称" prop="name">
+          <ElInput v-model="formData.name" placeholder="请输入部门名称" />
+        </ElFormItem>
+        <ElFormItem label="显示排序" prop="sort">
+          <ElInputNumber
             v-model="formData.sort"
             controls-position="right"
             style="width: 100px"
             :min="0"
           />
-        </el-form-item>
-        <el-form-item label="部门状态">
-          <el-radio-group v-model="formData.status">
-            <el-radio :label="1">
+        </ElFormItem>
+        <ElFormItem label="部门状态">
+          <ElRadioGroup v-model="formData.status">
+            <ElRadio :label="1">
               正常
-            </el-radio>
-            <el-radio :label="0">
+            </ElRadio>
+            <ElRadio :label="0">
               禁用
-            </el-radio>
-          </el-radio-group>
-        </el-form-item>
-      </el-form>
+            </ElRadio>
+          </ElRadioGroup>
+        </ElFormItem>
+      </ElForm>
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleSubmit">
+          <ElButton type="primary" @click="handleSubmit">
             确 定
-          </el-button>
-          <el-button @click="closeDialog">
+          </ElButton>
+          <ElButton @click="closeDialog">
             取 消
-          </el-button>
+          </ElButton>
         </div>
       </template>
-    </el-dialog>
+    </ElDialog>
   </div>
 </template>

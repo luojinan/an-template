@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { ElButton, ElCheckbox, ElPopover, ElScrollbar } from 'element-plus'
 import type { ProTableColumn, ToolbarBtn } from '../type'
 import { useUserStore } from '@/store'
-const userStore = useUserStore()
 
 // 定义接收的属性
 const props = defineProps<{
@@ -15,12 +15,13 @@ const emit = defineEmits<{
   handleToolbar: [string]
 }>()
 
+const userStore = useUserStore()
+
 const columns = defineModel<ProTableColumn>('columns')
 
 function handleToolbar(item) {
   if (typeof item === 'object') {
-    if (item.onClick)
-      item.onClick()
+    if (item.onClick) { item.onClick() }
 
     emit('handleToolbar', item.name)
   }
@@ -30,12 +31,11 @@ function handleToolbar(item) {
 }
 
 const authsToolbar = computed(() => {
-  if (props.toolbar && props.toolbar.length > 0){
+  if (props.toolbar && props.toolbar.length > 0) {
     return props.toolbar.filter(item => userStore.hasPerms(item.auths || []))
   }
   return []
 })
-
 </script>
 
 <template>
@@ -48,44 +48,44 @@ const authsToolbar = computed(() => {
         <template v-if="typeof item === 'string'">
           <!-- 新增 -->
           <template v-if="item === 'add'">
-            <el-button
+            <ElButton
               type="success"
               icon="plus"
               @click="handleToolbar(item)"
             >
               新增
-            </el-button>
+            </ElButton>
           </template>
           <!-- 删除 -->
           <template v-else-if="item === 'delete'">
-            <el-button
+            <ElButton
               type="danger"
               icon="delete"
               @click="handleToolbar(item)"
             >
               删除
-            </el-button>
+            </ElButton>
           </template>
           <!-- 导出 -->
           <template v-else-if="item === 'export'">
-            <el-button
+            <ElButton
               type="primary"
               icon="download"
               @click="handleToolbar(item)"
             >
               导出
-            </el-button>
+            </ElButton>
           </template>
         </template>
         <!-- 其他 -->
         <template v-else-if="typeof item === 'object'">
-          <el-button
+          <ElButton
             :icon="item.icon"
             :type="item.type ?? 'default'"
             @click="handleToolbar(item)"
           >
             {{ item.text }}
-          </el-button>
+          </ElButton>
         </template>
       </template>
     </div>
@@ -95,7 +95,7 @@ const authsToolbar = computed(() => {
         <template v-if="typeof item === 'string'">
           <!-- 刷新 -->
           <template v-if="item === 'refresh'">
-            <el-button
+            <ElButton
               icon="refresh"
               link
               title="刷新"
@@ -104,25 +104,25 @@ const authsToolbar = computed(() => {
           </template>
           <!-- 筛选列 -->
           <template v-else-if="item === 'filter'">
-            <el-popover placement="bottom" trigger="click">
+            <ElPopover placement="bottom" trigger="click">
               <template #reference>
-                <el-button icon="Operation" link title="筛选列" />
+                <ElButton icon="Operation" link title="筛选列" />
               </template>
-              <el-scrollbar max-height="350px">
+              <ElScrollbar max-height="350px">
                 <template v-for="col in columns" :key="col">
-                  <el-checkbox
+                  <ElCheckbox
                     v-if="col.prop"
                     v-model="col.show"
                     :label="col.label"
                   />
                 </template>
-              </el-scrollbar>
-            </el-popover>
+              </ElScrollbar>
+            </ElPopover>
           </template>
         </template>
         <!-- 其他 -->
         <template v-else-if="typeof item === 'object'">
-          <el-button
+          <ElButton
             :icon="item.icon"
             link
             :title="item.title"

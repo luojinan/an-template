@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const modelValue = defineModel<any>('modelValue', { required: true })
+import { ElOption, ElSelect } from 'element-plus'
+
 defineProps<{
   attrs?: any
   valueEnum?: Array<{
@@ -8,6 +9,7 @@ defineProps<{
     [key: string]: any
   }>
 }>()
+const modelValue = defineModel<any>('modelValue', { required: true })
 </script>
 
 <template>

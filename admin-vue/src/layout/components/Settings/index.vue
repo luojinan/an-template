@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ElDivider, ElDrawer, ElSwitch } from 'element-plus'
 import { useAppStore, usePermissionStore, useSettingsStore } from '@/store'
 import { LayoutEnum } from '@/enums/LayoutEnum'
 import { ThemeEnum } from '@/enums/ThemeEnum'
@@ -38,16 +39,13 @@ function changeTheme(val: any) {
  */
 function changeLayout(layout: string) {
   settingsStore.changeLayout(layout)
-  if (layout === LayoutEnum.MIX)
-    route.name && againActiveTop(route.name as string)
-  else if (layout === LayoutEnum.TOP)
-    appStore.openSideBar()
+  if (layout === LayoutEnum.MIX) { route.name && againActiveTop(route.name as string) }
+  else if (layout === LayoutEnum.TOP) { appStore.openSideBar() }
 }
 
 function againActiveTop(newVal: string) {
   const parent = findOutermostParent(permissionStore.routes, newVal)
-  if (appStore.activeTopMenu !== parent.path)
-    appStore.activeTopMenu(parent.path)
+  if (appStore.activeTopMenu !== parent.path) { appStore.activeTopMenu(parent.path) }
 }
 
 function findOutermostParent(tree: any[], findName: string) {
@@ -57,18 +55,15 @@ function findOutermostParent(tree: any[], findName: string) {
     parentMap[node.name] = parent
 
     if (node.children) {
-      for (let i = 0; i < node.children.length; i++)
-        buildParentMap(node.children[i], node)
+      for (let i = 0; i < node.children.length; i++) { buildParentMap(node.children[i], node) }
     }
   }
 
-  for (let i = 0; i < tree.length; i++)
-    buildParentMap(tree[i], null)
+  for (let i = 0; i < tree.length; i++) { buildParentMap(tree[i], null) }
 
   let currentNode = parentMap[findName]
   while (currentNode) {
-    if (!parentMap[currentNode.name])
-      return currentNode
+    if (!parentMap[currentNode.name]) { return currentNode }
 
     currentNode = parentMap[currentNode.name]
   }
@@ -78,14 +73,14 @@ function findOutermostParent(tree: any[], findName: string) {
 </script>
 
 <template>
-  <el-drawer v-model="settingsVisible" size="300" title="项目设置">
-    <el-divider>主题设置</el-divider>
+  <ElDrawer v-model="settingsVisible" size="300" title="项目设置">
+    <ElDivider>主题设置</ElDivider>
 
     <div class="flex-center">
-      <el-switch v-model="isDark" active-icon="Moon" inactive-icon="Sunny" @change="changeTheme" />
+      <ElSwitch v-model="isDark" active-icon="Moon" inactive-icon="Sunny" @change="changeTheme" />
     </div>
 
-    <el-divider>界面设置</el-divider>
+    <ElDivider>界面设置</ElDivider>
 
     <div class="settings-option">
       <span class="text-xs">主题颜色</span>
@@ -94,28 +89,28 @@ function findOutermostParent(tree: any[], findName: string) {
 
     <div class="settings-option">
       <span class="text-xs">开启 Tags-views</span>
-      <el-switch v-model="settingsStore.tagsView" />
+      <ElSwitch v-model="settingsStore.tagsView" />
     </div>
 
     <div class="settings-option">
       <span class="text-xs">固定 Header</span>
-      <el-switch v-model="settingsStore.fixedHeader" />
+      <ElSwitch v-model="settingsStore.fixedHeader" />
     </div>
 
     <div class="settings-option">
       <span class="text-xs">侧边栏 Logo</span>
-      <el-switch v-model="settingsStore.sidebarLogo" />
+      <ElSwitch v-model="settingsStore.sidebarLogo" />
     </div>
 
     <div class="settings-option">
       <span class="text-xs">开启水印</span>
-      <el-switch v-model="settingsStore.watermarkEnabled" />
+      <ElSwitch v-model="settingsStore.watermarkEnabled" />
     </div>
 
-    <el-divider>{{ 'settings.navigation' }}</el-divider>
+    <ElDivider>{{ 'settings.navigation' }}</ElDivider>
 
     <LayoutSelect v-model="settingsStore.layout" @update:model-value="changeLayout" />
-  </el-drawer>
+  </ElDrawer>
 </template>
 
 <style lang="scss" scoped>

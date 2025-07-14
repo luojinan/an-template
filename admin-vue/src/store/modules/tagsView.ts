@@ -1,12 +1,17 @@
 export const useTagsViewStore = defineStore('tagsView', () => {
   const visitedViews = useStorage<TagView[]>('visitedViews', [])
   const cachedViews = ref<string[]>([])
+  const router = useRouter()
+  const route = useRoute()
 
   /**
    * 添加已访问视图到已访问视图列表中
    */
   function addVisitedView(view: TagView) {
-    // 如果已经存在于已访问的视图列表中，则不再添加
+    // 如果已经存在于已访问的视图列表中或者是重定向地址，则不再添加
+    if (view.path.startsWith('/redirect')) {
+      return
+    }
     if (visitedViews.value.some(v => v.path === view.path)) { return }
 
     // 如果视图是固定的（affix），则在已访问的视图列表的开头添加
@@ -179,6 +184,48 @@ export const useTagsViewStore = defineStore('tagsView', () => {
     })
   }
 
+  /**
+   * 关闭当前tagView
+   */
+  function closeCurrentView() {
+    const tags: TagView = {
+      name: route.name as string,
+      title: route.meta.title as string,
+      path: route.path,
+      fullPath: route.fullPath,
+      affix: route.meta?.affix,
+      keepAlive: route.meta?.keepAlive,
+      query: route.query,
+    }
+    delView(tags).then((res: any) => {
+      if (isActive(tags)) {
+        toLastView(res.visitedViews, tags)
+      }
+    })
+  }
+
+  function isActive(tag: TagView) {
+    return tag.path === route.path
+  }
+
+  function toLastView(visitedViews: TagView[], view?: TagView) {
+    const latestView = visitedViews.slice(-1)[0]
+    if (latestView && latestView.fullPath) {
+      router.push(latestView.fullPath)
+    }
+    else {
+      // now the default is to redirect to the home page if there is no tags-view,
+      // you can adjust it according to your needs.
+      if (view?.name === 'Dashboard') {
+        // to reload home page
+        router.replace(`/redirect${view.fullPath}`)
+      }
+      else {
+        router.push('/')
+      }
+    }
+  }
+
   return {
     visitedViews,
     cachedViews,
@@ -197,5 +244,8 @@ export const useTagsViewStore = defineStore('tagsView', () => {
     delAllViews,
     delAllVisitedViews,
     delAllCachedViews,
+    closeCurrentView,
+    isActive,
+    toLastView,
   }
 })

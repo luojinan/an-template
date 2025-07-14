@@ -11,67 +11,99 @@ export interface ResultObject {
 
 export interface UserForm {
   /**
-   * 用户ID
-   */
-  id: string
-  /**
-   * 用户名
-   */
-  username: string
-  /**
-   * 昵称
-   */
-  nickname: string
-  /**
-   * 手机号码
-   */
-  mobile: string
-  /**
-   * 性别
-   */
-  gender: number
-  /**
    * 用户头像
    */
   avatar: string
-  /**
-   * 邮箱
-   */
-  email: string
-  /**
-   * 用户状态(1:正常;0:禁用)
-   */
-  status: number
   /**
    * 部门ID
    */
   deptId: number
   /**
+   * 邮箱
+   */
+  email: string
+  /**
+   * 性别
+   */
+  gender: number
+  /**
+   * 用户ID
+   */
+  id: string
+  /**
+   * 详细介绍
+   */
+  introduction: string
+  /**
+   * 手机号码
+   */
+  mobile: string
+  /**
+   * 昵称
+   */
+  nickname: string
+  /**
+   * 海报URL
+   */
+  posterUrl: string
+  /**
    * 角色ID集合
    */
   roleIds: number[]
+  /**
+   * 宣传标语
+   */
+  slogan: string
+  /**
+   * 擅长领域列表，对应字典为specialties
+   */
+  specialties: string[]
+  /**
+   * 用户状态(1:正常;0:禁用)
+   */
+  status: number
+  /**
+   * 所属门店ID(storeType为EXCLUSIVE时必填)
+   */
+  storeId: string
+  /**
+   * 门店类型(EXCLUSIVE:专属门店;ALL:全门店)
+   */
+  storeType: string
+  /**
+   * 用户名
+   */
+  username: string
 }
 
 export interface UserChangePasswordForm {
   /**
-   * 旧密码
+   * 邮箱
    */
-  srcPassword: string
-  /**
-   * 新密码
-   */
-  newPassword: string
+  email: string
   /**
    * 手机号
    */
   mobile: string
   /**
-   * 邮箱
+   * 新密码
    */
-  email: string
+  newPassword: string
+  /**
+   * 旧密码
+   */
+  srcPassword: string
 }
 
 export interface RoleForm {
+  /**
+   * 角色编码
+   */
+  code: string
+  /**
+   * 数据权限
+   */
+  dataScope: number
   /**
    * 角色ID
    */
@@ -81,10 +113,6 @@ export interface RoleForm {
    */
   name: string
   /**
-   * 角色编码
-   */
-  code: string
-  /**
    * 排序
    */
   sort: number
@@ -92,10 +120,6 @@ export interface RoleForm {
    * 角色状态(1-正常；0-停用)
    */
   status: number
-  /**
-   * 数据权限
-   */
-  dataScope: number
 }
 
 export interface KeyValue {
@@ -111,65 +135,65 @@ export interface KeyValue {
 
 export interface MenuForm {
   /**
-   * 菜单ID
+   * 【目录】只有一个子路由是否始终显示
    */
-  id: number
-  /**
-   * 父菜单ID
-   */
-  parentId: number
-  /**
-   * 菜单名称
-   */
-  name: string
-  /**
-   * 菜单类型(1-菜单；2-目录；3-外链；4-按钮权限)
-   */
-  type: string
-  /**
-   * 路由路径
-   */
-  path: string
+  alwaysShow: number
   /**
    * 组件路径(vue页面完整路径，省略.vue后缀)
    */
   component: string
   /**
-   * 权限标识
-   */
-  perm: string
-  /**
-   * 显示状态(1:显示;0:隐藏)
-   */
-  visible: number
-  /**
-   * 排序(数字越小排名越靠前)
-   */
-  sort: number
-  /**
    * 菜单图标
    */
   icon: string
   /**
-   * 跳转路径
+   * 菜单ID
    */
-  redirect: string
+  id: number
   /**
    * 【菜单】是否开启页面缓存
    */
   keepAlive: number
   /**
-   * 【目录】只有一个子路由是否始终显示
+   * 菜单名称
    */
-  alwaysShow: number
+  name: string
   /**
    * 路由参数
    */
   params: KeyValue[]
   /**
+   * 父菜单ID
+   */
+  parentId: number
+  /**
+   * 路由路径
+   */
+  path: string
+  /**
+   * 权限标识
+   */
+  perm: string
+  /**
    * 查询类型：1 查询所有  2 查询部分
    */
   queryType: number
+  /**
+   * 跳转路径
+   */
+  redirect: string
+  /**
+   * 排序(数字越小排名越靠前)
+   */
+  sort: number
+  /**
+   * 菜单类型(1-菜单；2-目录；3-外链；4-按钮权限)
+   */
+  type: string
+  /**
+   * 显示状态(1:显示;0:隐藏)
+   */
+  visible: number
 }
 
 export interface DictForm {
@@ -178,32 +202,36 @@ export interface DictForm {
    */
   id: number
   /**
-   * 类型编码
-   */
-  typeCode: string
-  /**
    * 字典名称
    */
   name: string
   /**
-   * 字典值
+   * 字典备注
    */
-  value: string
-  /**
-   * 状态(1:启用;0:禁用)
-   */
-  status: number
+  remark: string
   /**
    * 排序
    */
   sort: number
   /**
-   * 字典备注
+   * 状态(1:启用;0:禁用)
    */
-  remark: string
+  status: number
+  /**
+   * 类型编码
+   */
+  typeCode: string
+  /**
+   * 字典值
+   */
+  value: string
 }
 
 export interface DictTypeForm {
+  /**
+   * 类型编码
+   */
+  code: string
   /**
    * 字典类型ID
    */
@@ -213,17 +241,13 @@ export interface DictTypeForm {
    */
   name: string
   /**
-   * 类型编码
+   * 备注
    */
-  code: string
+  remark: string
   /**
    * 类型状态(1:启用;0:禁用)
    */
   status: number
-  /**
-   * 备注
-   */
-  remark: string
 }
 
 export interface DeptForm {
@@ -240,68 +264,68 @@ export interface DeptForm {
    */
   parentId: number
   /**
-   * 状态(1:启用;0:禁用)
-   */
-  status: number
-  /**
    * 排序(数字越小排名越靠前)
    */
   sort: number
+  /**
+   * 状态(1:启用;0:禁用)
+   */
+  status: number
 }
 
 export interface IPageUserPageVO {
-  size: number
   current: number
-  records: UserPageVO[]
   pages: number
+  records: UserPageVO[]
+  size: number
   total: number
 }
 
 export interface UserPageVO {
   /**
-   * 用户ID
-   */
-  id: string
-  /**
-   * 用户名
-   */
-  username: string
-  /**
-   * 用户昵称
-   */
-  nickname: string
-  /**
-   * 手机号
-   */
-  mobile: string
-  /**
-   * 性别
-   */
-  genderLabel: string
-  /**
    * 用户头像地址
    */
   avatar: string
   /**
-   * 用户邮箱
+   * 创建时间
    */
-  email: string
-  /**
-   * 用户状态(1:启用;0:禁用)
-   */
-  status: number
+  createTime: string
   /**
    * 部门名称
    */
   deptName: string
   /**
+   * 用户邮箱
+   */
+  email: string
+  /**
+   * 性别
+   */
+  genderLabel: string
+  /**
+   * 用户ID
+   */
+  id: string
+  /**
+   * 手机号
+   */
+  mobile: string
+  /**
+   * 用户昵称
+   */
+  nickname: string
+  /**
    * 角色名称，多个使用英文逗号(,)分割
    */
   roleNames: string
   /**
-   * 创建时间
+   * 用户状态(1:启用;0:禁用)
    */
-  createTime: string
+  status: number
+  /**
+   * 用户名
+   */
+  username: string
 }
 
 export interface UserDeptVO {
@@ -310,16 +334,57 @@ export interface UserDeptVO {
    */
   id: number
   /**
-   * 部门或机构名称，根据isInstitution而定
-   */
-  name: string
-  /**
    * 是否机构
    */
   isInstitution: boolean
+  /**
+   * 部门或机构名称，根据isInstitution而定
+   */
+  name: string
 }
 
 export interface UserInfoVO {
+  /**
+   * 头像地址
+   */
+  avatar: string
+  dept: UserDeptVO
+  /**
+   * 用户详细介绍
+   */
+  introduction: string
+  /**
+   * 用户昵称
+   */
+  nickname: string
+  /**
+   * 用户权限标识集合
+   */
+  perms: string[]
+  /**
+   * 用户海报URL
+   */
+  posterUrl: string
+  /**
+   * 用户角色编码集合
+   */
+  roles: string[]
+  /**
+   * 用户宣传标语
+   */
+  slogan: string
+  /**
+   * 用户擅长领域列表
+   */
+  specialties: string[]
+  /**
+   * 所属门店ID
+   */
+  storeId: string
+  /**
+   * 门店类型(EXCLUSIVE:专属门店;ALL:全门店)
+   */
+  storeType: string
   /**
    * 用户ID
    */
@@ -328,45 +393,33 @@ export interface UserInfoVO {
    * 用户名
    */
   username: string
-  /**
-   * 用户昵称
-   */
-  nickname: string
-  /**
-   * 头像地址
-   */
-  avatar: string
-  /**
-   * 用户角色编码集合
-   */
-  roles: string[]
-  /**
-   * 用户权限标识集合
-   */
-  perms: string[]
-  dept: UserDeptVO
 }
 
 export interface OrderItem {
-  column: string
   asc: boolean
+  column: string
 }
 
 export interface PageRolePageVO {
-  records: RolePageVO[]
-  total: number
-  size: number
-  current: number
-  orders: OrderItem[]
-  optimizeCountSql: PageRolePageVO
-  searchCount: PageRolePageVO
-  optimizeJoinOfCountSql: boolean
-  maxLimit: number
   countId: string
+  current: number
+  maxLimit: number
+  optimizeCountSql: PageRolePageVO
+  optimizeJoinOfCountSql: boolean
+  orders: OrderItem[]
   pages: number
+  records: RolePageVO[]
+  searchCount: PageRolePageVO
+  size: number
+  total: number
 }
 
 export interface RolePageVO {
+  /**
+   * 角色编码
+   */
+  code: string
+  createTime: string
   /**
    * 角色ID
    */
@@ -376,158 +429,157 @@ export interface RolePageVO {
    */
   name: string
   /**
-   * 角色编码
+   * 排序
    */
-  code: string
+  sort: number
   /**
    * 角色状态
    */
   status: number
-  /**
-   * 排序
-   */
-  sort: number
-  createTime: string
   updateTime: string
 }
 
 export interface Option {
   /**
-   * 选项的值
-   */
-  value: IObject
-  /**
    * 选项的标签
    */
   label: string
+  /**
+   * 选项的值
+   */
+  value: IObject
 }
 
 export interface OptionObject {
   /**
-   * 选项的值
+   * 子选项列表
    */
-  value: IObject
+  children: Option[]
   /**
    * 选项的标签
    */
   label: string
   /**
-   * 子选项列表
+   * 选项的值
    */
-  children: Option[]
+  value: IObject
 }
 
 export interface MenuVO {
-  /**
-   * 菜单ID
-   */
-  id: number
-  /**
-   * 父菜单ID
-   */
-  parentId: number
-  /**
-   * 菜单名称
-   */
-  name: string
-  /**
-   * 菜单类型
-   */
-  type: string
-  /**
-   * 路由路径
-   */
-  path: string
-  /**
-   * 组件路径
-   */
-  component: string
-  /**
-   * 菜单排序(数字越小排名越靠前)
-   */
-  sort: number
-  /**
-   * 菜单是否可见(1:显示;0:隐藏)
-   */
-  visible: number
-  /**
-   * ICON
-   */
-  icon: string
-  /**
-   * 跳转路径
-   */
-  redirect: string
-  /**
-   * 按钮权限标识
-   */
-  perm: string
   /**
    * 子菜单
    */
   children: MenuVO[]
   /**
-   * 查询类型：1 查询所有  2 查询部分
+   * 组件路径
    */
-  queryType: number
-}
-
-export interface Meta {
-  /**
-   * 路由title
-   */
-  title: string
+  component: string
   /**
    * ICON
    */
   icon: string
   /**
-   * 是否隐藏(true-是 false-否)
+   * 菜单ID
    */
-  hidden: boolean
+  id: number
   /**
-   * 拥有路由权限的角色编码
+   * 菜单名称
    */
-  roles: string[]
+  name: string
   /**
-   * 【菜单】是否开启页面缓存
+   * 父菜单ID
    */
-  keepAlive: boolean
-  /**
-   * 【目录】只有一个子路由是否始终显示
-   */
-  alwaysShow: boolean
-  /**
-   * 路由参数
-   */
-  params: IObject
-}
-
-export interface RouteVO {
+  parentId: number
   /**
    * 路由路径
    */
   path: string
   /**
-   * 组件路径
+   * 按钮权限标识
    */
-  component: string
+  perm: string
   /**
-   * 跳转链接
+   * 查询类型：1 查询所有  2 查询部分
+   */
+  queryType: number
+  /**
+   * 跳转路径
    */
   redirect: string
   /**
-   * 路由名称
+   * 菜单排序(数字越小排名越靠前)
    */
-  name: string
-  meta: Meta
+  sort: number
+  /**
+   * 菜单类型
+   */
+  type: string
+  /**
+   * 菜单是否可见(1:显示;0:隐藏)
+   */
+  visible: number
+}
+
+export interface Meta {
+  /**
+   * 【目录】只有一个子路由是否始终显示
+   */
+  alwaysShow: boolean
+  /**
+   * 是否隐藏(true-是 false-否)
+   */
+  hidden: boolean
+  /**
+   * ICON
+   */
+  icon: string
+  /**
+   * 【菜单】是否开启页面缓存
+   */
+  keepAlive: boolean
+  /**
+   * 路由参数
+   */
+  params: IObject
+  /**
+   * 拥有路由权限的角色编码
+   */
+  roles: string[]
+  /**
+   * 路由title
+   */
+  title: string
+}
+
+export interface RouteVO {
   /**
    * 子路由列表
    */
   children: RouteVO[]
+  /**
+   * 组件路径
+   */
+  component: string
+  meta: Meta
+  /**
+   * 路由名称
+   */
+  name: string
+  /**
+   * 路由路径
+   */
+  path: string
+  /**
+   * 跳转链接
+   */
+  redirect: string
 }
 
 export interface DictTypePageVO {
+  /**
+   * 类型编码
+   */
+  code: string
   /**
    * 字典类型ID
    */
@@ -536,32 +588,29 @@ export interface DictTypePageVO {
    * 类型名称
    */
   name: string
-  /**
-   * 类型编码
-   */
-  code: string
+  remark: string
   /**
    * 状态：1:启用;0:禁用
    */
   status: number
-  remark: string
 }
 
 export interface PageDictTypePageVO {
-  records: DictTypePageVO[]
-  total: number
-  size: number
-  current: number
-  orders: OrderItem[]
-  optimizeCountSql: PageDictTypePageVO
-  searchCount: PageDictTypePageVO
-  optimizeJoinOfCountSql: boolean
-  maxLimit: number
   countId: string
+  current: number
+  maxLimit: number
+  optimizeCountSql: PageDictTypePageVO
+  optimizeJoinOfCountSql: boolean
+  orders: OrderItem[]
   pages: number
+  records: DictTypePageVO[]
+  searchCount: PageDictTypePageVO
+  size: number
+  total: number
 }
 
 export interface DictPageVO {
+  defaulted: number
   /**
    * 字典ID
    */
@@ -570,59 +619,38 @@ export interface DictPageVO {
    * 字典名称
    */
   name: string
-  /**
-   * 字典值
-   */
-  value: string
+  remark: string
   /**
    * 状态(1:启用;0:禁用)
    */
   status: number
-  defaulted: number
-  remark: string
+  /**
+   * 字典值
+   */
+  value: string
 }
 
 export interface PageDictPageVO {
-  records: DictPageVO[]
-  total: number
-  size: number
-  current: number
-  orders: OrderItem[]
-  optimizeCountSql: PageDictPageVO
-  searchCount: PageDictPageVO
-  optimizeJoinOfCountSql: boolean
-  maxLimit: number
   countId: string
+  current: number
+  maxLimit: number
+  optimizeCountSql: PageDictPageVO
+  optimizeJoinOfCountSql: boolean
+  orders: OrderItem[]
   pages: number
+  records: DictPageVO[]
+  searchCount: PageDictPageVO
+  size: number
+  total: number
 }
 
 export interface HomeDataDto {
+  goodRatings: string
   history: string
   trainees: string
-  goodRatings: string
 }
 
 export interface DeptVO {
-  /**
-   * 部门ID
-   */
-  id: number
-  /**
-   * 父部门ID
-   */
-  parentId: number
-  /**
-   * 部门名称
-   */
-  name: string
-  /**
-   * 排序
-   */
-  sort: number
-  /**
-   * 状态(1:启用；0:禁用)
-   */
-  status: number
   /**
    * 子部门
    */
@@ -631,6 +659,26 @@ export interface DeptVO {
    * 创建时间
    */
   createTime: string
+  /**
+   * 部门ID
+   */
+  id: number
+  /**
+   * 部门名称
+   */
+  name: string
+  /**
+   * 父部门ID
+   */
+  parentId: number
+  /**
+   * 排序
+   */
+  sort: number
+  /**
+   * 状态(1:启用；0:禁用)
+   */
+  status: number
   /**
    * 修改时间
    */

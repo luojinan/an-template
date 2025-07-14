@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { EpPropMergeType } from 'element-plus/es/utils/vue/props/types'
-
+import { ElCard, ElCol, ElEmpty, ElRow } from 'element-plus'
 import { TransitionPresets, useTransition } from '@vueuse/core'
 import { useUserStore } from '@/store/modules/user'
 
@@ -136,9 +136,9 @@ const cardData = ref<CardProp[]>([
 
 <template>
   <div class="dashboard-container">
-    <el-card shadow="never">
-      <el-row justify="space-between">
-        <el-col :span="18" :xs="24">
+    <ElCard shadow="never">
+      <ElRow justify="space-between">
+        <ElCol :span="18" :xs="24">
           <div class="flex h-full items-center">
             <img
               class="w-20 h-20 mr-5 rounded-full"
@@ -148,23 +148,23 @@ const cardData = ref<CardProp[]>([
               <p>{{ greetings }}</p>
             </div>
           </div>
-        </el-col>
+        </ElCol>
 
-        <el-col :span="6" :xs="24">
+        <ElCol :span="6" :xs="24">
           <div class="flex h-full items-center justify-around" />
-        </el-col>
-      </el-row>
-    </el-card>
+        </ElCol>
+      </ElRow>
+    </ElCard>
 
-    <el-card shadow="never">
-      <el-empty
+    <ElCard shadow="never">
+      <ElEmpty
         description="欢迎来到MZY"
       >
         <template #image>
           <img :src="imgSrc" alt="本地图片">
         </template>
-      </el-empty>
-    </el-card>
+      </ElEmpty>
+    </ElCard>
   </div>
 </template>
 

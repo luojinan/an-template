@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ElButton } from 'element-plus'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -21,9 +22,9 @@ const back = () => router.push('/dashboard')
       <div class="info text-gray mb-7 text-[0.8125rem]">
         请确认您输入的网址是否正确，或者点击下方按钮返回首页。
       </div>
-      <el-button round type="primary" class="btn h-9 w-28 mb-10" @click="back">
+      <ElButton round type="primary" class="btn h-9 w-28 mb-10" @click="back">
         返回首页
-      </el-button>
+      </ElButton>
     </div>
   </div>
 </template>

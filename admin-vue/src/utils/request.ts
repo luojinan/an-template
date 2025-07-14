@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useRoute } from 'vue-router'
 // 手动引入会导致样式丢失...🙄 autoimport 到底在做什么
 // import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { ResultEnum } from '@/enums/ResultEnum'
 import { TOKEN_KEY } from '@/enums/CacheEnum'
 import { useUserStoreHook } from '@/store/modules/user'
@@ -79,11 +80,37 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   (response: AxiosResponse) => {
-    // 检查配置的响应类型是否为二进制类型（'blob' 或 'arraybuffer'）, 如果是，直接返回响应对象
-    if (
+    // 检查是否为文件下载响应
+    const contentType = response.headers['content-type']
+    const isFileDownload = (
       response.config.responseType === 'blob'
       || response.config.responseType === 'arraybuffer'
-    ) { return response }
+      || contentType?.includes('application/vnd.openxmlformats-officedocument')
+      || contentType?.includes('application/vnd.ms-excel')
+    )
+
+    if (isFileDownload) {
+      const contentDisposition = response.headers['content-disposition']
+      let filename = 'download'
+      if (contentDisposition) {
+        // 优先匹配filename*=UTF-8''格式
+        const filenameMatch = contentDisposition.match(/filename\*=UTF-8''([^;\n]*)|filename=([^;\n]*)/)
+        if (filenameMatch) {
+          filename = filenameMatch[1] || filenameMatch[2] // 使用第一个匹配组（UTF-8编码）或第二个匹配组（普通格式）
+          filename = decodeURIComponent(filename.replace(/['"]*/g, ''))
+        }
+      }
+      const blob = new Blob([response.data])
+      const downloadUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = downloadUrl
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(downloadUrl)
+      return response
+    }
 
     const { code, data, msg } = response.data
     if (code === ResultEnum.SUCCESS) {

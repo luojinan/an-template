@@ -1,12 +1,14 @@
 <script setup lang="ts">
-const modelValue = defineModel<any>('modelValue', { required: true })
+import { ElCascader } from 'element-plus'
+
 defineProps<{
   attrs?: any
 }>()
+const modelValue = defineModel<any>('modelValue', { required: true })
 </script>
 
 <template>
-  <el-cascader
+  <ElCascader
     v-model="modelValue"
     :style="{ width: '100%', flex: 1 }"
     clearable

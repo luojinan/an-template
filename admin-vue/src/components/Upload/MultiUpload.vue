@@ -1,6 +1,7 @@
 <!-- 多图上传组件 -->
 <script setup lang="ts">
 import type {
+  ElIcon,
   UploadFile,
   UploadProps,
   UploadRawFile,
@@ -8,6 +9,7 @@ import type {
   UploadUserFile,
 } from 'element-plus'
 import { ref, watch } from 'vue'
+import { ElImageViewer, ElMessage, ElUpload } from 'element-plus'
 import { uploadOss } from '@/utils'
 
 const props = defineProps({
@@ -176,7 +178,7 @@ defineExpose({ fileList })
 </script>
 
 <template>
-  <el-upload
+  <ElUpload
     v-model:file-list="fileList"
     :accept="props.accept"
     list-type="picture-card"
@@ -202,14 +204,14 @@ defineExpose({ fileList })
             class="el-upload-list__item-delete"
             @click="handleRemove(file)"
           >
-            <el-icon><Delete /></el-icon>
+            <ElIcon><Delete /></ElIcon>
           </span>
         </span>
       </div>
     </template>
-  </el-upload>
+  </ElUpload>
 
-  <el-image-viewer
+  <ElImageViewer
     v-if="viewVisible"
     :zoom-rate="1.2"
     :initial-index="initialIndex"

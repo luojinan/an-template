@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { ElForm, ElMessage, ElMessageBox, ElTree } from 'element-plus'
+import { ElButton, ElCard, ElDialog, ElForm, ElFormItem, ElInput, ElInputNumber, ElMessage, ElMessageBox, ElOption, ElRadio, ElRadioGroup, ElScrollbar, ElSelect, ElTable, ElTableColumn, ElTag, ElTree } from 'element-plus'
 import { getApiV1MenusOptions, getApiV1RolesByroleidForm, getApiV1RolesByroleidMenuids, getApiV1RolesPage, postApiV1Roles, putApiV1RolesByid, putApiV1RolesByroleidMenus } from '@/utils/proApi/system'
 
 import type { RoleForm } from '@/utils/proApi/types/systemTypes'
@@ -236,41 +236,41 @@ onMounted(() => {
   <div class="app-container">
     <div class="search-container">
       <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
-        <el-form-item prop="keywords" label="关键字">
-          <el-input
+        <ElFormItem prop="keywords" label="关键字">
+          <ElInput
             v-model="queryParams.keywords"
             placeholder="角色名称"
             clearable
             @keyup.enter="handleQuery"
           />
-        </el-form-item>
+        </ElFormItem>
 
-        <el-form-item>
-          <el-button type="primary" @click="handleQuery">
+        <ElFormItem>
+          <ElButton type="primary" @click="handleQuery">
             <i-ep-search />搜索
-          </el-button>
-          <el-button @click="resetQuery">
+          </ElButton>
+          <ElButton @click="resetQuery">
             <i-ep-refresh />重置
-          </el-button>
-        </el-form-item>
+          </ElButton>
+        </ElFormItem>
       </ElForm>
     </div>
 
-    <el-card shadow="never" class="table-container">
+    <ElCard shadow="never" class="table-container">
       <template #header>
-        <el-button type="success" @click="openDialog()">
+        <ElButton type="success" @click="openDialog()">
           <i-ep-plus />新增
-        </el-button>
-        <el-button
+        </ElButton>
+        <ElButton
           type="danger"
           :disabled="ids.length === 0"
           @click="handleDelete()"
         >
           <i-ep-delete />删除
-        </el-button>
+        </ElButton>
       </template>
 
-      <el-table
+      <ElTable
         ref="dataTableRef"
         v-loading="loading"
         :data="roleList"
@@ -278,52 +278,52 @@ onMounted(() => {
         border
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="角色名称" prop="name" min-width="100" />
-        <el-table-column label="角色编码" prop="code" width="150" />
+        <ElTableColumn type="selection" width="55" align="center" />
+        <ElTableColumn label="角色名称" prop="name" min-width="100" />
+        <ElTableColumn label="角色编码" prop="code" width="150" />
 
-        <el-table-column label="状态" align="center" width="100">
+        <ElTableColumn label="状态" align="center" width="100">
           <template #default="scope">
-            <el-tag v-if="scope.row.status === 1" type="success">
+            <ElTag v-if="scope.row.status === 1" type="success">
               正常
-            </el-tag>
-            <el-tag v-else type="info">
+            </ElTag>
+            <ElTag v-else type="info">
               禁用
-            </el-tag>
+            </ElTag>
           </template>
-        </el-table-column>
+        </ElTableColumn>
 
-        <el-table-column label="排序" align="center" width="80" prop="sort" />
+        <ElTableColumn label="排序" align="center" width="80" prop="sort" />
 
-        <el-table-column fixed="right" label="操作" width="220">
+        <ElTableColumn fixed="right" label="操作" width="220">
           <template #default="scope">
-            <el-button
+            <ElButton
               type="primary"
               size="small"
               link
               @click="openMenuDialog(scope.row)"
             >
               <i-ep-position />分配权限
-            </el-button>
-            <el-button
+            </ElButton>
+            <ElButton
               type="primary"
               size="small"
               link
               @click="openDialog(scope.row.id)"
             >
               <i-ep-edit />编辑
-            </el-button>
-            <el-button
+            </ElButton>
+            <ElButton
               type="primary"
               size="small"
               link
               @click="handleDelete(scope.row.id)"
             >
               <i-ep-delete />删除
-            </el-button>
+            </ElButton>
           </template>
-        </el-table-column>
-      </el-table>
+        </ElTableColumn>
+      </ElTable>
 
       <pagination
         v-if="total > 0"
@@ -332,10 +332,10 @@ onMounted(() => {
         v-model:limit="queryParams.pageSize"
         @pagination="handleQuery"
       />
-    </el-card>
+    </ElCard>
 
     <!-- 角色表单弹窗 -->
-    <el-dialog
+    <ElDialog
       v-model="dialog.visible"
       :title="dialog.title"
       width="500px"
@@ -347,63 +347,63 @@ onMounted(() => {
         :rules="rules"
         label-width="100px"
       >
-        <el-form-item label="角色名称" prop="name">
-          <el-input v-model="formData.name" placeholder="请输入角色名称" />
-        </el-form-item>
+        <ElFormItem label="角色名称" prop="name">
+          <ElInput v-model="formData.name" placeholder="请输入角色名称" />
+        </ElFormItem>
 
-        <el-form-item label="角色编码" prop="code">
-          <el-input v-model="formData.code" placeholder="请输入角色编码" />
-        </el-form-item>
+        <ElFormItem label="角色编码" prop="code">
+          <ElInput v-model="formData.code" placeholder="请输入角色编码" />
+        </ElFormItem>
 
-        <el-form-item label="数据权限" prop="dataScope">
-          <el-select v-model="formData.dataScope">
-            <el-option :key="0" label="全部数据" :value="0" />
-            <el-option :key="1" label="部门及子部门数据" :value="1" />
-            <el-option :key="2" label="本部门数据" :value="2" />
-            <el-option :key="3" label="本人数据" :value="3" />
-          </el-select>
-        </el-form-item>
+        <ElFormItem label="数据权限" prop="dataScope">
+          <ElSelect v-model="formData.dataScope">
+            <ElOption :key="0" label="全部数据" :value="0" />
+            <ElOption :key="1" label="部门及子部门数据" :value="1" />
+            <ElOption :key="2" label="本部门数据" :value="2" />
+            <ElOption :key="3" label="本人数据" :value="3" />
+          </ElSelect>
+        </ElFormItem>
 
-        <el-form-item label="状态" prop="status">
-          <el-radio-group v-model="formData.status">
-            <el-radio :label="1">
+        <ElFormItem label="状态" prop="status">
+          <ElRadioGroup v-model="formData.status">
+            <ElRadio :label="1">
               正常
-            </el-radio>
-            <el-radio :label="0">
+            </ElRadio>
+            <ElRadio :label="0">
               停用
-            </el-radio>
-          </el-radio-group>
-        </el-form-item>
+            </ElRadio>
+          </ElRadioGroup>
+        </ElFormItem>
 
-        <el-form-item label="排序" prop="sort">
-          <el-input-number
+        <ElFormItem label="排序" prop="sort">
+          <ElInputNumber
             v-model="formData.sort"
             controls-position="right"
             :min="0"
             style="width: 100px"
           />
-        </el-form-item>
+        </ElFormItem>
       </ElForm>
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleSubmit">
+          <ElButton type="primary" @click="handleSubmit">
             确 定
-          </el-button>
-          <el-button @click="closeDialog">
+          </ElButton>
+          <ElButton @click="closeDialog">
             取 消
-          </el-button>
+          </ElButton>
         </div>
       </template>
-    </el-dialog>
+    </ElDialog>
 
     <!-- 分配菜单弹窗  -->
-    <el-dialog
+    <ElDialog
       v-model="menuDialogVisible"
       :title="`【${checkedRole.name}】权限分配`"
       width="800px"
     >
-      <el-scrollbar v-loading="loading" max-height="600px">
+      <ElScrollbar v-loading="loading" max-height="600px">
         <ElTree
           ref="menuRef"
           node-key="value"
@@ -415,18 +415,18 @@ onMounted(() => {
             {{ data.label }}
           </template>
         </ElTree>
-      </el-scrollbar>
+      </ElScrollbar>
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleRoleMenuSubmit">
+          <ElButton type="primary" @click="handleRoleMenuSubmit">
             确 定
-          </el-button>
-          <el-button @click="menuDialogVisible = false">
+          </ElButton>
+          <ElButton @click="menuDialogVisible = false">
             取 消
-          </el-button>
+          </ElButton>
         </div>
       </template>
-    </el-dialog>
+    </ElDialog>
   </div>
 </template>

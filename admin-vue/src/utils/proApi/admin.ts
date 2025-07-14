@@ -5,41 +5,126 @@ import type {
   AgreementForm,
   ArticleManagementForm,
   CaptchaResult,
+  ClassroomDTO,
+  ClassroomUpdateDTO,
+  ClassroomVO,
+  CommodityClassification,
+  CommodityClassificationForm,
+  CommodityClassificationPageQuery,
+  CommodityForm,
+  CommodityVO,
+  ContractAddForm,
+  ContractDetailVO,
   CountryAreaForm,
   CountryAreaPageQuery,
+  CouponForm,
   CourseAddVO,
   CourseDetailVO,
   CourseEditVO,
-  CustCouponQueryDto,
-  CustGoldDto,
+  CourseScheduleDTO,
+  CourseScheduleDetailVO,
+  CourseScheduleUpdateDTO,
+  CustFollowUpDto,
+  CustReturnVisit,
+  CustReturnVisitAddFrom,
   DistributionQuery,
+  Editor,
+  EditorForm,
   HotWordRecordForm,
   IPageAgreementPageVO,
   IPageArticleManagementPageVO,
+  IPageCommodityClassification,
+  IPageCommodityVO,
+  IPageContractPageVO,
   IPageCountryAreaPageVO,
+  IPageCouponPageVO,
   IPageCourseDetailVO,
   IPageHotWordRecordPageVO,
   IPageKsCustPageVO,
   IPageMemberRuleVO,
-  IPagePointsRulesVO,
+  IPageOrdersPageVO,
   IPageRichTextPageVO,
   IPageRotationChartPageVO,
-  KsCustAttachDto,
-  KsCustChannelChangeDto,
+  IPageShoppingCartsVO,
+  IPageSurveyAnswerVO,
+  IPageSurveyTemplate,
   KsCustForm,
-  KsCustQueryDto,
+  KsCustTransferDto,
   LevelRuleForm,
   LoginResult,
+  OrdersForm,
+  OrdersVO,
+  PageClassroomVO,
+  PageCustReturnVisit,
+  PageEditor,
   PagePassPageVO,
+  PageStorePageVO,
+  PageUserPointsDetail,
   PassAddVO,
   PassDetailVO,
   PassEditVO,
-  PointRuleForm,
   RichTextForm,
-  RotationChartForm
+  RotationChartForm,
+  ShoppingCarts,
+  ShoppingCartsForm,
+  StoreAddVO,
+  StoreDetailVO,
+  StoreEditVO,
+  SurveyAnswer,
+  SurveyAnswerForm,
+  SurveyTemplate,
+  SurveyTemplateDesignForm,
+  SurveyTemplateForm,
+  UserCouponDto,
+  UserPointsDetailQuery
 } from './types/adminTypes'
 import request from '@/utils/request'
 
+
+/**
+ * 修改问卷模板表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/问卷模板表接口/updateSurveyTemplate
+ * 
+ * 请求头: put /api/v1/surveyTemplates/update
+ */
+export function putApiV1SurveytemplatesUpdate(data: SurveyTemplateForm) {
+  return request<any, any>({
+    url: '/api/v1/surveyTemplates/update',
+    method: 'put',
+    data,
+  })
+}
+
+/**
+ * 修改用户答案表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/用户答案表接口/update
+ * 
+ * 请求头: put /api/v1/surveyAnswers/update
+ */
+export function putApiV1SurveyanswersUpdate(data: SurveyAnswerForm) {
+  return request<any, any>({
+    url: '/api/v1/surveyAnswers/update',
+    method: 'put',
+    data,
+  })
+}
+
+/**
+ * 修改购物车表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/购物车表接口/updateShoppingCarts
+ * 
+ * 请求头: put /api/v1/shoppingCarts/update
+ */
+export function putApiV1ShoppingcartsUpdate(data: ShoppingCartsForm) {
+  return request<any, any>({
+    url: '/api/v1/shoppingCarts/update',
+    method: 'put',
+    data,
+  })
+}
 
 /**
  * 修改轮播图表
@@ -60,7 +145,7 @@ export function putApiV1RotationchartsByid(params: { id: string }, data: Rotatio
 /**
  * 修改卡信息
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/卡管理接口/update
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/卡管理接口/update_1
  * 
  * 请求头: put /api/v1/pass
  */
@@ -106,7 +191,7 @@ export function putApiV1HotwordrecordsByid(params: { id: string }, data: HotWord
 /**
  * 编辑课程信息
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课程表接口/edit
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课程表接口-旧/edit
  * 
  * 请求头: put /api/v1/course/edit
  */
@@ -119,9 +204,54 @@ export function putApiV1CourseEdit(data: CourseEditVO) {
 }
 
 /**
+ * 激活用户优惠劵
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/优惠劵接口/activeUserCoupon
+ * 
+ * 请求头: put /api/v1/coupons/user/{id}
+ */
+export function putApiV1CouponsUserByid(params: { id: number }) {
+  return request<any, any>({
+    url: `/api/v1/coupons/user/${params.id}`,
+    method: 'put',
+    params,
+  })
+}
+
+/**
+ * 修改优惠劵表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/优惠劵接口/updateCoupon
+ * 
+ * 请求头: put /api/v1/coupons/update
+ */
+export function putApiV1CouponsUpdate(data: CouponForm) {
+  return request<any, any>({
+    url: '/api/v1/coupons/update',
+    method: 'put',
+    data,
+  })
+}
+
+/**
+ * 发放优惠劵
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/优惠劵接口/sendCoupon
+ * 
+ * 请求头: put /api/v1/coupons/send/{id}
+ */
+export function putApiV1CouponsSendByid(params: { id: number }) {
+  return request<any, any>({
+    url: `/api/v1/coupons/send/${params.id}`,
+    method: 'put',
+    params,
+  })
+}
+
+/**
  * 修改国家地区表
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/国家地区表接口/update_1
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/国家地区表接口/update_2
  * 
  * 请求头: put /api/v1/countryArea/admin/{id}
  */
@@ -131,6 +261,36 @@ export function putApiV1CountryareaAdminByid(params: { id: string }, data: Count
     method: 'put',
     data,
     params,
+  })
+}
+
+/**
+ * 修改商品分类
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/商品分类接口/updateCommodityClassification
+ * 
+ * 请求头: put /api/v1/commodityClassifications/update
+ */
+export function putApiV1CommodityclassificationsUpdate(data: CommodityClassificationForm) {
+  return request<any, any>({
+    url: '/api/v1/commodityClassifications/update',
+    method: 'put',
+    data,
+  })
+}
+
+/**
+ * 修改商品
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/商品接口/updateCommodity
+ * 
+ * 请求头: put /api/v1/commodity/update
+ */
+export function putApiV1CommodityUpdate(data: CommodityForm) {
+  return request<any, any>({
+    url: '/api/v1/commodity/update',
+    method: 'put',
+    data,
   })
 }
 
@@ -167,6 +327,66 @@ export function putApiV1AgreementsByid(params: { id: string }, data: AgreementFo
 }
 
 /**
+ * 编辑课程信息
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课程表接口/edit_1
+ * 
+ * 请求头: put /api/v1/admin/course/edit
+ */
+export function putApiV1AdminCourseEdit(data: CourseEditVO) {
+  return request<any, any>({
+    url: '/api/v1/admin/course/edit',
+    method: 'put',
+    data,
+  })
+}
+
+/**
+ * 修改课程表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课程表管理接口/update_3
+ * 
+ * 请求头: put /api/admin/course-schedule/update
+ */
+export function putApiAdminCourseScheduleUpdate(data: CourseScheduleUpdateDTO) {
+  return request<any, any>({
+    url: '/api/admin/course-schedule/update',
+    method: 'put',
+    data,
+  })
+}
+
+/**
+ * 修改课室
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课室管理接口/update_4
+ * 
+ * 请求头: put /api/admin/classroom/update
+ */
+export function putApiAdminClassroomUpdate(data: ClassroomUpdateDTO) {
+  return request<any, any>({
+    url: '/api/admin/classroom/update',
+    method: 'put',
+    data,
+  })
+}
+
+/**
+ * 删除课室
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课室管理接口/delete
+ * 
+ * 请求头: put /api/admin/classroom/delete/{id}
+ */
+export function putApiAdminClassroomDeleteByid(params: { id: number }) {
+  return request<any, any>({
+    url: `/api/admin/classroom/delete/${params.id}`,
+    method: 'put',
+    params,
+  })
+}
+
+/**
  * 修改富文本表
  *
  * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/富文本表接口/updateRichText
@@ -183,61 +403,16 @@ export function putAdminRichtextsByid(params: { id: number }, data: RichTextForm
 }
 
 /**
- * 编辑积分规则
+ * 修改编辑器
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/用户积分规则接口/edit_1
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/编辑器接口/updateEditor
  * 
- * 请求头: post /point/rule/edit
+ * 请求头: put /admin/editors/update
  */
-export function postPointRuleEdit(data: PointRuleForm) {
+export function putAdminEditorsUpdate(data: EditorForm) {
   return request<any, any>({
-    url: '/point/rule/edit',
-    method: 'post',
-    data,
-  })
-}
-
-/**
- * 新建积分规则
- *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/用户积分规则接口/add
- * 
- * 请求头: post /point/rule/add
- */
-export function postPointRuleAdd(data: PointRuleForm) {
-  return request<any, any>({
-    url: '/point/rule/add',
-    method: 'post',
-    data,
-  })
-}
-
-/**
- * 编辑积分规则
- *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员等级规则接口/edit_2
- * 
- * 请求头: post /level/rule/edit
- */
-export function postLevelRuleEdit(data: LevelRuleForm) {
-  return request<any, any>({
-    url: '/level/rule/edit',
-    method: 'post',
-    data,
-  })
-}
-
-/**
- * 新建会员等级规则
- *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员等级规则接口/add_1
- * 
- * 请求头: post /level/rule/add
- */
-export function postLevelRuleAdd(data: LevelRuleForm) {
-  return request<any, any>({
-    url: '/level/rule/add',
-    method: 'post',
+    url: '/admin/editors/update',
+    method: 'put',
     data,
   })
 }
@@ -257,6 +432,66 @@ export function postApiV1WechatCallbackVerify() {
 }
 
 /**
+ * 设计调查问卷
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/问卷模板表接口/design
+ * 
+ * 请求头: post /api/v1/surveyTemplates/design
+ */
+export function postApiV1SurveytemplatesDesign(data: SurveyTemplateDesignForm) {
+  return request<any, any>({
+    url: '/api/v1/surveyTemplates/design',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ * 新增问卷模板表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/问卷模板表接口/add
+ * 
+ * 请求头: post /api/v1/surveyTemplates/add
+ */
+export function postApiV1SurveytemplatesAdd(data: SurveyTemplateForm) {
+  return request<any, any>({
+    url: '/api/v1/surveyTemplates/add',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ * 新增用户答案表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/用户答案表接口/save
+ * 
+ * 请求头: post /api/v1/surveyAnswers/add
+ */
+export function postApiV1SurveyanswersAdd(data: SurveyAnswerForm) {
+  return request<any, any>({
+    url: '/api/v1/surveyAnswers/add',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ * 新增购物车表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/购物车表接口/saveShoppingCarts
+ * 
+ * 请求头: post /api/v1/shoppingCarts/add
+ */
+export function postApiV1ShoppingcartsAdd(data: ShoppingCartsForm) {
+  return request<any, any>({
+    url: '/api/v1/shoppingCarts/add',
+    method: 'post',
+    data,
+  })
+}
+
+/**
  * 新增轮播图表
  *
  * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/轮播图表接口/saveRotationChart
@@ -266,6 +501,21 @@ export function postApiV1WechatCallbackVerify() {
 export function postApiV1Rotationcharts(data: RotationChartForm) {
   return request<any, any>({
     url: '/api/v1/rotationCharts',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ * 新增订单表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/订单表接口/saveOrders
+ * 
+ * 请求头: post /api/v1/order/add
+ */
+export function postApiV1OrderAdd(data: OrdersForm) {
+  return request<any, any>({
+    url: '/api/v1/order/add',
     method: 'post',
     data,
   })
@@ -343,9 +593,39 @@ export function postApiV1FileGetwxassets() {
 }
 
 /**
+ * 更新回访记录
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员回访表/update_5
+ * 
+ * 请求头: post /api/v1/custReturnVisit/update
+ */
+export function postApiV1CustreturnvisitUpdate(data: CustReturnVisitAddFrom) {
+  return request<any, any>({
+    url: '/api/v1/custReturnVisit/update',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ * 新增回访记录
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员回访表/create_1
+ * 
+ * 请求头: post /api/v1/custReturnVisit/add
+ */
+export function postApiV1CustreturnvisitAdd(data: CustReturnVisitAddFrom) {
+  return request<any, any>({
+    url: '/api/v1/custReturnVisit/add',
+    method: 'post',
+    data,
+  })
+}
+
+/**
  * 添加课程
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课程表接口/add_2
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课程表接口-旧/add_1
  * 
  * 请求头: post /api/v1/course/add
  */
@@ -358,9 +638,39 @@ export function postApiV1CourseAdd(data: CourseAddVO) {
 }
 
 /**
+ * 指定发放优惠劵
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/优惠劵接口/sendUserCoupon
+ * 
+ * 请求头: post /api/v1/coupons/send
+ */
+export function postApiV1CouponsSend(data: UserCouponDto) {
+  return request<any, any>({
+    url: '/api/v1/coupons/send',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ * 新增优惠劵表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/优惠劵接口/saveCoupon
+ * 
+ * 请求头: post /api/v1/coupons/add
+ */
+export function postApiV1CouponsAdd(data: CouponForm) {
+  return request<any, any>({
+    url: '/api/v1/coupons/add',
+    method: 'post',
+    data,
+  })
+}
+
+/**
  * 新增国家地区表
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/国家地区表接口/add_3
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/国家地区表接口/add_2
  * 
  * 请求头: post /api/v1/countryArea/admin
  */
@@ -382,6 +692,66 @@ export function postApiV1CountryareaAdmin(data: CountryAreaForm) {
 export function postApiV1CountryareaAdminTree(data: CountryAreaPageQuery) {
   return request<any, any>({
     url: '/api/v1/countryArea/admin/tree',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ * 新增合同
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/合同管理接口/saveContract
+ * 
+ * 请求头: post /api/v1/contracts
+ */
+export function postApiV1Contracts(data: ContractAddForm) {
+  return request<any, any>({
+    url: '/api/v1/contracts',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ * 分类树
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/商品分类接口/tree_1
+ * 
+ * 请求头: post /api/v1/commodityClassifications/tree
+ */
+export function postApiV1CommodityclassificationsTree(data: CommodityClassificationPageQuery) {
+  return request<any, any>({
+    url: '/api/v1/commodityClassifications/tree',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ * 新增商品分类
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/商品分类接口/saveCommodityClassification
+ * 
+ * 请求头: post /api/v1/commodityClassifications/add
+ */
+export function postApiV1CommodityclassificationsAdd(data: CommodityClassificationForm) {
+  return request<any, any>({
+    url: '/api/v1/commodityClassifications/add',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ * 新增商品
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/商品接口/saveCommodity
+ * 
+ * 请求头: post /api/v1/commodity/add
+ */
+export function postApiV1CommodityAdd(data: CommodityForm) {
+  return request<any, any>({
+    url: '/api/v1/commodity/add',
     method: 'post',
     data,
   })
@@ -433,6 +803,96 @@ export function postApiV1Agreements(data: AgreementForm) {
 }
 
 /**
+ * 添加课程
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课程表接口/add_3
+ * 
+ * 请求头: post /api/v1/admin/course/add
+ */
+export function postApiV1AdminCourseAdd(data: CourseAddVO) {
+  return request<any, any>({
+    url: '/api/v1/admin/course/add',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ * 新增课程表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课程表管理接口/create_2
+ * 
+ * 请求头: post /api/admin/course-schedule/create
+ */
+export function postApiAdminCourseScheduleCreate(data: CourseScheduleDTO) {
+  return request<any, any>({
+    url: '/api/admin/course-schedule/create',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ * 新增课室
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课室管理接口/create_3
+ * 
+ * 请求头: post /api/admin/classroom/create
+ */
+export function postApiAdminClassroomCreate(data: ClassroomDTO) {
+  return request<any, ClassroomVO>({
+    url: '/api/admin/classroom/create',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ * 用户积分明细分页列表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/管理端用户积分接口/page
+ * 
+ * 请求头: post /admin/user/points/page
+ */
+export function postAdminUserPointsPage(data: UserPointsDetailQuery) {
+  return request<any, PageUserPointsDetail>({
+    url: '/admin/user/points/page',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ * 修改门店
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/门店管理/update_6
+ * 
+ * 请求头: post /admin/store/update
+ */
+export function postAdminStoreUpdate(data: StoreEditVO) {
+  return request<any, any>({
+    url: '/admin/store/update',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ * 新增门店
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/门店管理/add_4
+ * 
+ * 请求头: post /admin/store/add
+ */
+export function postAdminStoreAdd(data: StoreAddVO) {
+  return request<any, any>({
+    url: '/admin/store/add',
+    method: 'post',
+    data,
+  })
+}
+
+/**
  * 新增富文本表
  *
  * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/富文本表接口/saveRichText
@@ -448,45 +908,60 @@ export function postAdminRichtexts(data: RichTextForm) {
 }
 
 /**
- * 添加用户
+ * 编辑积分规则
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/后台管理用户接口/addCust
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员等级规则接口/edit_2
  * 
- * 请求头: post /admin/cust
+ * 请求头: post /admin/member/rule/edit
  */
-export function postAdminCust(data: KsCustForm) {
+export function postAdminMemberRuleEdit(data: LevelRuleForm) {
   return request<any, any>({
-    url: '/admin/cust',
+    url: '/admin/member/rule/edit',
     method: 'post',
     data,
   })
 }
 
 /**
- * 充值金币
+ * 新建会员等级规则
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/后台管理用户接口/rechargeGoldCoins
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员等级规则接口/add_5
  * 
- * 请求头: post /admin/cust/recharge/gold
+ * 请求头: post /admin/member/rule/add
  */
-export function postAdminCustRechargeGold(data: CustGoldDto) {
+export function postAdminMemberRuleAdd(data: LevelRuleForm) {
   return request<any, any>({
-    url: '/admin/cust/recharge/gold',
+    url: '/admin/member/rule/add',
     method: 'post',
     data,
   })
 }
 
 /**
- * 发放优惠券
+ * 新增编辑器
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/后台管理用户接口/issueCoupons
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/编辑器接口/saveEditor
  * 
- * 请求头: post /admin/cust/issue/coupons
+ * 请求头: post /admin/editors/add
  */
-export function postAdminCustIssueCoupons(data: CustCouponQueryDto) {
+export function postAdminEditorsAdd(data: EditorForm) {
   return request<any, any>({
-    url: '/admin/cust/issue/coupons',
+    url: '/admin/editors/add',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ * 会员转店
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员用户管理接口/transfer
+ * 
+ * 请求头: post /admin/cust/transfer
+ */
+export function postAdminCustTransfer(data: KsCustTransferDto) {
+  return request<any, any>({
+    url: '/admin/cust/transfer',
     method: 'post',
     data,
   })
@@ -495,7 +970,7 @@ export function postAdminCustIssueCoupons(data: CustCouponQueryDto) {
 /**
  * 修改用户表
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/后台管理用户接口/updateKsCust
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员用户管理接口/updateKsCust
  * 
  * 请求头: post /admin/cust/edit
  */
@@ -508,9 +983,9 @@ export function postAdminCustEdit(data: KsCustForm) {
 }
 
 /**
- * 分配用户，分配后在权限为查询自己时，可以查看分配的用户
+ * 访客分配
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/后台管理用户接口/distribution
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员用户管理接口/distribution
  * 
  * 请求头: post /admin/cust/distribution
  */
@@ -523,106 +998,137 @@ export function postAdminCustDistribution(data: DistributionQuery) {
 }
 
 /**
- * 查询用户子集
+ * 添加用户
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/后台管理用户接口/childList
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员用户管理接口/addCust
  * 
- * 请求头: post /admin/cust/child
+ * 请求头: post /admin/cust/add
  */
-export function postAdminCustChild(data: KsCustQueryDto) {
+export function postAdminCustAdd(data: KsCustForm) {
   return request<any, any>({
-    url: '/admin/cust/child',
+    url: '/admin/cust/add',
     method: 'post',
     data,
   })
 }
 
 /**
- * 切换会员线上线下渠道属性
+ * 问卷模板表表单数据
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/后台管理用户接口/changeChannel
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/问卷模板表接口/getSurveyTemplateForm
  * 
- * 请求头: post /admin/cust/changeChannel
+ * 请求头: get /api/v1/surveyTemplates/{id}
  */
-export function postAdminCustChangechannel(data: KsCustChannelChangeDto) {
-  return request<any, any>({
-    url: '/admin/cust/changeChannel',
-    method: 'post',
-    data,
-  })
-}
-
-/**
- * 挂靠会员，即把某个会员变成别的会员的子会员
- *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/后台管理用户接口/attach
- * 
- * 请求头: post /admin/cust/attach
- */
-export function postAdminCustAttach(data: KsCustAttachDto) {
-  return request<any, any>({
-    url: '/admin/cust/attach',
-    method: 'post',
-    data,
-  })
-}
-
-/**
- * 修改积分规则状态
- *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/用户积分规则接口/updateStatus
- * 
- * 请求头: get /point/rule/updateStatus
- */
-export function getPointRuleUpdatestatus(params: { id: number, status: number }) {
-  return request<any, any>({
-    url: '/point/rule/updateStatus',
+export function getApiV1SurveytemplatesByid(params: { id: string }) {
+  return request<any, SurveyTemplate>({
+    url: `/api/v1/surveyTemplates/${params.id}`,
     method: 'get',
     params,
   })
 }
 
 /**
- * 积分规则分页列表
+ * 更新状态
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/用户积分规则接口/list
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/问卷模板表接口/updateStatus
  * 
- * 请求头: get /point/rule/list
+ * 请求头: get /api/v1/surveyTemplates/status
  */
-export function getPointRuleList(params: { status?: string, pageNum?: string, pageSize?: string }) {
-  return request<any, IPagePointsRulesVO>({
-    url: '/point/rule/list',
-    method: 'get',
-    params,
-  })
-}
-
-/**
- * 会员等级规则分页列表
- *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员等级规则接口/list_1
- * 
- * 请求头: get /level/rule/list
- */
-export function getLevelRuleList(params: { delFlag?: number, pageNum?: string, pageSize?: string }) {
-  return request<any, IPageMemberRuleVO>({
-    url: '/level/rule/list',
-    method: 'get',
-    params,
-  })
-}
-
-/**
- * 会员等级规则获取
- *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员等级规则接口/tree_1
- * 
- * 请求头: get /level/rule/enableList
- */
-export function getLevelRuleEnablelist() {
+export function getApiV1SurveytemplatesStatus(params: { id: string, status: number }) {
   return request<any, any>({
-    url: '/level/rule/enableList',
+    url: '/api/v1/surveyTemplates/status',
     method: 'get',
+    params,
+  })
+}
+
+/**
+ * 问卷模板表分页列表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/问卷模板表接口/page_1
+ * 
+ * 请求头: get /api/v1/surveyTemplates/page
+ */
+export function getApiV1SurveytemplatesPage(params: { keywords?: string, status?: string, pageNum?: string, pageSize?: string }) {
+  return request<any, IPageSurveyTemplate>({
+    url: '/api/v1/surveyTemplates/page',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 获取调查问卷设计
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/问卷模板表接口/getQuestion
+ * 
+ * 请求头: get /api/v1/surveyTemplates/getQuestion
+ */
+export function getApiV1SurveytemplatesGetquestion(params: { id: string }) {
+  return request<any, SurveyTemplateDesignForm>({
+    url: '/api/v1/surveyTemplates/getQuestion',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 用户答案表表单数据
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/用户答案表接口/getSurveyAnswerForm
+ * 
+ * 请求头: get /api/v1/surveyAnswers/{id}
+ */
+export function getApiV1SurveyanswersByid(params: { id: number }) {
+  return request<any, SurveyAnswer>({
+    url: `/api/v1/surveyAnswers/${params.id}`,
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 用户答案表分页列表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/用户答案表接口/listPagedSurveyAnswers
+ * 
+ * 请求头: get /api/v1/surveyAnswers/page
+ */
+export function getApiV1SurveyanswersPage(params: { keywords?: string, pageNum?: string, pageSize?: string }) {
+  return request<any, IPageSurveyAnswerVO>({
+    url: '/api/v1/surveyAnswers/page',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 购物车表表单数据
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/购物车表接口/getShoppingCartsForm
+ * 
+ * 请求头: get /api/v1/shoppingCarts/{id}
+ */
+export function getApiV1ShoppingcartsByid(params: { id: string }) {
+  return request<any, ShoppingCarts>({
+    url: `/api/v1/shoppingCarts/${params.id}`,
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 购物车表分页列表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/购物车表接口/listPagedShoppingCarts
+ * 
+ * 请求头: get /api/v1/shoppingCarts/page
+ */
+export function getApiV1ShoppingcartsPage(params: { keywords?: string, userId?: string, pageNum?: string, pageSize?: string }) {
+  return request<any, IPageShoppingCartsVO>({
+    url: '/api/v1/shoppingCarts/page',
+    method: 'get',
+    params,
   })
 }
 
@@ -704,7 +1210,7 @@ export function getApiV1PassByid(params: { id: string }) {
 /**
  * 删除卡
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/卡管理接口/delete
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/卡管理接口/delete_1
  * 
  * 请求头: delete /api/v1/pass/{id}
  */
@@ -719,13 +1225,43 @@ export function deleteApiV1PassByid(params: { id: string }) {
 /**
  * 卡分页列表
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/卡管理接口/page
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/卡管理接口/page_2
  * 
  * 请求头: get /api/v1/pass/page
  */
 export function getApiV1PassPage(params: { type?: string, name?: string, pageNum?: string, pageSize?: string }) {
   return request<any, PagePassPageVO>({
     url: '/api/v1/pass/page',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 订单表表单数据
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/订单表接口/getOrdersForm
+ * 
+ * 请求头: get /api/v1/order/{id}
+ */
+export function getApiV1OrderByid(params: { id: string }) {
+  return request<any, OrdersVO>({
+    url: `/api/v1/order/${params.id}`,
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 订单表分页列表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/订单表接口/listPagedOrderss
+ * 
+ * 请求头: get /api/v1/order/page
+ */
+export function getApiV1OrderPage(params: { keywords?: string, id?: string, status?: string, pageNum?: string, pageSize?: string }) {
+  return request<any, IPageOrdersPageVO>({
+    url: '/api/v1/order/page',
     method: 'get',
     params,
   })
@@ -762,13 +1298,88 @@ export function getApiV1HotwordrecordsPage(params: { keywords?: string, pageNum?
 }
 
 /**
+ * 回访记录详情
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员回访表/detail_1
+ * 
+ * 请求头: get /api/v1/custReturnVisit/{id}
+ */
+export function getApiV1CustreturnvisitByid(params: { id: string }) {
+  return request<any, CustReturnVisit>({
+    url: `/api/v1/custReturnVisit/${params.id}`,
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 删除回访记录
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员回访表/delete_2
+ * 
+ * 请求头: delete /api/v1/custReturnVisit/{id}
+ */
+export function deleteApiV1CustreturnvisitByid(params: { id: string }) {
+  return request<any, any>({
+    url: `/api/v1/custReturnVisit/${params.id}`,
+    method: 'delete',
+    params,
+  })
+}
+
+/**
+ * 回访记录分页列表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员回访表/page_3
+ * 
+ * 请求头: get /api/v1/custReturnVisit/page
+ */
+export function getApiV1CustreturnvisitPage(params: { keywords?: string, deptId?: string, createTimeStart?: string, createTimeEnd?: string, custId?: string, pageNum?: string, pageSize?: string }) {
+  return request<any, PageCustReturnVisit>({
+    url: '/api/v1/custReturnVisit/page',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 回访记录列表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员回访表/list
+ * 
+ * 请求头: get /api/v1/custReturnVisit/list
+ */
+export function getApiV1CustreturnvisitList(params: { keywords?: string, deptId?: string, createTimeStart?: string, createTimeEnd?: string, custId?: string, pageNum?: string, pageSize?: string }) {
+  return request<any, any>({
+    url: '/api/v1/custReturnVisit/list',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 访客跟进
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员回访表/followUp
+ * 
+ * 请求头: get /api/v1/custReturnVisit/followUp
+ */
+export function getApiV1CustreturnvisitFollowup(params: { id: string }) {
+  return request<any, CustFollowUpDto>({
+    url: '/api/v1/custReturnVisit/followUp',
+    method: 'get',
+    params,
+  })
+}
+
+/**
  * 获取课程分页列表
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课程表接口/page_1
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课程表接口-旧/page_4
  * 
  * 请求头: get /api/v1/course/page
  */
-export function getApiV1CoursePage(params: { status?: string, storeId?: string, type?: string, pageNum?: string, pageSize?: string }) {
+export function getApiV1CoursePage(params: { status?: string, storeId?: string, type?: string, size?: string, tag?: string, pageNum?: string, pageSize?: string }) {
   return request<any, IPageCourseDetailVO>({
     url: '/api/v1/course/page',
     method: 'get',
@@ -779,13 +1390,43 @@ export function getApiV1CoursePage(params: { status?: string, storeId?: string, 
 /**
  * 获取课程详情
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课程表接口/detail_1
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课程表接口-旧/detail_2
  * 
  * 请求头: get /api/v1/course/detail/{id}
  */
 export function getApiV1CourseDetailByid(params: { id: string }) {
   return request<any, CourseDetailVO>({
     url: `/api/v1/course/detail/${params.id}`,
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 优惠劵表表单数据
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/优惠劵接口/getCouponForm
+ * 
+ * 请求头: get /api/v1/coupons/{id}
+ */
+export function getApiV1CouponsByid(params: { id: number }) {
+  return request<any, CouponForm>({
+    url: `/api/v1/coupons/${params.id}`,
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 优惠劵表分页列表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/优惠劵接口/listPagedCoupons
+ * 
+ * 请求头: get /api/v1/coupons/page
+ */
+export function getApiV1CouponsPage(params: { keywords?: string, status?: number, level?: number, valid?: string, date?: string, receiveType?: number, pageNum?: string, pageSize?: string }) {
+  return request<any, IPageCouponPageVO>({
+    url: '/api/v1/coupons/page',
     method: 'get',
     params,
   })
@@ -816,6 +1457,126 @@ export function getApiV1CountryareaAdminByidForm(params: { id: string }) {
 export function getApiV1CountryareaAdminPage(params: { name?: string, keywords?: string, parentId?: string, parentName?: string, names?: string, pageNum?: string, pageSize?: string }) {
   return request<any, IPageCountryAreaPageVO>({
     url: '/api/v1/countryArea/admin/page',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 合同详情表单数据
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/合同管理接口/getContractForm
+ * 
+ * 请求头: get /api/v1/contracts/{id}/form
+ */
+export function getApiV1ContractsByidForm(params: { id: string }) {
+  return request<any, ContractDetailVO>({
+    url: `/api/v1/contracts/${params.id}/form`,
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 合同分页列表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/合同管理接口/listPagedContracts
+ * 
+ * 请求头: get /api/v1/contracts/page
+ */
+export function getApiV1ContractsPage(params: { customerName?: string, passName?: string, isNewContract?: string, referrer?: string, pageNum?: string, pageSize?: string }) {
+  return request<any, IPageContractPageVO>({
+    url: '/api/v1/contracts/page',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 商品分类表单数据
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/商品分类接口/getCommodityClassificationForm
+ * 
+ * 请求头: get /api/v1/commodityClassifications/{id}
+ */
+export function getApiV1CommodityclassificationsByid(params: { id: string }) {
+  return request<any, CommodityClassification>({
+    url: `/api/v1/commodityClassifications/${params.id}`,
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 更新状态
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/商品分类接口/updateStatus_2
+ * 
+ * 请求头: get /api/v1/commodityClassifications/status
+ */
+export function getApiV1CommodityclassificationsStatus(params: { id: string, status: number }) {
+  return request<any, any>({
+    url: '/api/v1/commodityClassifications/status',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 商品分类分页列表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/商品分类接口/listPagedCommodityClassifications
+ * 
+ * 请求头: get /api/v1/commodityClassifications/page
+ */
+export function getApiV1CommodityclassificationsPage(params: { name?: string, status?: string, parentId?: string, queryParent?: string, pageNum?: string, pageSize?: string }) {
+  return request<any, IPageCommodityClassification>({
+    url: '/api/v1/commodityClassifications/page',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 商品表单数据
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/商品接口/getCommodityForm
+ * 
+ * 请求头: get /api/v1/commodity/{id}
+ */
+export function getApiV1CommodityByid(params: { id: string }) {
+  return request<any, CommodityVO>({
+    url: `/api/v1/commodity/${params.id}`,
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 上架下架
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/商品接口/shelves
+ * 
+ * 请求头: get /api/v1/commodity/shelves
+ */
+export function getApiV1CommodityShelves(params: { id: string, shelvesStatus: number }) {
+  return request<any, any>({
+    url: '/api/v1/commodity/shelves',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 商品分页列表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/商品接口/listPagedCommodity
+ * 
+ * 请求头: get /api/v1/commodity/page
+ */
+export function getApiV1CommodityPage(params: { keywords?: string, classificationId?: string, subClassId?: string, shelvesStatus?: string, pageNum?: string, pageSize?: string }) {
+  return request<any, IPageCommodityVO>({
+    url: '/api/v1/commodity/page',
     method: 'get',
     params,
   })
@@ -896,6 +1657,126 @@ export function getApiV1AgreementsPage(params: { keywords?: string, pageNum?: st
 }
 
 /**
+ * 获取课程分页列表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课程表接口/page_5
+ * 
+ * 请求头: get /api/v1/admin/course/page
+ */
+export function getApiV1AdminCoursePage(params: { status?: string, storeId?: string, type?: string, size?: string, tag?: string, pageNum?: string, pageSize?: string }) {
+  return request<any, IPageCourseDetailVO>({
+    url: '/api/v1/admin/course/page',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 获取课程详情
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课程表接口/detail_3
+ * 
+ * 请求头: get /api/v1/admin/course/detail/{id}
+ */
+export function getApiV1AdminCourseDetailByid(params: { id: string }) {
+  return request<any, CourseDetailVO>({
+    url: `/api/v1/admin/course/detail/${params.id}`,
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 分页查询课程表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课程表管理接口/pageQuery
+ * 
+ * 请求头: get /api/admin/course-schedule/page
+ */
+export function getApiAdminCourseSchedulePage(params: { storeId?: string, classroomId?: string, courseId?: string, teacherId?: string, startTime?: string, endTime?: string }) {
+  return request<any, any>({
+    url: '/api/admin/course-schedule/page',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 课程表详情查询
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课程表管理接口/getDetail_1
+ * 
+ * 请求头: get /api/admin/course-schedule/detail/{id}
+ */
+export function getApiAdminCourseScheduleDetailByid(params: { id: number }) {
+  return request<any, CourseScheduleDetailVO>({
+    url: `/api/admin/course-schedule/detail/${params.id}`,
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 分页查询课室
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课室管理接口/pageQuery_1
+ * 
+ * 请求头: get /api/admin/classroom/page
+ */
+export function getApiAdminClassroomPage(params: { storeId?: string, name?: string, status?: string, pageNum?: string, pageSize?: string }) {
+  return request<any, PageClassroomVO>({
+    url: '/api/admin/classroom/page',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 课室详情查询
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课室管理接口/getDetail_2
+ * 
+ * 请求头: get /api/admin/classroom/detail/{id}
+ */
+export function getApiAdminClassroomDetailByid(params: { id: number }) {
+  return request<any, ClassroomVO>({
+    url: `/api/admin/classroom/detail/${params.id}`,
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 分页查询门店
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/门店管理/page_6
+ * 
+ * 请求头: get /admin/store/page
+ */
+export function getAdminStorePage(params: { pageNum?: string, pageSize?: string, name?: string }) {
+  return request<any, PageStorePageVO>({
+    url: '/admin/store/page',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 门店详情
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/门店管理/detail_4
+ * 
+ * 请求头: get /admin/store/detail/{id}
+ */
+export function getAdminStoreDetailByid(params: { id: string }) {
+  return request<any, StoreDetailVO>({
+    url: `/admin/store/detail/${params.id}`,
+    method: 'get',
+    params,
+  })
+}
+
+/**
  * 富文本表表单数据
  *
  * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/富文本表接口/getRichTextForm
@@ -926,9 +1807,68 @@ export function getAdminRichtextsPage(params: { keywords?: string, isDisplay?: s
 }
 
 /**
+ * 会员等级规则分页列表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员等级规则接口/list_1
+ * 
+ * 请求头: get /admin/member/rule/page
+ */
+export function getAdminMemberRulePage(params: { delFlag?: number, pageNum?: string, pageSize?: string }) {
+  return request<any, IPageMemberRuleVO>({
+    url: '/admin/member/rule/page',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 会员等级规则获取
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员等级规则接口/tree_2
+ * 
+ * 请求头: get /admin/member/rule/enableList
+ */
+export function getAdminMemberRuleEnablelist() {
+  return request<any, any>({
+    url: '/admin/member/rule/enableList',
+    method: 'get',
+  })
+}
+
+/**
+ * 编辑器表单数据
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/编辑器接口/getEditorForm
+ * 
+ * 请求头: get /admin/editors/{id}
+ */
+export function getAdminEditorsByid(params: { id: string }) {
+  return request<any, Editor>({
+    url: `/admin/editors/${params.id}`,
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 编辑器分页列表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/编辑器接口/listPagedEditors
+ * 
+ * 请求头: get /admin/editors/page
+ */
+export function getAdminEditorsPage(params: { keywords?: string, pageNum?: string, pageSize?: string }) {
+  return request<any, PageEditor>({
+    url: '/admin/editors/page',
+    method: 'get',
+    params,
+  })
+}
+
+/**
  * 用户表表单数据
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/后台管理用户接口/getKsCustForm
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员用户管理接口/getKsCustForm
  * 
  * 请求头: get /admin/cust/{id}
  */
@@ -941,13 +1881,28 @@ export function getAdminCustByid(params: { id: string }) {
 }
 
 /**
+ * 删除用户
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员用户管理接口/delete_7
+ * 
+ * 请求头: delete /admin/cust/{id}
+ */
+export function deleteAdminCustByid(params: { id: string }) {
+  return request<any, any>({
+    url: `/admin/cust/${params.id}`,
+    method: 'delete',
+    params,
+  })
+}
+
+/**
  * 用户表分页列表
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/后台管理用户接口/listPagedKsCusts
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员用户管理接口/listPagedKsCusts
  * 
  * 请求头: get /admin/cust/page
  */
-export function getAdminCustPage(params: { keywords?: string, createTimeStart?: string, createTimeEnd?: string, mark?: string, channel?: string, userSource?: string, custId?: string, pageNum?: string, pageSize?: string }) {
+export function getAdminCustPage(params: { keywords?: string, createTimeStart?: string, createTimeEnd?: string, customerType: string, deptId?: string, counselor?: string, applyCard?: string, memberType?: string, coachId?: string, memberTimeStart?: string, memberTimeEnd?: string, pageNum?: string, pageSize?: string }) {
   return request<any, IPageKsCustPageVO>({
     url: '/admin/cust/page',
     method: 'get',
@@ -956,75 +1911,45 @@ export function getAdminCustPage(params: { keywords?: string, createTimeStart?: 
 }
 
 /**
- * 会员列表
+ * 删除问卷模板表
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/后台管理用户接口/rechargeGoldCoins_1
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/问卷模板表接口/deleteSurveyTemplates
  * 
- * 请求头: get /admin/cust/list
+ * 请求头: delete /api/v1/surveyTemplates/{ids}
  */
-export function getAdminCustList(params: { phone?: string, userName?: string }) {
+export function deleteApiV1SurveytemplatesByids(params: { ids: string }) {
   return request<any, any>({
-    url: '/admin/cust/list',
-    method: 'get',
-    params,
-  })
-}
-
-/**
- * 查询邀请用户
- *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/后台管理用户接口/queryInvitationList
- * 
- * 请求头: get /admin/cust/invitation
- */
-export function getAdminCustInvitation(params: { id: string }) {
-  return request<any, any>({
-    url: '/admin/cust/invitation',
-    method: 'get',
-    params,
-  })
-}
-
-/**
- * 加入黑名单,不能登录小程序
- *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/后台管理用户接口/disallowLogin
- * 
- * 请求头: get /admin/cust/disallowLogin
- */
-export function getAdminCustDisallowlogin(params: { id: string, type: number }) {
-  return request<any, any>({
-    url: '/admin/cust/disallowLogin',
-    method: 'get',
-    params,
-  })
-}
-
-/**
- * 删除积分规则
- *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/用户积分规则接口/remove
- * 
- * 请求头: delete /point/rule/remove/{id}
- */
-export function deletePointRuleRemoveByid(params: { id: number }) {
-  return request<any, any>({
-    url: `/point/rule/remove/${params.id}`,
+    url: `/api/v1/surveyTemplates/${params.ids}`,
     method: 'delete',
     params,
   })
 }
 
 /**
- * 删除积分规则
+ * 删除用户答案表
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员等级规则接口/remove_1
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/用户答案表接口/deleteSurveyAnswers
  * 
- * 请求头: delete /level/rule/remove/{id}
+ * 请求头: delete /api/v1/surveyAnswers/{ids}
  */
-export function deleteLevelRuleRemoveByid(params: { id: number }) {
+export function deleteApiV1SurveyanswersByids(params: { ids: string }) {
   return request<any, any>({
-    url: `/level/rule/remove/${params.id}`,
+    url: `/api/v1/surveyAnswers/${params.ids}`,
+    method: 'delete',
+    params,
+  })
+}
+
+/**
+ * 删除购物车表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/购物车表接口/deleteShoppingCartss
+ * 
+ * 请求头: delete /api/v1/shoppingCarts/{ids}
+ */
+export function deleteApiV1ShoppingcartsByids(params: { ids: string }) {
+  return request<any, any>({
+    url: `/api/v1/shoppingCarts/${params.ids}`,
     method: 'delete',
     params,
   })
@@ -1040,6 +1965,21 @@ export function deleteLevelRuleRemoveByid(params: { id: number }) {
 export function deleteApiV1RotationchartsByids(params: { ids: string }) {
   return request<any, any>({
     url: `/api/v1/rotationCharts/${params.ids}`,
+    method: 'delete',
+    params,
+  })
+}
+
+/**
+ * 删除订单表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/订单表接口/deleteOrder
+ * 
+ * 请求头: delete /api/v1/order/{ids}
+ */
+export function deleteApiV1OrderByids(params: { ids: string }) {
+  return request<any, any>({
+    url: `/api/v1/order/${params.ids}`,
     method: 'delete',
     params,
   })
@@ -1063,13 +2003,28 @@ export function deleteApiV1HotwordrecordsByids(params: { ids: string }) {
 /**
  * 删除课程
  *
- * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课程表接口/delete_1
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课程表接口-旧/delete_3
  * 
  * 请求头: delete /api/v1/course/delete/{id}
  */
 export function deleteApiV1CourseDeleteByid(params: { id: string }) {
   return request<any, any>({
     url: `/api/v1/course/delete/${params.id}`,
+    method: 'delete',
+    params,
+  })
+}
+
+/**
+ * 删除优惠劵表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/优惠劵接口/deleteCoupons
+ * 
+ * 请求头: delete /api/v1/coupons/{ids}
+ */
+export function deleteApiV1CouponsByids(params: { ids: string }) {
+  return request<any, any>({
+    url: `/api/v1/coupons/${params.ids}`,
     method: 'delete',
     params,
   })
@@ -1085,6 +2040,36 @@ export function deleteApiV1CourseDeleteByid(params: { id: string }) {
 export function deleteApiV1CountryareaAdminByids(params: { ids: string }) {
   return request<any, any>({
     url: `/api/v1/countryArea/admin/${params.ids}`,
+    method: 'delete',
+    params,
+  })
+}
+
+/**
+ * 删除商品分类
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/商品分类接口/deleteCommodityClassifications
+ * 
+ * 请求头: delete /api/v1/commodityClassifications/{ids}
+ */
+export function deleteApiV1CommodityclassificationsByids(params: { ids: string }) {
+  return request<any, any>({
+    url: `/api/v1/commodityClassifications/${params.ids}`,
+    method: 'delete',
+    params,
+  })
+}
+
+/**
+ * 删除商品
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/商品接口/deleteCommoditys
+ * 
+ * 请求头: delete /api/v1/commodity/{ids}
+ */
+export function deleteApiV1CommodityByids(params: { ids: string }) {
+  return request<any, any>({
+    url: `/api/v1/commodity/${params.ids}`,
     method: 'delete',
     params,
   })
@@ -1135,6 +2120,51 @@ export function deleteApiV1AgreementsByids(params: { ids: string }) {
 }
 
 /**
+ * 删除课程
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课程表接口/delete_4
+ * 
+ * 请求头: delete /api/v1/admin/course/delete/{id}
+ */
+export function deleteApiV1AdminCourseDeleteByid(params: { id: string }) {
+  return request<any, any>({
+    url: `/api/v1/admin/course/delete/${params.id}`,
+    method: 'delete',
+    params,
+  })
+}
+
+/**
+ * 删除课程表
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/课程表管理接口/delete_5
+ * 
+ * 请求头: delete /api/admin/course-schedule/delete/{id}
+ */
+export function deleteApiAdminCourseScheduleDeleteByid(params: { id: number }) {
+  return request<any, any>({
+    url: `/api/admin/course-schedule/delete/${params.id}`,
+    method: 'delete',
+    params,
+  })
+}
+
+/**
+ * 删除门店
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/门店管理/delete_6
+ * 
+ * 请求头: delete /admin/store/delete/{id}
+ */
+export function deleteAdminStoreDeleteByid(params: { id: string }) {
+  return request<any, any>({
+    url: `/admin/store/delete/${params.id}`,
+    method: 'delete',
+    params,
+  })
+}
+
+/**
  * 删除富文本表
  *
  * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/富文本表接口/deleteRichTexts
@@ -1144,6 +2174,36 @@ export function deleteApiV1AgreementsByids(params: { ids: string }) {
 export function deleteAdminRichtextsByids(params: { ids: string }) {
   return request<any, any>({
     url: `/admin/richTexts/${params.ids}`,
+    method: 'delete',
+    params,
+  })
+}
+
+/**
+ * 删除积分规则
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/会员等级规则接口/remove
+ * 
+ * 请求头: delete /admin/member/rule/remove/{id}
+ */
+export function deleteAdminMemberRuleRemoveByid(params: { id: number }) {
+  return request<any, any>({
+    url: `/admin/member/rule/remove/${params.id}`,
+    method: 'delete',
+    params,
+  })
+}
+
+/**
+ * 删除编辑器
+ *
+ * 接口文档: https://tenvia.cn/prod-api/doc.html#/管理端/编辑器接口/deleteEditors
+ * 
+ * 请求头: delete /admin/editors/{ids}
+ */
+export function deleteAdminEditorsByids(params: { ids: string }) {
+  return request<any, any>({
+    url: `/admin/editors/${params.ids}`,
     method: 'delete',
     params,
   })

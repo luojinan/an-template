@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const modelValue = defineModel<any>('modelValue', { required: true })
+import { ElRadio, ElRadioGroup } from 'element-plus'
+
 defineProps<{
   attrs?: any
   valueEnum?: Array<{
@@ -8,12 +9,13 @@ defineProps<{
     [key: string]: any
   }>
 }>()
+const modelValue = defineModel<any>('modelValue', { required: true })
 </script>
 
 <template>
-  <el-radio-group v-model="modelValue" v-bind="attrs">
+  <ElRadioGroup v-model="modelValue" v-bind="attrs">
     <template v-for="option in valueEnum" :key="option.value">
-      <el-radio v-bind="option" />
+      <ElRadio v-bind="option" />
     </template>
-  </el-radio-group>
+  </ElRadioGroup>
 </template>

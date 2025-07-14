@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ElButton, ElDrawer } from 'element-plus'
+
 withDefaults(defineProps<{
   drawerProps?: any
   showFooter?: boolean
@@ -19,7 +21,7 @@ function handleCloseModal() {
 </script>
 
 <template>
-  <el-drawer
+  <ElDrawer
     v-model="open"
     :append-to-body="true"
     v-bind="{
@@ -34,13 +36,13 @@ function handleCloseModal() {
     <slot />
     <template v-if="showFooter" #footer>
       <div>
-        <el-button type="primary" @click="onSubmit">
+        <ElButton type="primary" @click="onSubmit">
           确 定
-        </el-button>
-        <el-button @click="handleCloseModal">
+        </ElButton>
+        <ElButton @click="handleCloseModal">
           取 消
-        </el-button>
+        </ElButton>
       </div>
     </template>
-  </el-drawer>
+  </ElDrawer>
 </template>

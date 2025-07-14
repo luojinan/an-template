@@ -1,12 +1,14 @@
 <script setup lang="ts">
-const modelValue = defineModel<any>('modelValue', { required: true })
+import { ElTreeSelect } from 'element-plus'
+
 defineProps<{
   attrs?: any
 }>()
+const modelValue = defineModel<any>('modelValue', { required: true })
 </script>
 
 <template>
-  <el-tree-select
+  <ElTreeSelect
     v-model="modelValue"
     clearable
     v-bind="attrs"

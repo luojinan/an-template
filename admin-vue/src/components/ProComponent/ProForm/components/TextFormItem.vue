@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ElText } from 'element-plus'
+
 defineProps<{
   attrs?: any
 }>()
@@ -6,7 +8,7 @@ const modelValue = defineModel<any>('modelValue', { required: true })
 </script>
 
 <template>
-  <el-text v-bind="attrs">
+  <ElText v-bind="attrs">
     {{ modelValue || modelValue === 0 ? modelValue : '-' }}
-  </el-text>
+  </ElText>
 </template>

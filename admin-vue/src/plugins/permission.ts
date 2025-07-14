@@ -35,8 +35,8 @@ export function hasAuth(
   return typeof value === 'string'
     ? auths.includes(value)
     : auths.some((perm) => {
-      return value.includes(perm)
-    })
+        return value.includes(perm)
+      })
 }
 
 export function setupPermission() {
@@ -71,13 +71,13 @@ export function setupPermission() {
 
             // 当路由path是空时，优先去缓存的路由，没有再去dashbord，有redirectedFrom
             // 注意区分，当路由是dashbord时，去dashboard而不是缓存的路由，没有redirectedFrom
-            if (to.fullPath === '/dashboard' && to.redirectedFrom?.fullPath === '/') {
-              // 从缓存中获取要去的路由信息
-              next(resumeRouter.value)
-            }
-            else {
-              next()
-            }
+            // if (to.fullPath === '/dashboard' && to.redirectedFrom?.fullPath === '/' && resumeRouter.value?.fullPath) {
+            //   // 从缓存中获取要去的路由信息
+            //   next(resumeRouter.value)
+            // }
+            // else {
+            next()
+            // }
           }
         }
         else {
@@ -115,7 +115,7 @@ export function setupPermission() {
 
   router.afterEach((to) => {
     // 缓存记录当前路由，用于下次打开自动进入
-    if (to.fullPath !== '/dashboard') {
+    if (to.fullPath !== '/dashboard' && !to.fullPath.includes('login')) {
       resumeRouter.value = to
     }
     NProgress.done()

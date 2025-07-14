@@ -1,6 +1,7 @@
 <script setup lang="ts" generic="T extends IObject">
 import type { DrawerProps, FormInstance } from 'element-plus'
 import { reactive, ref, useId } from 'vue'
+import { ElButton, ElDrawer, ElForm } from 'element-plus'
 import type { IObject, ProFormColumn } from '../type'
 import FormItem from './FormItem.vue'
 
@@ -14,7 +15,8 @@ const props = defineProps<{
   columns: ProFormColumn<T>[]
   formProps?: any
   drawerProps?: Partial<DrawerProps>
-  onSubmit: (formdata: T) => Promise<void>
+  unMountedValueType?: 'string' | 'undefined'
+  onSubmit?: (formdata: T) => Promise<void>
 }>()
 
 const formRef = ref<FormInstance>()
@@ -58,7 +60,7 @@ async function getFormData(key?: string) {
   let res = {}
   for (const key in formData) {
     if (!monutedFormKeyList.includes(key)) {
-      res[key] = '' // 传undefined 后端不会清除字段值
+      res[key] = props.unMountedValueType === 'undefined' ? undefined : '' // 课程相关传undefined 后端不会清除字段值，消息相关传空字符报错，改为组件外部决定unmountd的字段为什么值
     }
     else {
       const itemConfig = allFormItems.value.find(item => item.prop === key)
@@ -151,6 +153,11 @@ async function handleSubmit() {
   loading.value = false
 }
 
+// 设置loading状态
+function setLoading(value: boolean) {
+  loading.value = value
+}
+
 const slots = computed(() => {
   const customs = allFormItems.value.filter(item => item.valueType === 'custom' && item.slotName)
   const formListCustoms = allFormItems.value.filter(item => item.valueType === 'formList').reduce((acc, item) => {
@@ -161,12 +168,12 @@ const slots = computed(() => {
 })
 
 // 暴露的属性和方法
-defineExpose({ validateForm, getFormData, setFormData, setFormItemData, resetFormData })
+defineExpose({ validateForm, getFormData, setFormData, setFormItemData, resetFormData, setLoading })
 </script>
 
 <template>
   <template v-if="type === 'drawer'">
-    <el-drawer
+    <ElDrawer
       v-model="open"
       class="proform-drawer"
       :append-to-body="true"
@@ -180,7 +187,7 @@ defineExpose({ validateForm, getFormData, setFormData, setFormItemData, resetFor
       @close="handleCloseModal"
     >
       <slot name="drawer-before-form" />
-      <el-form
+      <ElForm
         ref="formRef"
         v-loading="loading"
         label-width="auto"
@@ -189,29 +196,29 @@ defineExpose({ validateForm, getFormData, setFormData, setFormItemData, resetFor
         scroll-to-error
       >
         <template v-for="(item, index) in formItems" :key="item.prop || item.key">
-          <FormItem v-model:itemData="formData[item.prop]" v-model:column="formItems[index]" :form-props="formProps" :form-data="formData" :form-items="allFormItems">
+          <FormItem v-model:item-data="formData[item.prop]" v-model:column="formItems[index]" v-model:open="open" :form-props="formProps" :form-data="formData" :form-items="allFormItems">
             <template v-for="slot in slots" :key="slot.slotName" #[slot.slotName]="scope">
               <slot :name="slot.slotName ?? slot.prop" :form-data="formData" v-bind="scope" />
             </template>
           </FormItem>
         </template>
-      </el-form>
+      </ElForm>
 
       <template #footer>
         <div>
-          <el-button @click="handleCloseModal">
+          <ElButton @click="handleCloseModal">
             取 消
-          </el-button>
+          </ElButton>
           <slot name="drawer-footer-btn" :form-data="formData" />
-          <el-button :disabled="formProps?.disabled" :loading="loading" type="primary" @click="handleSubmit">
+          <ElButton :disabled="formProps?.disabled" :loading="loading" type="primary" @click="handleSubmit">
             确 定
-          </el-button>
+          </ElButton>
         </div>
       </template>
-    </el-drawer>
+    </ElDrawer>
   </template>
   <template v-else>
-    <el-form
+    <ElForm
       ref="formRef"
       label-width="auto"
       v-bind="formProps"
@@ -220,13 +227,13 @@ defineExpose({ validateForm, getFormData, setFormData, setFormItemData, resetFor
       class="baseForm"
     >
       <template v-for="(item, index) in formItems" :key="item.prop">
-        <FormItem v-model:itemData="formData[item.prop]" v-model:column="formItems[index]" :form-props="formProps" :form-data="formData" :form-items="allFormItems">
+        <FormItem v-model:item-data="formData[item.prop]" v-model:column="formItems[index]" v-model:open="open" :form-props="formProps" :form-data="formData" :form-items="allFormItems">
           <template v-for="slot in slots" :key="slot.slotName" #[slot.slotName]="scope">
             <slot :name="slot.slotName ?? slot.prop" :form-data="formData" v-bind="scope" />
           </template>
         </FormItem>
       </template>
-    </el-form>
+    </ElForm>
   </template>
 </template>
 

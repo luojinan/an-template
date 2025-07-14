@@ -45,6 +45,14 @@ const API_CONFIGS = [
     typesPath: '../src/utils/proApi/types/systemTypes.ts', // 类型定义文件路径
     docBaseUrl: 'https://tenvia.cn/prod-api/doc.html#/系统端', // 文档基础URL（用于生成文档链接）
   },
+  // 可以添加更多API源配置
+  // {
+  //   name: 'client',
+  //   url: 'https://tenvia.cn/client-api/v3/api-docs',
+  //   outputPath: '../src/utils/proApi/client.ts',
+  //   typesPath: '../src/utils/proApi/types/clientTypes.ts',
+  //   docBaseUrl: 'https://tenvia.cn/client-api/doc.html',
+  // },
 ]
 
 // 定义共享类型定义文件的路径（仅包含通用类型，如IObject）
@@ -122,7 +130,7 @@ function generateTypeScriptTypes(apiData) {
   Object.keys(apiData.components.schemas).forEach((schemaKey) => {
     const schema = apiData.components.schemas[schemaKey]
     tsTypes += `export interface ${schemaKey} {\n`
-    Object.keys(schema.properties).forEach((propKey) => {
+    Object.keys(schema.properties).sort().forEach((propKey) => {
       const prop = schema.properties[propKey]
       let type = prop.type
       const itemsType = prop.items ? prop.items.type || prop.items.$ref : ''
@@ -292,7 +300,7 @@ export type IObject = Record<string, any>
       tsTypes += `export interface ${schemaKey} {\n`
 
       if (schema.properties) {
-        Object.keys(schema.properties).forEach((propKey) => {
+        Object.keys(schema.properties).sort().forEach((propKey) => {
           const prop = schema.properties[propKey]
           let type = prop.type
           const itemsType = prop.items ? prop.items.type || prop.items.$ref : ''

@@ -1,5 +1,6 @@
 <!-- 部门树 -->
 <script setup lang="ts">
+import { ElCard, ElInput, ElTree } from 'element-plus'
 import DeptAPI from '@/api/dept'
 
 const props = defineProps({
@@ -28,8 +29,7 @@ watchEffect(
 
 /** 部门筛选 */
 function handleFilter(value: string, data: any) {
-  if (!value)
-    return true
+  if (!value) { return true }
 
   return data.label.includes(value)
 }
@@ -48,14 +48,14 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <el-card shadow="never">
-    <el-input v-model="deptName" placeholder="部门名称" clearable>
+  <ElCard shadow="never">
+    <ElInput v-model="deptName" placeholder="部门名称" clearable>
       <template #prefix>
         <i-ep-search />
       </template>
-    </el-input>
+    </ElInput>
 
-    <el-tree
+    <ElTree
       ref="deptTreeRef"
       class="mt-2"
       :data="deptList"
@@ -65,5 +65,5 @@ onBeforeMount(() => {
       default-expand-all
       @node-click="handleNodeClick"
     />
-  </el-card>
+  </ElCard>
 </template>

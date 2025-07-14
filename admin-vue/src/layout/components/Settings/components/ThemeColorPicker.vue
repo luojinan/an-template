@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import { ref, watch } from 'vue'
+import { ElColorPicker } from 'element-plus'
+
 const props = defineProps({
   modelValue: String,
 })
@@ -7,6 +10,7 @@ const emit = defineEmits(['update:modelValue'])
 
 // 定义颜色预设
 const colorPresets = [
+  '#1677ff',
   '#409EFF',
   '#ff4500',
   '#ff8c00',
@@ -27,8 +31,9 @@ watch(currentColor, (newValue) => {
 </script>
 
 <template>
-  <el-color-picker
+  <ElColorPicker
     v-model="currentColor"
+    disabled
     :predefine="colorPresets"
     popper-class="theme-picker-dropdown"
   />

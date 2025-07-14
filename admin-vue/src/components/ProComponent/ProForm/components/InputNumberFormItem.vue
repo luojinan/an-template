@@ -1,12 +1,14 @@
 <script setup lang="ts">
-const modelValue = defineModel<any>('modelValue', { required: true })
+import { ElInputNumber } from 'element-plus'
+
 defineProps<{
   attrs?: any
 }>()
+const modelValue = defineModel<any>('modelValue', { required: true })
 </script>
 
 <template>
-  <el-input-number
+  <ElInputNumber
     v-model="modelValue"
     controls-position="right"
     :style="{ width: '100%', flex: 1 }"

@@ -1,19 +1,16 @@
 import { resolve } from 'node:path'
 import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 import type { ConfigEnv } from 'vite'
 import { defineConfig, loadEnv } from 'vite'
-import archiver from 'archiver'
-import fs from 'node:fs'
 
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import ElementPlus from 'unplugin-element-plus/vite'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
-import mockDevServerPlugin from 'vite-plugin-mock-dev-server'
 
 import UnoCSS from 'unocss/vite'
-import compression from 'vite-plugin-compression'
 import {
   dependencies,
   devDependencies,
@@ -34,6 +31,10 @@ const pathSrc = resolve(__dirname, 'src')
 export default defineConfig(({ mode }: ConfigEnv) => {
   const env = loadEnv(mode, process.cwd())
   return {
+    experimental: {
+      // 导致样式文件丢失
+      enableNativePlugin: false,
+    },
     resolve: {
       alias: {
         '@': pathSrc,
@@ -64,6 +65,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
           changeOrigin: true,
           // 接口地址
           target: env.VITE_APP_API_URL,
+          // secure: false,
           rewrite: path =>
             path.replace(new RegExp(`^${env.VITE_APP_BASE_API}`), ''),
         },
@@ -71,38 +73,23 @@ export default defineConfig(({ mode }: ConfigEnv) => {
     },
     preview: {
       host: '0.0.0.0',
-      port: Number(env.VITE_APP_PORT),
       open: false,
-      allowedHosts: true
+      port: 5500,
+      allowedHosts: true,
     },
     plugins: [
-      {
-        name: 'vite-plugin-zip-dist',
-        apply: 'build',
-        closeBundle() {
-          const archive = archiver('zip', { zlib: { level: 9 } })
-          const output = fs.createWriteStream('dist.zip')
-          archive.pipe(output)
-          archive.directory('dist/', false)
-          archive.finalize()
-        }
-      },
       insertDefineOptions(),
-      process.env.NODE_ENV === 'production' && compression({
-        algorithm: 'gzip', // 使用 gzip 算法
-        threshold: 20480, // 只压缩大于 10KB 的文件
-      }),
       vue(),
-      // MOCK 服务
-      env.VITE_MOCK_DEV_SERVER === 'true' ? mockDevServerPlugin() : null,
+      vueJsx(),
       UnoCSS(),
+      ElementPlus({
+        // options
+      }),
       // 自动导入参考： https://github.com/sxzz/element-plus-best-practices/blob/main/vite.config.ts
       AutoImport({
         // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
         imports: ['vue', '@vueuse/core', 'pinia', 'vue-router'],
         resolvers: [
-          // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
-          ElementPlusResolver(),
           // 自动导入图标组件
           IconsResolver({}),
         ],
@@ -121,8 +108,6 @@ export default defineConfig(({ mode }: ConfigEnv) => {
       }),
       Components({
         resolvers: [
-          // 自动导入 Element Plus 组件
-          ElementPlusResolver(),
           // 自动注册图标组件
           IconsResolver({
             // element-plus图标库，其他图标库 https://icon-sets.iconify.design/
@@ -154,71 +139,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
         '@wangeditor/editor',
         '@wangeditor/editor-for-vue',
         'path-browserify',
-        'element-plus/es/components/form/style/css',
-        'element-plus/es/components/form-item/style/css',
-        'element-plus/es/components/button/style/css',
-        'element-plus/es/components/input/style/css',
-        'element-plus/es/components/input-number/style/css',
-        'element-plus/es/components/switch/style/css',
-        'element-plus/es/components/upload/style/css',
-        'element-plus/es/components/menu/style/css',
-        'element-plus/es/components/col/style/css',
-        'element-plus/es/components/icon/style/css',
-        'element-plus/es/components/row/style/css',
-        'element-plus/es/components/tag/style/css',
-        'element-plus/es/components/dialog/style/css',
-        'element-plus/es/components/loading/style/css',
-        'element-plus/es/components/radio/style/css',
-        'element-plus/es/components/radio-group/style/css',
-        'element-plus/es/components/popover/style/css',
-        'element-plus/es/components/scrollbar/style/css',
-        'element-plus/es/components/tooltip/style/css',
-        'element-plus/es/components/dropdown/style/css',
-        'element-plus/es/components/dropdown-menu/style/css',
-        'element-plus/es/components/dropdown-item/style/css',
-        'element-plus/es/components/sub-menu/style/css',
-        'element-plus/es/components/menu-item/style/css',
-        'element-plus/es/components/divider/style/css',
-        'element-plus/es/components/card/style/css',
-        'element-plus/es/components/link/style/css',
-        'element-plus/es/components/breadcrumb/style/css',
-        'element-plus/es/components/breadcrumb-item/style/css',
-        'element-plus/es/components/table/style/css',
-        'element-plus/es/components/tree-select/style/css',
-        'element-plus/es/components/table-column/style/css',
-        'element-plus/es/components/select/style/css',
-        'element-plus/es/components/option/style/css',
-        'element-plus/es/components/pagination/style/css',
-        'element-plus/es/components/tree/style/css',
-        'element-plus/es/components/alert/style/css',
-        'element-plus/es/components/radio-button/style/css',
-        'element-plus/es/components/checkbox-group/style/css',
-        'element-plus/es/components/checkbox/style/css',
-        'element-plus/es/components/tabs/style/css',
-        'element-plus/es/components/tab-pane/style/css',
-        'element-plus/es/components/rate/style/css',
-        'element-plus/es/components/date-picker/style/css',
-        'element-plus/es/components/notification/style/css',
-        'element-plus/es/components/image/style/css',
-        'element-plus/es/components/statistic/style/css',
-        'element-plus/es/components/watermark/style/css',
-        'element-plus/es/components/config-provider/style/css',
-        'element-plus/es/components/text/style/css',
-        'element-plus/es/components/drawer/style/css',
-        'element-plus/es/components/color-picker/style/css',
-        'element-plus/es/components/descriptions/style/css',
-        'element-plus/es/components/descriptions-item/style/css',
-        'element-plus/es/components/backtop/style/css',
-        'element-plus/es/components/message-box/style/css',
-        'element-plus/es/components/skeleton/style/css',
-        'element-plus/es/components/skeleton/style/css',
-        'element-plus/es/components/skeleton-item/style/css',
-        'element-plus/es/components/badge/style/css',
-        'element-plus/es/components/steps/style/css',
-        'element-plus/es/components/step/style/css',
-        'element-plus/es/components/avatar/style/css',
-        'element-plus/es/components/descriptions/style/css',
-        'element-plus/es/components/descriptions-item/style/css',
+        'element-plus/es/**',
       ],
     },
     // 构建配置
@@ -233,13 +154,19 @@ export default defineConfig(({ mode }: ConfigEnv) => {
           chunkFileNames: (chunkInfo) => {
             let name = ''
             const moduleIds = chunkInfo.moduleIds
+            // 出现了空数组的 moduleIds 是业务组件
+            if (moduleIds.length === 0) {
+              return 'js/[name].[hash].js'
+            }
             const lastModuleId = moduleIds[moduleIds.length - 1]
             if (lastModuleId.includes('node_modules')) {
-              // 就算设置了同名vendor，也不会合并成1一个产物，而是多个vendor.[hash].js
-              const match = lastModuleId.match(/node_modules\/([^/]+)/)
-              name = match ? `vendor-${match[1]}` : 'vendor'
-            } else if (lastModuleId.match(/src\/(.*?)$/) && (chunkInfo.isDynamicEntry || chunkInfo.name==='index')) {
-              const match = lastModuleId.match(/src\/(.*?)$/)
+              return 'js/vendor-[name].[hash].js'
+            }
+            if (
+              lastModuleId.match(/src\/(.*)$/)
+              && (chunkInfo.isDynamicEntry || chunkInfo.name === 'index')
+            ) {
+              const match = lastModuleId.match(/src\/(.*)$/)
               if (match && match[1]) {
                 name = match[1].replace(/\//g, '-').replace(/\.[^/.]+$/, '')
               }
@@ -252,40 +179,35 @@ export default defineConfig(({ mode }: ConfigEnv) => {
           },
           // 用于输出静态资源的命名，[ext]表示文件扩展名
           assetFileNames: (assetInfo: any) => {
-            const info = assetInfo.name.split('.')
+            // console.log('assetInfo', Object.keys(assetInfo))
+            // const info = assetInfo.name.split('.') // NOTE:不再有name {names:[''],originalFileNames:[''],source,type:'asset'}
+            const info = assetInfo.names[0].split('.')
             let extType = info[info.length - 1]
             // console.log('文件信息', assetInfo.name)
             if (
               /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/i.test(assetInfo.name)
-            )
-              extType = 'media'
-            else if (/\.(png|jpe?g|gif|svg)(\?.*)?$/.test(assetInfo.name))
-              extType = 'img'
-            else if (/\.(woff2?|eot|ttf|otf)(\?.*)?$/i.test(assetInfo.name))
-              extType = 'fonts'
+            ) { extType = 'media' }
+            else if (/\.(png|jpe?g|gif|svg)(\?.*)?$/.test(assetInfo.name)) { extType = 'img' }
+            else if (/\.(woff2?|eot|ttf|otf)(\?.*)?$/i.test(assetInfo.name)) { extType = 'fonts' }
 
             return `${extType}/[name].[hash].[ext]`
           },
-          manualChunks(id) {
-            // 第三方库分包
-            if (id.includes('node_modules')) {
-              if (id.includes('axios')) {
-                return 'entry-vendor-axios'
-              }
-            }
-
-            // 业务代码分包
-            if (id.includes('src/')) {
-              if (id.includes('/utils/')) {
-                return 'entry-utils'
-              }
-            }
-          }
+          // 只有被多个入口使用才会被拆分，如editedialog的组件使用了1次大依赖，则不会出现在vendor逻辑里，如pinia、axios只在一个入口使用，不会被拆到vendor
+          // FIXME: advancedChunks groups 导致 element-plus 变大
+          advancedChunks: {
+            groups: [
+              // {
+              //   name: 'vendor-axios',
+              //   test: 'axios',
+              // },
+              // {
+              //   name: 'vendor-pinia',
+              //   test: 'pinia',
+              // },
+            ],
+          },
         },
       },
-    },
-    esbuild: {
-      drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
     },
     define: {
       __APP_INFO__: JSON.stringify(__APP_INFO__),

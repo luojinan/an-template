@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ElButton, ElCol, ElLink, ElRow } from 'element-plus'
 import { useRouter } from 'vue-router'
 
 defineOptions({ name: 'Page401' })
@@ -7,11 +8,11 @@ const router = useRouter()
 
 <template>
   <div class="p-5 pb-0 sm:p-10 lg:p-20 w-full">
-    <el-button icon="arrow-left" @click="router.back()">
+    <ElButton icon="arrow-left" @click="router.back()">
       返回
-    </el-button>
-    <el-row>
-      <el-col :xs="24" :span="12">
+    </ElButton>
+    <ElRow>
+      <ElCol :xs="24" :span="12">
         <h1 class="text-6xl font-bold text-[#484848]">
           Oops!
         </h1>
@@ -19,14 +20,14 @@ const router = useRouter()
         <h6>如有不满请联系你领导</h6>
         <div class="flex flex-col items-start gap-1.5 text-sm">
           <span>或者你可以去:</span>
-          <el-link type="primary" @click="router.push('/dashboard')">
+          <ElLink type="primary" @click="router.push('/dashboard')">
             回首页
-          </el-link>
+          </ElLink>
         </div>
-      </el-col>
-      <el-col :xs="24" :span="12">
+      </ElCol>
+      <ElCol :xs="24" :span="12">
         <img src="@/assets/images/401.svg" class="w-full">
-      </el-col>
-    </el-row>
+      </ElCol>
+    </ElRow>
   </div>
 </template>

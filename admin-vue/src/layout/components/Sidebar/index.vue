@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ElScrollbar } from 'element-plus'
 import { useAppStore, usePermissionStore, useSettingsStore } from '@/store'
 import { LayoutEnum } from '@/enums/LayoutEnum'
 
@@ -21,9 +22,9 @@ const layout = computed(() => settingsStore.layout)
     <!-- 左侧布局 || 顶部布局 -->
     <template v-else>
       <SidebarLogo v-if="sidebarLogo" :collapse="!appStore.sidebar.opened" />
-      <el-scrollbar>
+      <ElScrollbar>
         <SidebarMenu :menu-list="permissionStore.routes" base-path="" />
-      </el-scrollbar>
+      </ElScrollbar>
       <NavbarRight v-if="layout === LayoutEnum.TOP" />
     </template>
   </div>

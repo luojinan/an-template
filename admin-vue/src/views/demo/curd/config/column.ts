@@ -13,17 +13,7 @@ export const tableColumns: ProTableColumn<{ id: number, a: string, status: numbe
     hideInTable: true,
   },
   {
-    prop: 'status',
-    label: '上架状态',
-    valueType: 'select',
-    attrs: {
-      placeholder: '全部',
-    },
-    valueEnum: [{ label: '启用', value: 1 }, { label: '禁用', value: 0 }],
-    hideInTable: true,
-  },
-  {
-    label: 'select支持tag样式',
+    label: 'select',
     valueType: 'select',
     prop: 'status',
     valueEnum: [
@@ -33,20 +23,35 @@ export const tableColumns: ProTableColumn<{ id: number, a: string, status: numbe
     hideInSearch: true,
   },
   {
-    label: '上架状态插槽',
-    prop: 'status',
-    valueType: 'custom',
-    slotName: 'status',
-    hideInSearch: true,
-  },
-  {
-    label: '字典枚举',
+    label: '接口数据select',
     prop: 'a',
     valueType: 'select',
     valueEnum: [],
     initFn: async (formItem) => {
       formItem.valueEnum = await getApiV1DictBytypecodeOptions({ typeCode: 'institutionType' })
     },
+  },
+  {
+    label: '格式化数据',
+    prop: 'keyFormat',
+    formatFn: (value) => {
+      return value ? `格式化数据${value}` : '-'
+    },
+    hideInSearch: true,
+  },
+  // {
+  //   label: '插槽直接',
+  //   prop: 'keySlot',
+  //   valueType: 'custom',
+  //   slotName: 'status', // TODO: 直接使用Vue组件实例
+  //   hideInSearch: true,
+  // },
+  {
+    label: '插槽',
+    prop: 'status',
+    valueType: 'custom',
+    slotName: 'status',
+    hideInSearch: true,
   },
 ]
 
@@ -89,22 +94,6 @@ export const formColumns: ProFormColumn[] = [
               formItem.valueEnum = [{ label: '选项', value: '1' }]
             },
             rules: [{ required: true, trigger: 'blur' }],
-            watch: async (value, old, formdata, formconfig, formItemTool) => {
-              const [teacherIdForm] = formItemTool.getFieldConfig(['institutionId', 'teacherId'])
-              if (!userStore.user.dept.isInstitution && value) {
-                const list = [{ label: '选项', value: '1' }]
-                teacherIdForm.valueEnum = list.map((item: any) => ({ label: item.displayName, value: `${item.id}` }))
-              }
-              else {
-                teacherIdForm.valueEnum = []
-              }
-
-              // 没有值变为有值，为初始化不需要重置
-              if (old) {
-                formdata.teacherId = ''
-                formdata.teacherName = ''
-              }
-            },
           },
           {
             label: '导师名称',

@@ -4,6 +4,7 @@
 // ✨最佳实践：鼠标悬浮查看templace中<ProTable>的columns属性，显示内部推断的Item类型，复制到ts中显式定义按要求使用类型
 import { reactive, ref } from 'vue'
 import { cloneDeep } from 'lodash-es'
+import { ElButton, ElCard, ElMessage, ElMessageBox, ElTable, ElTableColumn } from 'element-plus'
 import type { IObject, ProTableColumn, ToolOperatBtn } from '../type'
 import ProToolBar from './ProToolBar.vue'
 import ProPagination from './ProPagination.vue'
@@ -72,7 +73,6 @@ const pagination = reactive(
 // 表格列 + 搜索栏
 const initialCols = cloneDeep(props.columns).filter(item => !item.hideInTable).map((col) => {
   col.align = 'center'
-  col.initFn && col.initFn(col)
 
   // 设置默认 show 参数
   if (col.show === undefined) { col.show = true }
@@ -90,6 +90,10 @@ const initialCols = cloneDeep(props.columns).filter(item => !item.hideInTable).m
   return col
 })
 const cols = ref(initialCols)
+cols.value.forEach((col) => {
+  col.initFn && col.initFn(col)
+})
+
 const searchCols = computed(() => {
   const list = cloneDeep(props.columns).filter((item) => {
     if (item.hideInSearch) { return false }
@@ -226,9 +230,10 @@ async function fetchPageData(formData?: IObject, isRestart = false) {
 }
 fetchPageData()
 
-// 获取涮选属性
-function getFilterParams() {
-  return filterParams
+// 获取筛选属性 不取分页参数
+async function getFilterParams() {
+  const { custom, ...res } = await searchFormRef.value.getFormData()
+  return res
 }
 
 function handleSelectionChange(list: any[]) {
@@ -245,7 +250,7 @@ defineExpose({ fetchPageData, getFilterParams, clearSelect, proTableCoreRef })
 </script>
 
 <template>
-  <el-card
+  <ElCard
     v-if="search !== false"
     class="mb-[10px]"
     style="
@@ -261,17 +266,17 @@ defineExpose({ fetchPageData, getFilterParams, clearSelect, proTableCoreRef })
     >
       <template #searchBtn>
         <div class="flex justify-end">
-          <el-button type="primary" icon="search" @click="handleQuery">
+          <ElButton type="primary" icon="search" @click="handleQuery">
             搜索
-          </el-button>
-          <el-button icon="refresh" @click="handleReset">
+          </ElButton>
+          <ElButton icon="refresh" @click="handleReset">
             重置
-          </el-button>
+          </ElButton>
         </div>
       </template>
     </ProForm>
-  </el-card>
-  <el-card
+  </ElCard>
+  <ElCard
     class="protable"
     style="
 
@@ -287,7 +292,7 @@ defineExpose({ fetchPageData, getFilterParams, clearSelect, proTableCoreRef })
     />
 
     <!-- 表格 -->
-    <el-table
+    <ElTable
       v-bind="tableProps"
       ref="proTableCoreRef"
       v-loading="loading"
@@ -296,11 +301,11 @@ defineExpose({ fetchPageData, getFilterParams, clearSelect, proTableCoreRef })
       @selection-change="handleSelectionChange"
       @filter-change="handleFilterChange"
     >
-      <el-table-column v-if="selection" type="selection" width="55" />
+      <ElTableColumn v-if="selection" type="selection" width="55" />
       <template v-for="col in cols" :key="col">
         <TableField v-if="col.valueType !== 'custom'" :col="col" :table-props="tableProps" @handle-operat="handleOperat" />
-        <!-- 自定义 -->
-        <el-table-column v-else v-bind="col">
+        <!-- 自定义 插槽跨层级传递不好实现 -->
+        <ElTableColumn v-else v-bind="col">
           <template #default="scope">
             <slot
               :name="col.slotName ?? col.prop"
@@ -309,9 +314,9 @@ defineExpose({ fetchPageData, getFilterParams, clearSelect, proTableCoreRef })
               :attrs="col.attrs"
             />
           </template>
-        </el-table-column>
+        </ElTableColumn>
       </template>
-    </el-table>
+    </ElTable>
 
     <!-- 分页 -->
     <ProPagination
@@ -320,7 +325,7 @@ defineExpose({ fetchPageData, getFilterParams, clearSelect, proTableCoreRef })
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-  </el-card>
+  </ElCard>
 </template>
 
 <style lang="css">

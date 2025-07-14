@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { RouterView } from 'vue-router'
 import { useTagsViewStore } from '@/store'
 
 const cachedViews = computed(() => useTagsViewStore().cachedViews) // 缓存页面集合
@@ -6,7 +7,7 @@ const cachedViews = computed(() => useTagsViewStore().cachedViews) // 缓存页�
 
 <template>
   <section class="app-main">
-    <router-view>
+    <RouterView>
       <template #default="{ Component, route }">
         <!-- TODO: 进入 讲师详情后 切换任意页面白屏，组件以及路由看上去没问题，可能动画样式影响了页面组件展示 -->
         <!-- <transition
@@ -18,7 +19,7 @@ const cachedViews = computed(() => useTagsViewStore().cachedViews) // 缓存页�
         </keep-alive>
         <!-- </transition> -->
       </template>
-    </router-view>
+    </RouterView>
   </section>
 </template>
 

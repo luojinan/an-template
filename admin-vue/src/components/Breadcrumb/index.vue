@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import type { RouteLocationMatched } from 'vue-router'
+import { type RouteLocationMatched, useRoute } from 'vue-router'
 import { compile } from 'path-to-regexp'
+import { onBeforeMount, ref, watch } from 'vue'
+import { ElBreadcrumb, ElBreadcrumbItem } from 'element-plus'
 import router from '@/router'
 
 const currentRoute = useRoute()
@@ -29,8 +31,7 @@ function getBreadcrumb() {
 
 function isDashboard(route: RouteLocationMatched) {
   const name = route && route.name
-  if (!name)
-    return false
+  if (!name) { return false }
 
   return (
     name.toString().trim().toLocaleLowerCase()
@@ -54,8 +55,7 @@ function handleLink(item: any) {
 watch(
   () => currentRoute.path,
   (path) => {
-    if (path.startsWith('/redirect/'))
-      return
+    if (path.startsWith('/redirect/')) { return }
 
     getBreadcrumb()
   },
@@ -67,9 +67,9 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <el-breadcrumb class="flex-y-center">
+  <ElBreadcrumb class="flex-y-center">
     <transition-group enter-active-class="animate__animated animate__fadeInRight">
-      <el-breadcrumb-item v-for="(item, index) in breadcrumbs" :key="item.path">
+      <ElBreadcrumbItem v-for="(item, index) in breadcrumbs" :key="item.path">
         <span
           v-if="item.redirect === 'noredirect' || index === breadcrumbs.length - 1
           " class="color-gray-400"
@@ -77,9 +77,9 @@ onBeforeMount(() => {
         <a v-else @click.prevent="handleLink(item)">
           {{ item.meta.title }}
         </a>
-      </el-breadcrumb-item>
+      </ElBreadcrumbItem>
     </transition-group>
-  </el-breadcrumb>
+  </ElBreadcrumb>
 </template>
 
 <style lang="scss" scoped>

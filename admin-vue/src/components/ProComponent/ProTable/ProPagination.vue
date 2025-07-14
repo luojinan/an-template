@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ElPagination, ElScrollbar } from 'element-plus'
 import type { Pagination } from '../type'
 // 定义接收的属性
 defineProps<{
@@ -19,13 +20,13 @@ function handleCurrentChange(val) {
 </script>
 
 <template>
-  <el-scrollbar>
+  <ElScrollbar>
     <div class="mt-[12px] flex justify-end">
-      <el-pagination
+      <ElPagination
         v-bind="pagination"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
     </div>
-  </el-scrollbar>
+  </ElScrollbar>
 </template>

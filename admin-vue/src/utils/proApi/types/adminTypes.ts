@@ -9,23 +9,112 @@ export interface ResultObject {
   msg: string
 }
 
-export interface RotationChartForm {
+export interface SurveyTemplateForm {
+  /**
+   * 创建时间
+   */
+  createTime: string
+  /**
+   * 创建人
+   */
+  createUser: string
+  /**
+   * 创建人名称
+   */
+  createUserName: string
+  /**
+   * 问卷描述
+   */
+  description: string
+  /**
+   * 问卷模板ID
+   */
+  id: string
+  /**
+   * 问卷标题
+   */
+  title: string
+  /**
+   * 更新时间
+   */
+  updateTime: string
+}
+
+export interface SurveyAnswerForm {
+  /**
+   * 回答内容
+   */
+  answerValue: string
+  /**
+   * 创建时间
+   */
+  createTime: string
+  /**
+   * 答案ID
+   */
+  id: string
+  /**
+   * 问题ID
+   */
+  questionId: string
+  /**
+   * 所属回答ID
+   */
+  responseId: string
+  /**
+   * 更新时间
+   */
+  updateTime: string
+}
+
+export interface ShoppingCartsForm {
+  /**
+   * 商品数量
+   */
+  commodityCount: number
+  /**
+   * 商品id
+   */
+  commodityId: string
   /**
    * 主键
    */
   id: string
   /**
-   * 活动名称
+   * 用户id
    */
-  name: string
+  userId: string
+  /**
+   * 用户名称
+   */
+  userName: string
+}
+
+export interface RotationChartForm {
   /**
    * 轮播图
    */
   bannerPicture: string
   /**
+   * 创建时间
+   */
+  createTime: string
+  /**
+   * 创建人ID
+   */
+  createUser: string
+  /**
+   * 主键
+   */
+  id: string
+  /**
    * 跳转地址
    */
   jumpUrl: string
+  /**
+   * 活动名称
+   */
+  name: string
   /**
    * 显示顺序
    */
@@ -35,22 +124,6 @@ export interface RotationChartForm {
    */
   status: number
   /**
-   * 创建时间
-   */
-  createTime: string
-  /**
-   * 更新时间
-   */
-  updateTime: string
-  /**
-   * 创建人ID
-   */
-  createUser: string
-  /**
-   * 修改人ID
-   */
-  updateUser: string
-  /**
    * 类型编码
    */
   typeCode: string
@@ -58,23 +131,19 @@ export interface RotationChartForm {
    * 类型名称
    */
   typeName: string
+  /**
+   * 更新时间
+   */
+  updateTime: string
+  /**
+   * 修改人ID
+   */
+  updateUser: string
 }
 
-export interface PassEditVO {
+export interface PassCourseVO {
   /**
-   * 卡名称
-   */
-  name: string
-  /**
-   * 卡类型（次卡/额度卡）
-   */
-  type: string
-  /**
-   * 购买价格
-   */
-  purchasePrice: number
-  /**
-   * 可用额度（类型为额度卡时必填）
+   * 可用额度（类型为储值卡时必填）
    */
   availableAmount: number
   /**
@@ -82,36 +151,79 @@ export interface PassEditVO {
    */
   availableTimes: number
   /**
-   * 有效期开始时间戳
+   * 课程ID列表
    */
-  validStartTime: number
+  courseIds: string[]
   /**
-   * 有效期结束时间戳
+   * 课班规模，参考字典CourseSize
    */
-  validEndTime: number
+  courseSize: string
   /**
-   * 适用范围（全局通用/指定课程）
+   * 课程标签
    */
-  scope: string
+  courseTags: string[]
+}
+
+export interface PassEditVO {
+  /**
+   * 可用额度（类型为储值卡时必填）
+   */
+  availableAmount: number
+  /**
+   * 可用次数（类型为次卡时必填）
+   */
+  availableTimes: number
+  /**
+   * banner轮播图URL
+   */
+  bannerUrl: string
+  /**
+   * 是否可以线上售卖，0-否，1-是
+   */
+  canSaleOnLine: number
   /**
    * 适用课程ID列表（scope为指定课程时必填）
    */
-  courseIds: string[]
+  courses: PassCourseVO[]
   /**
    * 卡ID
    */
   id: string
+  /**
+   * 是否体验卡, 0-否，1-是
+   */
+  isTrial: number
+  /**
+   * 卡名称
+   */
+  name: string
+  /**
+   * 购买说明
+   */
+  purchaseNotes: string
+  /**
+   * 购买价格，单位元
+   */
+  purchasePrice: number
+  /**
+   * 缩略图URL
+   */
+  thumbnailUrl: string
+  /**
+   * 卡类型（次卡/额度卡），参考字典CardType
+   */
+  type: string
+  /**
+   * 有效期时长，期限卡需要设置
+   */
+  validityPeriod: number
+  /**
+   * 有效期单位，参考字典TimeUnit，期限卡需要设置
+   */
+  validityUnit: string
 }
 
 export interface HotWordRecordForm {
-  /**
-   * 主键
-   */
-  id: string
-  /**
-   * 热词
-   */
-  name: string
   /**
    * 显示顺序
    */
@@ -121,6 +233,14 @@ export interface HotWordRecordForm {
    */
   createTime: string
   /**
+   * 主键
+   */
+  id: string
+  /**
+   * 热词
+   */
+  name: string
+  /**
    * 更新时间
    */
   updateTime: string
@@ -128,73 +248,201 @@ export interface HotWordRecordForm {
 
 export interface CourseEditVO {
   /**
+   * 是否可以在小程序展示(0:否,1:是)
+   */
+  canBeShownOnMiniProgram: string
+  /**
+   * 是否可以在小程序售卖(0:否,1:是)
+   */
+  canBeSoldOnMiniProgram: number
+  /**
    * 课程中文名
    */
   chineseName: string
-  /**
-   * 课程英文名
-   */
-  englishName: string
-  /**
-   * 课程图片 URL
-   */
-  imageUrl: string
-  /**
-   * 课程所属的门店 ID
-   */
-  storeId: string
-  /**
-   * 课程规则类型，瑜伽课程或团课
-   */
-  type: string
-  /**
-   * 课班规模，大班课，小班课，私教课
-   */
-  size: string
-  /**
-   * 价格
-   */
-  price: number
-  /**
-   * 课程状态
-   */
-  status: string
-  /**
-   * 课程主要训练目标
-   */
-  mainTrainingGoal: string
-  /**
-   * 课程次要训练目标
-   */
-  secondaryTrainingGoal: string[]
-  /**
-   * 开课时间-开始
-   */
-  startTime: number
-  /**
-   * 开课时间-结束
-   */
-  startEnd: number
-  /**
-   * 排序号
-   */
-  sortNumber: number
-  /**
-   * 难度星级
-   */
-  difficultyRate: string
   /**
    * 课程描述
    */
   description: string
   /**
+   * 难度星级
+   */
+  difficultyRate: string
+  /**
+   * 课程时长，单位为分
+   */
+  duration: number
+  /**
+   * 课程英文名
+   */
+  englishName: string
+  /**
    * 课程 ID
    */
   id: string
+  /**
+   * 课程图片 URL
+   */
+  imageUrl: string
+  /**
+   * 课程主要训练目标
+   */
+  mainTrainingGoal: string
+  /**
+   * 价格
+   */
+  price: number
+  /**
+   * 课程次要训练目标
+   */
+  secondaryTrainingGoal: string[]
+  /**
+   * 课班规模，大班课，小班课，私教课
+   */
+  size: string
+  /**
+   * 排序号
+   */
+  sortNumber: number
+  /**
+   * 课程状态
+   */
+  status: string
+  /**
+   * 课程标签，参考字典CourseTag
+   */
+  tag: string
+}
+
+export interface CouponForm {
+  /**
+   * 选中课程、课程分类id
+   */
+  businessIds: string
+  /**
+   * 选中课程、课程分类名称
+   */
+  businessNames: string
+  /**
+   * 优惠券图片
+   */
+  couponPic: string
+  /**
+   * 优惠券缩略图
+   */
+  couponThumbnail: string
+  /**
+   * 创建人ID
+   */
+  createBy: number
+  /**
+   * 创建时间
+   */
+  createTime: string
+  /**
+   * 抵扣金额/折扣/补偿劵额
+   */
+  deductionAmount: number
+  deptId: number
+  /**
+   * 可用用户级别
+   */
+  embershipLevelId: string
+  /**
+   * 主键
+   */
+  id: number
+  idPathList: string[]
+  /**
+   * 逻辑删除标识(1:已删除;0:未删除)
+   */
+  isDeleted: number
+  /**
+   * 系统发放时间
+   */
+  issueStartTime: string
+  /**
+   * 限制使用结束时间
+   */
+  limitUsageEndTime: string
+  /**
+   * 限制使用开始时间
+   */
+  limitUsageStartTime: string
+  /**
+   * 优惠劵名称
+   */
+  name: string
+  /**
+   * 发放数量
+   */
+  number: number
+  /**
+   * 领取方式(1人工发放 2系统赠送)
+   */
+  receiveType: number
+  /**
+   * 使用规则
+   */
+  remark: string
+  /**
+   * 奖励方式(1邀请奖励 2新人福利 3生日 4考试奖励)
+   */
+  rewardType: string
+  /**
+   * 状态(1:正常;0:禁用)
+   */
+  status: number
+  /**
+   * 优惠劵类型(1满减 2折扣 3体验)
+   */
+  type: number
+  /**
+   * 修改人ID
+   */
+  updateBy: number
+  /**
+   * 更新时间
+   */
+  updateTime: string
+  /**
+   * 使用时间天数
+   */
+  useRestrictedNum: number
+  /**
+   * 使用时间(1固定时间 2当日起几天 3次日起几天)
+   */
+  useRestrictedType: number
+  /**
+   * 使用范围(1通用 2指定课程可用 3指定课程不可用)
+   */
+  useScope: number
+  /**
+   * 使用门槛(0无 其他数值为门槛金额)
+   */
+  useThreshold: number
+  /**
+   * 使用范围不为通用详情
+   */
+  userScopeDetail: string
 }
 
 export interface CountryAreaForm {
+  createTime: string
+  createUser: string
+  createUserName: string
   id: string
+  /**
+   * id全路径
+   */
+  idPath: string
+  /**
+   * 是否在小程序展示(0-不展示，1-展示)
+   */
+  isShowMiniapp: number
+  /**
+   * 级别1,2,3,4
+   */
+  level: number
   /**
    * 名称
    */
@@ -204,13 +452,603 @@ export interface CountryAreaForm {
    */
   nameEn: string
   /**
-   * 级别1,2,3,4
+   * 父级id
+   */
+  parentId: string
+  updateTime: string
+  updateUser: string
+  updateUserName: string
+}
+
+export interface CommodityClassificationForm {
+  /**
+   * 图标
+   */
+  icon: string
+  /**
+   * 主键
+   */
+  id: string
+  /**
+   * code全路径
+   */
+  idPath: string
+  /**
+   * 级别1,2,3,4,5
    */
   level: number
+  /**
+   * 分类名称
+   */
+  name: string
+  /**
+   * 父级code
+   */
+  parentId: string
+  /**
+   * 1 启用 0 停用
+   */
+  status: number
+}
+
+export interface CommodityForm {
+  /**
+   * 分类全路径
+   */
+  classificationFullId: string
+  /**
+   * 分类id
+   */
+  classificationId: string
+  /**
+   * 分类名称
+   */
+  classificationName: string
+  /**
+   * 商品描述
+   */
+  description: string
+  /**
+   * 主键
+   */
+  id: string
+  /**
+   * 库存
+   */
+  inventoryNum: number
+  /**
+   * 主图
+   */
+  mainPicture: string
+  /**
+   * 分类名称
+   */
+  name: string
+  /**
+   * 积分
+   */
+  points: number
+  /**
+   * 商品售价
+   */
+  price: number
+  /**
+   * 购买方式（1 仅金钱支出，2 仅积分兑换，3 合并支付）
+   */
+  priceMethod: string
+  /**
+   * 轮播图url列表
+   */
+  publicityPictureUrls: string[]
+}
+
+export interface ArticleManagementForm {
+  /**
+   * 文章内容
+   */
+  articleDesc: string
+  /**
+   * 文章分类
+   */
+  articleType: string
+  /**
+   * 创建时间
+   */
+  createTime: string
+  /**
+   * 创建人ID
+   */
+  createUser: string
+  createUserName: string
+  /**
+   * 主键
+   */
+  id: string
+  /**
+   * 链接地址
+   */
+  linkUrl: string
+  /**
+   * 主图
+   */
+  mainPicture: string
+  /**
+   * 文章名称
+   */
+  title: string
+  /**
+   * 更新时间
+   */
+  updateTime: string
+  /**
+   * 修改人ID
+   */
+  updateUser: string
+  updateUserName: string
+}
+
+export interface AgreementForm {
+  /**
+   * 内容
+   */
+  contentData: string
+  /**
+   * 创建时间
+   */
+  createTime: string
+  /**
+   * 创建人ID
+   */
+  createUser: string
+  /**
+   * 主键
+   */
+  id: string
+  /**
+   * 是否展示
+   */
+  isDisplay: number
+  /**
+   * 标题
+   */
+  title: string
+  /**
+   * 更新时间
+   */
+  updateTime: string
+  /**
+   * 修改人ID
+   */
+  updateUser: string
+}
+
+export interface CourseScheduleUpdateDTO {
+  /**
+   * 可预约人数
+   */
+  canBookNum: number
+  /**
+   * 课程ID
+   */
+  courseId: string
+  /**
+   * 课程表排课ID
+   */
+  id: number
+  /**
+   * 老师ID
+   */
+  teacherId: string
+}
+
+export interface ClassroomUpdateDTO {
+  /**
+   * 课室ID
+   */
+  id: number
+  /**
+   * 课室名称
+   */
+  name: string
+  /**
+   * 课室状态, 1-正常，0-停用
+   */
+  status: number
+}
+
+export interface RichTextForm {
+  /**
+   * 内容
+   */
+  contentData: string
+  /**
+   * 创建时间
+   */
+  createTime: string
+  /**
+   * 创建人ID
+   */
+  createUser: string
+  /**
+   * 主键
+   */
+  id: number
+  /**
+   * 是否展示
+   */
+  isDisplay: number
+  /**
+   * 图片url
+   */
+  mainPicture: string
+  /**
+   * 标题
+   */
+  title: string
+  /**
+   * 更新时间
+   */
+  updateTime: string
+  /**
+   * 修改人ID
+   */
+  updateUser: string
+}
+
+export interface EditorForm {
+  /**
+   * 内容
+   */
+  contentData: string
+  /**
+   * 创建时间
+   */
+  createTime: string
+  /**
+   * 创建人ID
+   */
+  createUser: string
+  /**
+   * 类型
+   */
+  editorType: number
+  /**
+   * 主键
+   */
+  id: string
+  /**
+   * 是否展示 0 否  1 是
+   */
+  isDisplay: number
+  /**
+   * 图片url
+   */
+  mainPicture: string
+  /**
+   * 简述
+   */
+  summary: string
+  /**
+   * 标题
+   */
+  title: string
+  /**
+   * 更新时间
+   */
+  updateTime: string
+  /**
+   * 修改人ID
+   */
+  updateUser: string
+}
+
+export interface SurveyQuestion {
+  createTime: string
+  id: string
+  questionOptions: string
+  questionText: string
+  questionType: string
+  required: number
+  sortOrder: number
+  surveyId: string
+  updateTime: string
+}
+
+export interface SurveyTemplateDesignForm {
+  /**
+   * 问卷模板ID
+   */
+  id: string
+  /**
+   * 问题
+   */
+  surveyQuestions: SurveyQuestion[]
+}
+
+export interface PassAddVO {
+  /**
+   * 可用额度（类型为储值卡时必填）
+   */
+  availableAmount: number
+  /**
+   * 可用次数（类型为次卡时必填）
+   */
+  availableTimes: number
+  /**
+   * banner轮播图URL
+   */
+  bannerUrl: string
+  /**
+   * 是否可以线上售卖，0-否，1-是
+   */
+  canSaleOnLine: number
+  /**
+   * 适用课程ID列表（scope为指定课程时必填）
+   */
+  courses: PassCourseVO[]
+  /**
+   * 是否体验卡, 0-否，1-是
+   */
+  isTrial: number
+  /**
+   * 卡名称
+   */
+  name: string
+  /**
+   * 购买说明
+   */
+  purchaseNotes: string
+  /**
+   * 购买价格，单位元
+   */
+  purchasePrice: number
+  /**
+   * 缩略图URL
+   */
+  thumbnailUrl: string
+  /**
+   * 卡类型（次卡/额度卡），参考字典CardType
+   */
+  type: string
+  /**
+   * 有效期时长，期限卡需要设置
+   */
+  validityPeriod: number
+  /**
+   * 有效期单位，参考字典TimeUnit，期限卡需要设置
+   */
+  validityUnit: string
+}
+
+export interface OrderDetail {
+  /**
+   * 商品总金额
+   */
+  commodityAmount: number
+  /**
+   * 商品数量
+   */
+  commodityCount: number
+  /**
+   * 商品id
+   */
+  commodityId: string
+  /**
+   * 商品名称
+   */
+  commodityName: string
+  /**
+   * 商品积分
+   */
+  commodityPoints: number
+  /**
+   * 商品单价
+   */
+  commodityPrice: number
+  /**
+   * 主键
+   */
+  id: string
+  /**
+   * 商品主图
+   */
+  mainPicture: string
+  /**
+   * 订单表id
+   */
+  orderId: string
+  /**
+   * 商品总积分
+   */
+  pointsCount: number
+}
+
+export interface OrdersForm {
+  /**
+   * 优惠金额
+   */
+  discountAmount: number
+  /**
+   * 主键
+   */
+  id: string
+  /**
+   * 备注信息
+   */
+  mark: string
+  /**
+   * 订单金额
+   */
+  orderAmount: number
+  /**
+   * 订单商品
+   */
+  orderDetailList: OrderDetail[]
+  /**
+   * 订单编号
+   */
+  orderNumber: string
+  /**
+   * 支付金额
+   */
+  payAmount: number
+  /**
+   * 用户id
+   */
+  userId: string
+}
+
+export interface CustReturnVisitAddFrom {
+  /**
+   * 会员编码
+   */
+  custId: string
+  /**
+   * 会员名称
+   */
+  custName: string
+  /**
+   * 机构id
+   */
+  deptId: string
+  /**
+   * 机构id
+   */
+  deptName: string
+  /**
+   * 更新时添加
+   */
+  id: string
+  /**
+   * 联系方式
+   */
+  phone: string
+  /**
+   * 回访内容
+   */
+  visitContent: string
+}
+
+export interface CourseAddVO {
+  /**
+   * 是否可以在小程序展示(0:否,1:是)
+   */
+  canBeShownOnMiniProgram: string
+  /**
+   * 是否可以在小程序售卖(0:否,1:是)
+   */
+  canBeSoldOnMiniProgram: number
+  /**
+   * 课程中文名
+   */
+  chineseName: string
+  /**
+   * 课程描述
+   */
+  description: string
+  /**
+   * 难度星级
+   */
+  difficultyRate: string
+  /**
+   * 课程时长，单位为分
+   */
+  duration: number
+  /**
+   * 课程英文名
+   */
+  englishName: string
+  /**
+   * 课程图片 URL
+   */
+  imageUrl: string
+  /**
+   * 课程主要训练目标
+   */
+  mainTrainingGoal: string
+  /**
+   * 价格
+   */
+  price: number
+  /**
+   * 课程次要训练目标
+   */
+  secondaryTrainingGoal: string[]
+  /**
+   * 课班规模，大班课，小班课，私教课
+   */
+  size: string
+  /**
+   * 排序号
+   */
+  sortNumber: number
+  /**
+   * 课程状态
+   */
+  status: string
+  /**
+   * 课程标签，参考字典CourseTag
+   */
+  tag: string
+}
+
+export interface UserCouponDto {
+  idList: number[]
+  userId: string
+}
+
+export interface CountryAreaPageQuery {
+  /**
+   * 分类名称
+   */
+  keywords: string
+  /**
+   * 分类名称
+   */
+  name: string
+  /**
+   * 多个名称用，隔开
+   */
+  names: string
+  /**
+   * 页码
+   */
+  pageNum: number
+  /**
+   * 每页记录数
+   */
+  pageSize: number
   /**
    * 父级id
    */
   parentId: string
+  /**
+   * 多个名称用，隔开
+   */
+  parentName: string
+}
+
+export interface CountryAreaVO {
+  /**
+   * 子部门
+   */
+  children: CountryAreaVO[]
+  /**
+   * 创建时间
+   */
+  createTime: string
+  /**
+   * 创建人
+   */
+  createUser: string
+  /**
+   * 创建人姓名
+   */
+  createUserName: string
+  /**
+   * id
+   */
+  id: string
   /**
    * id全路径
    */
@@ -219,165 +1057,451 @@ export interface CountryAreaForm {
    * 是否在小程序展示(0-不展示，1-展示)
    */
   isShowMiniapp: number
-  createTime: string
-  createUser: string
+  /**
+   * 级别1,2,3,4
+   */
+  level: number
+  /**
+   * 名称
+   */
+  name: string
+  /**
+   * 英文名称
+   */
+  nameEn: string
+  /**
+   * 父级id
+   */
+  parentId: string
+  /**
+   * 编辑时间
+   */
   updateTime: string
+  /**
+   * 编辑人
+   */
   updateUser: string
-  createUserName: string
+  /**
+   * 编辑人姓名
+   */
   updateUserName: string
 }
 
-export interface ArticleManagementForm {
+export interface ContractAddForm {
+  /**
+   * 实付金额，单位元
+   */
+  actualPayment: number
+  /**
+   * 优惠券ID列表
+   */
+  couponIds: string[]
+  /**
+   * 会员ID
+   */
+  customerId: string
+  /**
+   * 合同结束日期，格式为yyyy-MM-dd
+   */
+  endDate: string
+  /**
+   * 卡信息ID
+   */
+  passId: string
+  /**
+   * 应付金额，单位元
+   */
+  payableAmount: number
+  /**
+   * 推荐人ID
+   */
+  referrerId: string
+  /**
+   * 备注信息
+   */
+  remark: string
+  /**
+   * 销售人员ID列表
+   */
+  salerIds: string[]
+  /**
+   * 合同开始日期，格式为yyyy-MM-dd
+   */
+  startDate: string
+}
+
+export interface CommodityClassificationPageQuery {
+  /**
+   * 分类名称
+   */
+  name: string
+  /**
+   * 页码
+   */
+  pageNum: number
+  /**
+   * 每页记录数
+   */
+  pageSize: number
+  /**
+   * 父级id
+   */
+  parentId: string
+  /**
+   * 是否只查父级，0 否 1 是 默认为否
+   */
+  queryParent: number
+  /**
+   * 状态 1启用 0停用
+   */
+  status: number
+}
+
+export interface CommodityClassificationVO {
+  /**
+   * 子分类
+   */
+  children: CommodityClassificationVO[]
+  createTime: string
+  createUser: string
+  /**
+   * 图标
+   */
+  icon: string
   /**
    * 主键
    */
   id: string
   /**
-   * 文章名称
+   * id全路径
    */
-  title: string
+  idPath: string
   /**
-   * 文章内容
+   * 级别1,2,3,4,5
    */
-  articleDesc: string
+  level: number
   /**
-   * 链接地址
+   * 分类名称
    */
-  linkUrl: string
+  name: string
+  /**
+   * 父级code
+   */
+  parentId: string
+  /**
+   * 1 启用 0 停用
+   */
+  status: number
+  updateTime: string
+  updateUser: string
+}
+
+export interface LoginResult {
+  /**
+   * 访问token
+   */
+  accessToken: string
+  /**
+   * 过期时间(单位：毫秒)
+   */
+  expires: number
+  /**
+   * 刷新token
+   */
+  refreshToken: string
+  /**
+   * token 类型
+   */
+  tokenType: string
+}
+
+export interface CourseScheduleDTO {
+  /**
+   * 可预约人数
+   */
+  canBookNum: number
+  /**
+   * 课室ID
+   */
+  classroomId: number
+  /**
+   * 课程ID
+   */
+  courseId: string
+  /**
+   * 结束时间
+   */
+  endTime: number
+  /**
+   * 开始时间
+   */
+  startTime: number
+  /**
+   * 老师ID
+   */
+  teacherId: string
+}
+
+export interface ClassroomDTO {
+  /**
+   * 课室名称
+   */
+  name: string
+  /**
+   * 所属门店ID
+   */
+  storeId: string
+}
+
+export interface ClassroomVO {
   /**
    * 创建时间
    */
   createTime: string
   /**
+   * 创建人ID
+   */
+  createUserId: string
+  /**
+   * 创建人名称
+   */
+  createUserName: string
+  /**
+   * 删除状态, 0-未删除，1-已删除
+   */
+  delFalg: number
+  /**
+   * ID
+   */
+  id: number
+  /**
+   * 课室名称
+   */
+  name: string
+  /**
+   * 课室状态, 1-正常，0-停用
+   */
+  status: number
+  /**
+   * 所属门店ID
+   */
+  storeId: string
+  /**
    * 更新时间
    */
   updateTime: string
   /**
-   * 创建人ID
+   * 更新人ID
    */
-  createUser: string
-  createUserName: string
+  updateUserId: string
+  /**
+   * 更新人名称
+   */
   updateUserName: string
-  /**
-   * 主图
-   */
-  mainPicture: string
-  /**
-   * 修改人ID
-   */
-  updateUser: string
-  /**
-   * 文章分类
-   */
-  articleType: string
 }
 
-export interface AgreementForm {
+export interface UserPointsDetailQuery {
   /**
-   * 主键
+   * 结束时间
+   */
+  endDate: string
+  /**
+   * 页码
+   */
+  pageNum: number
+  /**
+   * 每页记录数
+   */
+  pageSize: number
+  /**
+   * 开始时间
+   */
+  startDate: string
+  /**
+   * 会员id
+   */
+  userId: string
+  year: string
+}
+
+export interface OrderItem {
+  asc: boolean
+  column: string
+}
+
+export interface PageUserPointsDetail {
+  countId: string
+  current: number
+  maxLimit: number
+  optimizeCountSql: PageUserPointsDetail
+  optimizeJoinOfCountSql: boolean
+  orders: OrderItem[]
+  pages: number
+  records: UserPointsDetail[]
+  searchCount: PageUserPointsDetail
+  size: number
+  total: number
+}
+
+export interface UserPointsDetail {
+  /**
+   * 消费金额
+   */
+  amount: number
+  availablePoints: number
+  consumeRatio: number
+  courseName: string
+  createTime: string
+  createUser: string
+  delFlag: number
+  expiresFlag: number
+  expiresTime: string
+  id: number
+  invitationCustId: string
+  orderId: string
+  /**
+   * 描述信息
+   */
+  pointDesc: string
+  /**
+   * 积分数量
+   */
+  points: number
+  /**
+   * 1, 消费获取积分 2, 积分兑换
+   */
+  type: number
+  updateTime: string
+  updateUser: string
+  /**
+   * 用户id
+   */
+  userId: string
+  /**
+   * 用户名称
+   */
+  userName: string
+}
+
+export interface StoreEditVO {
+  /**
+   * 详细地址
+   */
+  address: string
+  /**
+   * 轮播图URL列表（JSON数组）
+   */
+  carouselImages: string[]
+  /**
+   * 门店介绍
+   */
+  description: string
+  /**
+   * 门店ID
    */
   id: string
   /**
-   * 标题
+   * 纬度
    */
-  title: string
+  latitude: string
   /**
-   * 内容
+   * 经度
    */
-  contentData: string
+  longitude: string
   /**
-   * 创建时间
+   * 主图URL
    */
-  createTime: string
+  mainImage: string
   /**
-   * 更新时间
+   * 门店名称
    */
-  updateTime: string
+  name: string
   /**
-   * 创建人ID
+   * 联系电话
    */
-  createUser: string
-  /**
-   * 修改人ID
-   */
-  updateUser: string
-  /**
-   * 是否展示
-   */
-  isDisplay: number
+  phone: string
 }
 
-export interface RichTextForm {
+export interface StoreAddVO {
   /**
-   * 主键
+   * 详细地址
    */
-  id: number
+  address: string
   /**
-   * 标题
+   * 轮播图URL列表（逗号分隔）
    */
-  title: string
+  carouselImages: string[]
   /**
-   * 内容
+   * 门店介绍
    */
-  contentData: string
+  description: string
   /**
-   * 创建时间
+   * 纬度
    */
-  createTime: string
+  latitude: string
   /**
-   * 更新时间
+   * 经度
    */
-  updateTime: string
+  longitude: string
   /**
-   * 创建人ID
+   * 主图URL
    */
-  createUser: string
+  mainImage: string
   /**
-   * 修改人ID
+   * 门店名称
    */
-  updateUser: string
+  name: string
   /**
-   * 图片url
+   * 联系电话
    */
-  mainPicture: string
-  /**
-   * 是否展示
-   */
-  isDisplay: number
-}
-
-export interface PointRuleForm {
-  /**
-   * 积分规则ID
-   */
-  id: number
-  /**
-   * 规则名称
-   */
-  ruleName: string
-  /**
-   * 积分增加比例
-   */
-  pointAddRatio: number
-  /**
-   * 积分兑换比例
-   */
-  pointRedemptionRatio: number
-  /**
-   * 积分有效时长(分钟)
-   */
-  ruleValidit: number
-  /**
-   * 是否启用(0否 1是)
-   */
-  ruleStatus: number
+  phone: string
 }
 
 export interface LevelRuleForm {
   /**
+   * 消费加分比例
+   */
+  consumeRatio: number
+  /**
+   * 会员折扣
+   */
+  discount: number
+  /**
+   * 积分有效时长(天)
+   */
+  duration: number
+  /**
+   * 权益规则
+   */
+  equityRules: string
+  /**
+   * 积分兑换比例
+   */
+  exchangeRatio: number
+  /**
    * 会员等级规则ID
    */
   id: number
+  /**
+   * 积分获取
+   */
+  integralGain: string
+  /**
+   * 权益说明
+   */
+  interestsStatement: string
+  /**
+   * 邀请加分比例
+   */
+  invitedRatio: number
+  /**
+   * 能否查看课程价格，0不可以，1可以
+   */
+  isShowCoursePrice: number
+  /**
+   * 能否查看讲师详情，0不可以，1可以
+   */
+  isShowTeacherDetail: number
   /**
    * 等级
    */
@@ -391,46 +1515,6 @@ export interface LevelRuleForm {
    */
   levelRule: number
   /**
-   * 邀请加分比例
-   */
-  invitedRatio: number
-  /**
-   * 消费加分比例
-   */
-  consumeRatio: number
-  /**
-   * 积分兑换比例
-   */
-  exchangeRatio: number
-  /**
-   * 积分有效时长(天)
-   */
-  duration: number
-  /**
-   * 会员折扣
-   */
-  discount: number
-  /**
-   * 能否查看讲师详情，0不可以，1可以
-   */
-  isShowTeacherDetail: number
-  /**
-   * 能否查看课程价格，0不可以，1可以
-   */
-  isShowCoursePrice: number
-  /**
-   * 权益说明
-   */
-  interestsStatement: string
-  /**
-   * 积分获取
-   */
-  integralGain: string
-  /**
-   * 权益规则
-   */
-  equityRules: string
-  /**
    * 可查看的课程数量，-1表示不限制
    */
   viewableCourseCount: number
@@ -440,366 +1524,245 @@ export interface LevelRuleForm {
   viewableTeacherCount: number
 }
 
-export interface PassAddVO {
+export interface KsCustTransferDto {
   /**
-   * 卡名称
+   * 场馆编码
    */
-  name: string
+  deptId: number
   /**
-   * 卡类型（次卡/额度卡）
+   * 场馆名称
    */
-  type: string
-  /**
-   * 购买价格
-   */
-  purchasePrice: number
-  /**
-   * 可用额度（类型为额度卡时必填）
-   */
-  availableAmount: number
-  /**
-   * 可用次数（类型为次卡时必填）
-   */
-  availableTimes: number
-  /**
-   * 有效期开始时间戳
-   */
-  validStartTime: number
-  /**
-   * 有效期结束时间戳
-   */
-  validEndTime: number
-  /**
-   * 适用范围（全局通用/指定课程）
-   */
-  scope: string
-  /**
-   * 适用课程ID列表（scope为指定课程时必填）
-   */
-  courseIds: string[]
-}
-
-export interface CourseAddVO {
-  /**
-   * 课程中文名
-   */
-  chineseName: string
-  /**
-   * 课程英文名
-   */
-  englishName: string
-  /**
-   * 课程图片 URL
-   */
-  imageUrl: string
-  /**
-   * 课程所属的门店 ID
-   */
-  storeId: string
-  /**
-   * 课程规则类型，瑜伽课程或团课
-   */
-  type: string
-  /**
-   * 课班规模，大班课，小班课，私教课
-   */
-  size: string
-  /**
-   * 价格
-   */
-  price: number
-  /**
-   * 课程状态
-   */
-  status: string
-  /**
-   * 课程主要训练目标
-   */
-  mainTrainingGoal: string
-  /**
-   * 课程次要训练目标
-   */
-  secondaryTrainingGoal: string[]
-  /**
-   * 开课时间-开始
-   */
-  startTime: number
-  /**
-   * 开课时间-结束
-   */
-  startEnd: number
-  /**
-   * 排序号
-   */
-  sortNumber: number
-  /**
-   * 难度星级
-   */
-  difficultyRate: string
-  /**
-   * 课程描述
-   */
-  description: string
-}
-
-export interface CountryAreaPageQuery {
-  /**
-   * 页码
-   */
-  pageNum: number
-  /**
-   * 每页记录数
-   */
-  pageSize: number
-  /**
-   * 分类名称
-   */
-  name: string
-  /**
-   * 分类名称
-   */
-  keywords: string
-  /**
-   * 父级id
-   */
-  parentId: string
-  /**
-   * 多个名称用，隔开
-   */
-  parentName: string
-  /**
-   * 多个名称用，隔开
-   */
-  names: string
-}
-
-export interface CountryAreaVO {
-  /**
-   * id
-   */
+  deptName: string
   id: string
-  /**
-   * 名称
-   */
-  name: string
-  /**
-   * 英文名称
-   */
-  nameEn: string
-  /**
-   * 级别1,2,3,4
-   */
-  level: number
-  /**
-   * 父级id
-   */
-  parentId: string
-  /**
-   * id全路径
-   */
-  idPath: string
-  /**
-   * 是否在小程序展示(0-不展示，1-展示)
-   */
-  isShowMiniapp: number
-  /**
-   * 创建时间
-   */
-  createTime: string
-  /**
-   * 创建人
-   */
-  createUser: string
-  /**
-   * 创建人姓名
-   */
-  createUserName: string
-  /**
-   * 编辑时间
-   */
-  updateTime: string
-  /**
-   * 编辑人
-   */
-  updateUser: string
-  /**
-   * 编辑人姓名
-   */
-  updateUserName: string
-  /**
-   * 子部门
-   */
-  children: CountryAreaVO[]
-}
-
-export interface LoginResult {
-  /**
-   * 访问token
-   */
-  accessToken: string
-  /**
-   * token 类型
-   */
-  tokenType: string
-  /**
-   * 刷新token
-   */
-  refreshToken: string
-  /**
-   * 过期时间(单位：毫秒)
-   */
-  expires: number
 }
 
 export interface KsCustForm {
   /**
-   * 用户id
+   * 常住地
    */
-  id: string
+  addres: string
+  addresList: string[]
+  /**
+   * 分配时间
+   */
+  allocateTime: string
+  /**
+   * 1 已到店  2未办卡 3 已办卡
+   */
+  applyCard: number
   /**
    * 用户头像
    */
   avatar: string
   /**
-   * 用户昵称
-   */
-  nickname: string
-  /**
-   * 用户账户
-   */
-  username: string
-  /**
-   * 用户密码
-   */
-  password: string
-  /**
-   * 真实姓名
-   */
-  realName: string
-  /**
-   * 性别
-   */
-  gender: string
-  /**
-   * 用户备注
-   */
-  mark: string
-  /**
-   * 父级id
-   */
-  parentId: string
-  /**
-   * 用户ID
-   */
-  userId: number
-  registerFrom: string
-  /**
-   * 手机号码
-   */
-  phone: string
-  /**
    * 用户余额
    */
   balance: number
-  /**
-   * 用户剩余金币
-   */
-  goldBalance: number
-  /**
-   * 用户剩余积分
-   */
-  integralBalance: number
-  /**
-   * 1为正常，0为禁止
-   */
-  status: boolean
-  /**
-   * 颜色
-   */
-  preferenceColor: string
-  /**
-   * 亲子账户人数
-   */
-  familyMemberCount: number
-  /**
-   * 常住地
-   */
-  addres: string
-  /**
-   * 微信用户json信息
-   */
-  wxProfile: string
-  deleted: number
-  /**
-   * 注册时间
-   */
-  createTime: string
-  /**
-   * 最后一次登录时间
-   */
-  updateTime: string
   /**
    * 生日
    */
   birthday: string
   /**
-   * 用户等级
+   * 证件编码
    */
-  level: number
+  cardNumber: string
   /**
-   * wechat openID
+   * 证件类型
    */
-  openId: string
+  cardType: string
   /**
-   * 性别 1 男  2 女
+   * 渠道，OnLine-线上小程序，OffLine-线下后台
    */
-  sex: boolean
+  channel: string
+  childNum: number
   /**
-   * 爱好
+   * 教练id
    */
-  hobbies: string
+  coachId: string
+  /**
+   * 教练名称
+   */
+  coachName: string
+  /**
+   * 合同编码
+   */
+  contractCode: string
+  /**
+   * 咨询师编码
+   */
+  counselor: string
+  /**
+   * 咨询师名称
+   */
+  counselorName: string
   /**
    * 希望学习的课程
    */
   courses: string
   /**
-   * 积分
+   * 注册时间
    */
-  points: number
-  addresList: string[]
-  childNum: number
+  createTime: string
   /**
-   * 邀请他人的邀请码
+   * 当前卡种编码
    */
-  invitationCustCode: string
-  invitationCust: string
+  currentPassCode: string
+  /**
+   * 当前卡种名称
+   */
+  currentPassName: string
   custId: string
+  /**
+   * 会员类型  1 访客  2 会员
+   */
+  customerType: number
+  deleted: number
+  /**
+   * 场馆编码
+   */
+  deptId: number
+  /**
+   * 场馆名称
+   */
+  deptName: string
+  /**
+   * 亲子账户人数
+   */
+  familyMemberCount: number
+  /**
+   * 档案数量
+   */
+  filesNumber: number
+  /**
+   * 用户剩余金币
+   */
+  goldBalance: number
+  /**
+   * 爱好
+   */
+  hobbies: string
+  /**
+   * 用户id
+   */
+  id: string
+  /**
+   * 用户剩余积分
+   */
+  integralBalance: number
   /**
    * 自身邀请码
    */
   invitationCode: string
+  invitationCust: string
+  /**
+   * 邀请他人的邀请码
+   */
+  invitationCustCode: string
   /**
    * 邀请时间
    */
   invitationTime: string
   /**
-   * 渠道，OnLine-线上小程序，OffLine-线下后台
-   */
-  channel: string
-  /**
    * 是否白名单(0否 1是)
    */
   isWhitelist: number
-}
-
-export interface CustGoldDto {
-  id: string
-  addGold: number
-}
-
-export interface CustCouponQueryDto {
-  couponIds: string[]
-  id: string
+  /**
+   * 用户等级
+   */
+  level: number
+  /**
+   * 会员邮箱
+   */
+  mail: string
+  /**
+   * 用户备注
+   */
+  mark: string
+  /**
+   * 会员编码
+   */
+  memberCode: string
+  /**
+   * 入会时间
+   */
+  memberTime: string
+  /**
+   * 会员类型  取字典表memberType
+   */
+  memberType: string
+  /**
+   * 国籍
+   */
+  nationality: string
+  /**
+   * 用户昵称
+   */
+  nickname: string
+  /**
+   * wechat openID
+   */
+  openId: string
+  /**
+   * 父级id
+   */
+  parentId: string
+  /**
+   * 用户密码
+   */
+  password: string
+  /**
+   * 手机号码
+   */
+  phone: string
+  /**
+   * 积分
+   */
+  points: number
+  /**
+   * 颜色
+   */
+  preferenceColor: string
+  /**
+   * 真实姓名
+   */
+  realName: string
+  registerFrom: string
+  /**
+   * 性别  1 男  2 女
+   */
+  sex: number
+  /**
+   * 状态 1 未办卡 2 未激活 3 正常 4 过期 5 缴费暂停 6 因病暂停 7 投诉暂停 8 已转卡 9 已退卡 10 其他暂停
+   */
+  status: number
+  /**
+   * 累计耗课
+   */
+  sumConsumption: number
+  /**
+   * 最后一次登录时间
+   */
+  updateTime: string
+  /**
+   * 更新人
+   */
+  updateUser: string
+  /**
+   * 更新人姓名
+   */
+  updateUserName: string
+  /**
+   * 用户ID
+   */
+  userId: number
+  /**
+   * 用户账户
+   */
+  username: string
+  /**
+   * 微信用户json信息
+   */
+  wxProfile: string
 }
 
 export interface DistributionQuery {
@@ -808,346 +1771,230 @@ export interface DistributionQuery {
    */
   id: string
   /**
-   * 待分配的用户的父级id
+   * 分配的咨询师
    */
-  parentId: string
+  userId: string
   /**
-   * 分配的后台管理人员
+   * 分配的咨询师
    */
-  userIds: string
+  userName: string
 }
 
-export interface KsCustQueryDto {
-  parentId: string
-}
-
-export interface KsCustVO {
-  /**
-   * 用户id
-   */
-  id: string
-  /**
-   * 用户头像
-   */
-  avatar: string
-  /**
-   * 用户昵称
-   */
-  nickname: string
-  /**
-   * 用户账户
-   */
-  username: string
-  /**
-   * 用户密码
-   */
-  password: string
-  /**
-   * 真实姓名
-   */
-  realName: string
-  /**
-   * 性别
-   */
-  gender: string
-  /**
-   * 用户备注
-   */
-  mark: string
-  /**
-   * 父级id
-   */
-  parentId: string
-  /**
-   * 用户ID
-   */
-  userId: number
-  registerFrom: string
-  /**
-   * 手机号码
-   */
-  phone: string
-  /**
-   * 用户余额
-   */
-  balance: number
-  /**
-   * 用户剩余金币
-   */
-  goldBalance: number
-  /**
-   * 用户剩余积分
-   */
-  integralBalance: number
-  /**
-   * 1为正常，0为禁止
-   */
-  status: boolean
-  /**
-   * 颜色
-   */
-  preferenceColor: string
-  /**
-   * 亲子账户人数
-   */
-  familyMemberCount: number
-  /**
-   * 常住地
-   */
-  addres: string
-  /**
-   * 微信用户json信息
-   */
-  wxProfile: string
-  deleted: number
-  /**
-   * 注册时间
-   */
+export interface SurveyTemplate {
   createTime: string
-  /**
-   * 最后一次登录时间
-   */
-  updateTime: string
-  /**
-   * 生日
-   */
-  birthday: string
-  /**
-   * 用户等级
-   */
-  level: number
-  /**
-   * wechat openID
-   */
-  openId: string
-  /**
-   * 性别 1 男  2 女
-   */
-  sex: boolean
-  /**
-   * 爱好
-   */
-  hobbies: string
-  /**
-   * 希望学习的课程
-   */
-  courses: string
-  courseId: string
-  childNum: number
-  /**
-   * 管理人员，多个用，隔开
-   */
-  managerPerson: string
   createUser: string
   createUserName: string
   /**
-   * 黑名单  0 否  1  是
+   * 问卷描述
    */
-  disallowLogin: number
+  description: string
+  id: string
+  /**
+   *  是否启用  0 停用  1 启用
+   */
+  status: number
+  /**
+   * 问卷标题
+   */
+  title: string
+  updateTime: string
 }
 
-export interface KsCustChannelChangeDto {
+export interface IPageSurveyTemplate {
+  current: number
+  pages: number
+  records: SurveyTemplate[]
+  size: number
+  total: number
+}
+
+export interface ResultSurveyAnswer {
+  code: string
+  data: SurveyAnswer
+  msg: string
+}
+
+export interface SurveyAnswer {
+  answerValue: string
+  createTime: string
+  id: string
+  questionId: string
+  responseId: string
+  updateTime: string
+}
+
+export interface IPageSurveyAnswerVO {
+  current: number
+  pages: number
+  records: SurveyAnswerVO[]
+  size: number
+  total: number
+}
+
+export interface SurveyAnswerVO {
   /**
-   * 会员账号id
+   * 回答内容
+   */
+  answerValue: string
+  /**
+   * 创建时间
+   */
+  createTime: string
+  /**
+   * 答案ID
    */
   id: string
   /**
-   * 渠道，OnLine-线上小程序，OffLine-线下后台
+   * 问题ID
    */
-  channel: string
+  questionId: string
+  /**
+   * 所属回答ID
+   */
+  responseId: string
+  /**
+   * 更新时间
+   */
+  updateTime: string
 }
 
-export interface KsCustAttachDto {
+export interface ShoppingCarts {
   /**
-   * 目标父账号id
+   * 产品数量
    */
-  targetId: string
+  commodityCount: number
   /**
-   * 待挂靠的会员id，挂靠后成为子账号
+   * 商品id
    */
-  toAttachId: string
+  commodityId: string
+  createTime: string
+  /**
+   * 创建人ID
+   */
+  createUser: string
+  /**
+   * 创建人姓名
+   */
+  createUserName: string
+  /**
+   * 主键
+   */
+  id: string
+  updateTime: string
+  /**
+   * 用户id
+   */
+  userId: string
+  /**
+   * 用户名称
+   */
+  userName: string
 }
 
-export interface IPagePointsRulesVO {
-  size: number
+export interface IPageShoppingCartsVO {
   current: number
-  records: PointsRulesVO[]
   pages: number
+  records: ShoppingCartsVO[]
+  size: number
   total: number
 }
 
-export interface PointsRulesVO {
+export interface ShoppingCartsVO {
   /**
-   * 积分规则ID
+   * 产品数量
    */
-  id: number
+  commodityCount: number
   /**
-   * 积分规则名称
+   * 商品id
    */
-  ruleName: string
-  /**
-   * 积分增加比例
-   */
-  pointAddRatio: number
-  /**
-   * 积分兑换比例
-   */
-  pointRedemptionRatio: number
-  /**
-   * 积分有效时长(分钟)
-   */
-  ruleValidit: number
-  /**
-   * 是否启用(0否 1是)
-   */
-  ruleStatus: number
-  /**
-   * 是否删除(0否 1是)
-   */
-  delFlag: number
+  commodityId: string
   /**
    * 创建时间
    */
   createTime: string
   /**
-   * 创建人
+   * 创建人ID
    */
   createUser: string
   /**
-   * 编辑时间
+   * 创建人姓名
    */
-  updateTime: string
+  createUserName: string
   /**
-   * 编辑人
+   * 商品描述
    */
-  updateUser: string
-}
-
-export interface IPageMemberRuleVO {
-  size: number
-  current: number
-  records: MemberRuleVO[]
-  pages: number
-  total: number
-}
-
-export interface MemberRuleVO {
-  /**
-   * 会员等级规则ID
-   */
-  id: number
-  /**
-   * 会员等级规则ID
-   */
-  level: number
-  /**
-   * 会员等级名称
-   */
-  levelName: string
-  /**
-   * 会员等级规则ID
-   */
-  levelRule: number
-  /**
-   * 邀请加分比例
-   */
-  invitedRatio: number
-  /**
-   * 消费加分比例
-   */
-  consumeRatio: number
-  /**
-   * 积分兑换比例
-   */
-  exchangeRatio: number
-  /**
-   * 积分有效时长(天)
-   */
-  duration: number
-  /**
-   * 会员折扣
-   */
-  discount: number
-  /**
-   * 创建时间
-   */
-  createTime: string
-  /**
-   * 创建人
-   */
-  createUser: string
-  /**
-   * 编辑时间
-   */
-  updateTime: string
-  /**
-   * 编辑人
-   */
-  updateUser: string
-  /**
-   * 是否删除(0否 1是)
-   */
-  delFlag: number
-  /**
-   * 能否查看讲师详情，0不可以，1可以
-   */
-  isShowTeacherDetail: number
-  /**
-   * 可查看的课程数量，-1表示不限制
-   */
-  viewableCourseCount: number
-  /**
-   * 可查看的讲师数量，-1表示不限制
-   */
-  viewableTeacherCount: number
-  /**
-   * 能否查看课程价格，0不可以，1可以
-   */
-  isShowCoursePrice: number
-  /**
-   * 权益说明
-   */
-  interestsStatement: string
-  /**
-   * 积分获取
-   */
-  integralGain: string
-  /**
-   * 权益规则
-   */
-  equityRules: string
-}
-
-export interface BaseDto {
-  level: number
-  name: string
-}
-
-export interface IPageRotationChartPageVO {
-  size: number
-  current: number
-  records: RotationChartPageVO[]
-  pages: number
-  total: number
-}
-
-export interface RotationChartPageVO {
+  description: string
   /**
    * 主键
    */
   id: string
   /**
-   * 活动名称
+   * 缩略图
+   */
+  mainPicture: string
+  /**
+   * 商品名称
    */
   name: string
+  /**
+   * 积分
+   */
+  points: number
+  /**
+   * 商品售价
+   */
+  price: number
+  /**
+   * 购买方式（1 仅金钱支出，2 仅积分兑换，3 合并支付）
+   */
+  priceMethod: string
+  /**
+   * 更新时间
+   */
+  updateTime: string
+  /**
+   * 用户id
+   */
+  userId: string
+  /**
+   * 用户名称
+   */
+  userName: string
+}
+
+export interface IPageRotationChartPageVO {
+  current: number
+  pages: number
+  records: RotationChartPageVO[]
+  size: number
+  total: number
+}
+
+export interface RotationChartPageVO {
   /**
    * 轮播图
    */
   bannerPicture: string
   /**
+   * 创建时间
+   */
+  createTime: string
+  /**
+   * 创建人ID
+   */
+  createUser: string
+  /**
+   * 主键
+   */
+  id: string
+  /**
    * 跳转地址
    */
   jumpUrl: string
+  /**
+   * 活动名称
+   */
+  name: string
   /**
    * 显示顺序
    */
@@ -1157,181 +2004,409 @@ export interface RotationChartPageVO {
    */
   status: number
   /**
-   * 创建时间
+   * 类型编码
    */
-  createTime: string
+  typeCode: string
+  /**
+   * 类型名称
+   */
+  typeName: string
   /**
    * 更新时间
    */
   updateTime: string
+  /**
+   * 修改人ID
+   */
+  updateUser: string
+}
+
+export interface RotationChart {
+  bannerPicture: string
+  createTime: string
+  createUser: string
+  id: string
+  jumpUrl: string
+  name: string
+  sort: number
+  status: number
+  /**
+   * 类型编码
+   */
+  typeCode: string
+  /**
+   * 类型名称
+   */
+  typeName: string
+  updateTime: string
+  updateUser: string
+}
+
+export interface PassCourseDetailVO {
+  /**
+   * 可用额度（类型为储值卡时必填）
+   */
+  availableAmount: number
+  /**
+   * 可用次数（类型为次卡时必填）
+   */
+  availableTimes: number
+  /**
+   * 课班规模，参考字典CourseSize
+   */
+  courseSize: string
+  /**
+   * 课程标签
+   */
+  courseTags: string[]
+  /**
+   * 课程列表
+   */
+  courses: StringIdNameItemVO[]
+  /**
+   * 主键
+   */
+  id: number
+  /**
+   * 排序序号
+   */
+  sortNumber: number
+}
+
+export interface PassDetailVO {
+  /**
+   * 可用额度（类型为储值卡时必填）
+   */
+  availableAmount: number
+  /**
+   * 可用次数（类型为次卡时必填）
+   */
+  availableTimes: number
+  /**
+   * banner轮播图URL
+   */
+  bannerUrl: string
+  /**
+   * 是否可以线上售卖，0-否，1-是
+   */
+  canSaleOnLine: number
+  /**
+   * 课班列表
+   */
+  courses: PassCourseDetailVO[]
+  /**
+   * 创建时间
+   */
+  createTime: string
+  /**
+   * 创建者id
+   */
+  createUserId: string
+  /**
+   * 卡ID
+   */
+  id: string
+  /**
+   * 是否体验卡, 0-否，1-是
+   */
+  isTrial: number
+  /**
+   * 卡名称
+   */
+  name: string
+  /**
+   * 购买说明
+   */
+  purchaseNotes: string
+  /**
+   * 购买价格，单位元
+   */
+  purchasePrice: number
+  /**
+   * 缩略图URL
+   */
+  thumbnailUrl: string
+  /**
+   * 卡类型（次卡/额度卡），参考字典CardType
+   */
+  type: string
+  /**
+   * 更新时间
+   */
+  updateTime: string
+  /**
+   * 更新者id
+   */
+  updateUserId: string
+  /**
+   * 有效期时长，期限卡需要设置
+   */
+  validityPeriod: number
+  /**
+   * 有效期单位，参考字典TimeUnit，期限卡需要设置
+   */
+  validityUnit: string
+}
+
+export interface StringIdNameItemVO {
+  /**
+   * id
+   */
+  id: string
+  /**
+   * 名称
+   */
+  name: string
+}
+
+export interface PagePassPageVO {
+  countId: string
+  current: number
+  maxLimit: number
+  optimizeCountSql: PagePassPageVO
+  optimizeJoinOfCountSql: boolean
+  orders: OrderItem[]
+  pages: number
+  records: PassPageVO[]
+  searchCount: PagePassPageVO
+  size: number
+  total: number
+}
+
+export interface PassPageVO {
+  /**
+   * 可用额度（类型为储值卡时必填）
+   */
+  availableAmount: number
+  /**
+   * 可用次数（类型为次卡时必填）
+   */
+  availableTimes: number
+  /**
+   * banner轮播图URL
+   */
+  bannerUrl: string
+  /**
+   * 是否可以线上售卖，0-否，1-是
+   */
+  canSaleOnLine: number
+  /**
+   * 创建时间
+   */
+  createTime: string
+  /**
+   * 卡ID
+   */
+  id: string
+  /**
+   * 是否体验卡, 0-否，1-是
+   */
+  isTrial: number
+  /**
+   * 卡名称
+   */
+  name: string
+  /**
+   * 购买说明
+   */
+  purchaseNotes: string
+  /**
+   * 购买价格，单位元
+   */
+  purchasePrice: number
+  /**
+   * 缩略图URL
+   */
+  thumbnailUrl: string
+  /**
+   * 卡类型（次卡/额度卡），参考字典CardType
+   */
+  type: string
+  /**
+   * 更新时间
+   */
+  updateTime: string
+  /**
+   * 有效期时长，期限卡需要设置
+   */
+  validityPeriod: number
+  /**
+   * 有效期单位，参考字典TimeUnit，期限卡需要设置
+   */
+  validityUnit: string
+}
+
+export interface OrdersVO {
+  /**
+   * 创建时间
+   */
+  createTime: string
   /**
    * 创建人ID
    */
   createUser: string
   /**
-   * 修改人ID
+   * 创建人姓名
    */
-  updateUser: string
+  createUserName: string
   /**
-   * 类型编码
+   * 逻辑删除标识(1:已删除;0:未删除)
    */
-  typeCode: string
+  deleted: number
   /**
-   * 类型名称
+   * 优惠金额
    */
-  typeName: string
-}
-
-export interface RotationChart {
-  createTime: string
-  updateTime: string
-  id: string
-  name: string
-  bannerPicture: string
-  jumpUrl: string
-  sort: number
-  status: number
-  createUser: string
-  updateUser: string
-  /**
-   * 类型编码
-   */
-  typeCode: string
-  /**
-   * 类型名称
-   */
-  typeName: string
-}
-
-export interface PassCourseVO {
-  /**
-   * 课程ID
-   */
-  courseId: string
-  /**
-   * 课程名称
-   */
-  name: string
-}
-
-export interface PassDetailVO {
-  /**
-   * 卡ID
-   */
-  id: string
-  /**
-   * 卡名称
-   */
-  name: string
-  /**
-   * 卡类型
-   */
-  type: string
-  /**
-   * 购买价格
-   */
-  purchasePrice: number
-  /**
-   * 可用额度
-   */
-  availableAmount: number
-  /**
-   * 可用次数
-   */
-  availableTimes: number
-  /**
-   * 有效期开始时间戳
-   */
-  validStartTime: number
-  /**
-   * 有效期结束时间戳
-   */
-  validEndTime: number
-  /**
-   * 创建时间
-   */
-  createTime: string
-  /**
-   * 更新时间
-   */
-  updateTime: string
-  /**
-   * 卡关联的课程列表
-   */
-  courseList: PassCourseVO[]
-}
-
-export interface OrderItem {
-  column: string
-  asc: boolean
-}
-
-export interface PagePassPageVO {
-  records: PassPageVO[]
-  total: number
-  size: number
-  current: number
-  orders: OrderItem[]
-  optimizeCountSql: PagePassPageVO
-  searchCount: PagePassPageVO
-  optimizeJoinOfCountSql: boolean
-  maxLimit: number
-  countId: string
-  pages: number
-}
-
-export interface PassPageVO {
-  /**
-   * 卡ID
-   */
-  id: string
-  /**
-   * 卡名称
-   */
-  name: string
-  /**
-   * 卡类型
-   */
-  type: string
-  /**
-   * 购买价格
-   */
-  purchasePrice: number
-  /**
-   * 可用额度
-   */
-  availableAmount: number
-  /**
-   * 可用次数
-   */
-  availableTimes: number
-  /**
-   * 有效期开始时间戳
-   */
-  validStartTime: number
-  /**
-   * 有效期结束时间戳
-   */
-  validEndTime: number
-  /**
-   * 创建时间
-   */
-  createTime: string
-  /**
-   * 更新时间
-   */
-  updateTime: string
-}
-
-export interface HotWordRecordPageVO {
+  discountAmount: number
   /**
    * 主键
    */
   id: string
   /**
-   * 热词
+   * 备注信息
    */
-  name: string
+  mark: string
+  /**
+   * 订单金额
+   */
+  orderAmount: number
+  /**
+   * 订单商品
+   */
+  orderDetailList: OrderDetail[]
+  /**
+   * 订单编号
+   */
+  orderNumber: string
+  /**
+   * 订单积分
+   */
+  orderPoints: number
+  /**
+   * 支付时间
+   */
+  orderTime: string
+  /**
+   * 支付金额
+   */
+  payAmount: number
+  /**
+   * 支付方式(1:微信支付;2:支付宝支付)
+   */
+  payWay: number
+  /**
+   * 退款金额
+   */
+  refundAmount: number
+  /**
+   * 状态(1:待支付;2:已支付；3已完成, 4退款中, 5.已取消 6.已退款)
+   */
+  status: number
+  /**
+   * 更新时间
+   */
+  updateTime: string
+  /**
+   * 修改人ID
+   */
+  updateUser: string
+  /**
+   * 用户id
+   */
+  userId: string
+}
+
+export interface IPageOrdersPageVO {
+  current: number
+  pages: number
+  records: OrdersPageVO[]
+  size: number
+  total: number
+}
+
+export interface OrdersPageVO {
+  /**
+   * 创建时间
+   */
+  createTime: string
+  /**
+   * 创建人ID
+   */
+  createUser: string
+  /**
+   * 创建人姓名
+   */
+  createUserName: string
+  /**
+   * 逻辑删除标识(1:已删除;0:未删除)
+   */
+  deleted: number
+  /**
+   * 优惠金额
+   */
+  discountAmount: number
+  /**
+   * 主键
+   */
+  id: string
+  /**
+   * 备注信息
+   */
+  mark: string
+  /**
+   * 订单金额
+   */
+  orderAmount: number
+  /**
+   * 订单编号
+   */
+  orderNumber: string
+  /**
+   * 订单积分
+   */
+  orderPoints: number
+  /**
+   * 支付时间
+   */
+  orderTime: string
+  /**
+   * 支付金额
+   */
+  payAmount: number
+  /**
+   * 支付方式(1:微信支付;2:支付宝支付)
+   */
+  payWay: number
+  /**
+   * 退款金额
+   */
+  refundAmount: number
+  /**
+   * 状态(1:待支付;2:已支付；3已完成, 4退款中, 5.已取消 6.已退款)
+   */
+  status: number
+  /**
+   * 更新时间
+   */
+  updateTime: string
+  /**
+   * 修改人ID
+   */
+  updateUser: string
+  /**
+   * 用户id
+   */
+  userId: string
+  /**
+   * 购买人
+   */
+  userName: string
+  /**
+   * 用户电话
+   */
+  userPhone: string
+}
+
+export interface HotWordRecordPageVO {
   /**
    * 显示顺序
    */
@@ -1341,139 +2416,288 @@ export interface HotWordRecordPageVO {
    */
   createTime: string
   /**
+   * 主键
+   */
+  id: string
+  /**
+   * 热词
+   */
+  name: string
+  /**
    * 更新时间
    */
   updateTime: string
 }
 
 export interface IPageHotWordRecordPageVO {
-  size: number
   current: number
-  records: HotWordRecordPageVO[]
   pages: number
+  records: HotWordRecordPageVO[]
+  size: number
   total: number
 }
 
+export interface CustReturnVisit {
+  createTime: string
+  createUser: string
+  createUserName: string
+  /**
+   * 会员编码
+   */
+  custId: string
+  /**
+   * 会员名称
+   */
+  custName: string
+  /**
+   * 机构id
+   */
+  deptId: string
+  /**
+   * 机构id
+   */
+  deptName: string
+  id: string
+  /**
+   * 联系方式
+   */
+  phone: string
+  /**
+   * 回访内容
+   */
+  visitContent: string
+}
+
+export interface PageCustReturnVisit {
+  countId: string
+  current: number
+  maxLimit: number
+  optimizeCountSql: PageCustReturnVisit
+  optimizeJoinOfCountSql: boolean
+  orders: OrderItem[]
+  pages: number
+  records: CustReturnVisit[]
+  searchCount: PageCustReturnVisit
+  size: number
+  total: number
+}
+
+export interface CustFollowUpDto {
+  /**
+   * 用户id
+   */
+  id: string
+  lastVisitContent: string
+  /**
+   * 用户名称
+   */
+  name: string
+  /**
+   * 联系方式
+   */
+  phone: string
+}
+
 export interface CourseDetailVO {
+  /**
+   * 是否可以在小程序展示(0:否,1:是)
+   */
+  canBeShownOnMiniProgram: string
+  /**
+   * 是否可以在小程序售卖(0:否,1:是)
+   */
+  canBeSoldOnMiniProgram: number
   /**
    * 课程中文名
    */
   chineseName: string
   /**
-   * 课程英文名
+   * 创建时间
    */
-  englishName: string
-  /**
-   * 课程图片 URL
-   */
-  imageUrl: string
-  /**
-   * 课程所属的门店 ID
-   */
-  storeId: string
-  /**
-   * 课程规则类型，瑜伽课程或团课
-   */
-  type: string
-  /**
-   * 课班规模，大班课，小班课，私教课
-   */
-  size: string
-  /**
-   * 价格
-   */
-  price: number
-  /**
-   * 课程状态
-   */
-  status: string
-  /**
-   * 课程主要训练目标
-   */
-  mainTrainingGoal: string
-  /**
-   * 课程次要训练目标
-   */
-  secondaryTrainingGoal: string[]
-  /**
-   * 开课时间-开始
-   */
-  startTime: number
-  /**
-   * 开课时间-结束
-   */
-  startEnd: number
-  /**
-   * 排序号
-   */
-  sortNumber: number
-  /**
-   * 难度星级
-   */
-  difficultyRate: string
-  /**
-   * 课程描述
-   */
-  description: string
-  /**
-   * 课程 ID
-   */
-  id: string
+  createTime: string
   /**
    * 创建者id
    */
   createUserId: string
   /**
-   * 创建时间
+   * 课程描述
    */
-  createTime: string
+  description: string
   /**
-   * 更新者id
+   * 难度星级
    */
-  updateUserId: string
+  difficultyRate: string
+  /**
+   * 课程时长，单位为分
+   */
+  duration: number
+  /**
+   * 课程英文名
+   */
+  englishName: string
+  /**
+   * 课程 ID
+   */
+  id: string
+  /**
+   * 课程图片 URL
+   */
+  imageUrl: string
+  /**
+   * 课程主要训练目标
+   */
+  mainTrainingGoal: string
+  /**
+   * 价格
+   */
+  price: number
+  /**
+   * 课程次要训练目标
+   */
+  secondaryTrainingGoal: string[]
+  /**
+   * 课班规模，大班课，小班课，私教课
+   */
+  size: string
+  /**
+   * 排序号
+   */
+  sortNumber: number
+  /**
+   * 课程状态
+   */
+  status: string
+  /**
+   * 课程标签，参考字典CourseTag
+   */
+  tag: string
   /**
    * 更新时间
    */
   updateTime: string
+  /**
+   * 更新者id
+   */
+  updateUserId: string
 }
 
 export interface IPageCourseDetailVO {
-  size: number
   current: number
-  records: CourseDetailVO[]
   pages: number
+  records: CourseDetailVO[]
+  size: number
+  total: number
+}
+
+export interface CouponPageVO {
+  /**
+   * 满足优惠金额
+   */
+  amountMet: number
+  /**
+   * 选中课程、课程分类id
+   */
+  businessIds: string
+  /**
+   * 选中课程、课程分类名称
+   */
+  businessNames: string
+  /**
+   * 优惠券图片
+   */
+  couponPic: string
+  /**
+   * 优惠券缩略图
+   */
+  couponThumbnail: string
+  /**
+   * 可用课程
+   */
+  courseId: string
+  /**
+   * 创建人ID
+   */
+  createBy: number
+  /**
+   * 创建时间
+   */
+  createTime: string
+  /**
+   * 抵扣金额/折扣/补偿劵额
+   */
+  deductionAmount: number
+  deptId: number
+  /**
+   * 可用用户级别
+   */
+  embershipLevelId: string
+  /**
+   * 主键
+   */
+  id: number
+  /**
+   * 逻辑删除标识(1:已删除;0:未删除)
+   */
+  isDeleted: number
+  /**
+   * 系统发放时间
+   */
+  issueStartTime: string
+  /**
+   * 限制使用结束时间
+   */
+  limitUsageEndTime: string
+  /**
+   * 限制使用开始时间
+   */
+  limitUsageStartTime: string
+  /**
+   * 优惠劵名称
+   */
+  name: string
+  /**
+   * 使用规则
+   */
+  remark: string
+  /**
+   * 奖励方式(1邀请奖励 2新人福利 3生日 4考试奖励)
+   */
+  rewardType: string
+  /**
+   * 状态(1:正常;0:禁用)
+   */
+  status: number
+  /**
+   * 优惠劵类型(1满减 2折扣 3体验)
+   */
+  type: number
+  /**
+   * 修改人ID
+   */
+  updateBy: number
+  /**
+   * 更新时间
+   */
+  updateTime: string
+  /**
+   * 使用时间天数
+   */
+  useRestrictedNum: number
+  /**
+   * 使用限制类型(1:限制使用时间;0:限制使用天数)
+   */
+  useRestrictedType: number
+}
+
+export interface IPageCouponPageVO {
+  current: number
+  pages: number
+  records: CouponPageVO[]
+  size: number
   total: number
 }
 
 export interface CountryAreaPageVO {
-  /**
-   * id
-   */
-  id: string
-  /**
-   * 名称
-   */
-  name: string
-  /**
-   * 英文名称
-   */
-  nameEn: string
-  /**
-   * 级别1,2,3,4
-   */
-  level: number
-  /**
-   * 父级id
-   */
-  parentId: string
-  /**
-   * id全路径
-   */
-  idPath: string
-  /**
-   * 是否在小程序展示(0-不展示，1-展示)
-   */
-  isShowMiniapp: number
   /**
    * 创建时间
    */
@@ -1486,6 +2710,34 @@ export interface CountryAreaPageVO {
    * 创建人姓名
    */
   createUserName: string
+  /**
+   * id
+   */
+  id: string
+  /**
+   * id全路径
+   */
+  idPath: string
+  /**
+   * 是否在小程序展示(0-不展示，1-展示)
+   */
+  isShowMiniapp: number
+  /**
+   * 级别1,2,3,4
+   */
+  level: number
+  /**
+   * 名称
+   */
+  name: string
+  /**
+   * 英文名称
+   */
+  nameEn: string
+  /**
+   * 父级id
+   */
+  parentId: string
   /**
    * 编辑时间
    */
@@ -1501,87 +2753,370 @@ export interface CountryAreaPageVO {
 }
 
 export interface IPageCountryAreaPageVO {
-  size: number
   current: number
-  records: CountryAreaPageVO[]
   pages: number
+  records: CountryAreaPageVO[]
+  size: number
+  total: number
+}
+
+export interface ContractDetailVO {
+  /**
+   * 实付金额
+   */
+  actualPayment: number
+  /**
+   * 优惠券列表
+   */
+  coupons: IntegerIdNameItemVO[]
+  /**
+   * 创建时间
+   */
+  createTime: string
+  /**
+   * 创建人id
+   */
+  createUserId: string
+  /**
+   * 创建人姓名
+   */
+  createUserName: string
+  /**
+   * 会员ID
+   */
+  customerId: string
+  /**
+   * 会员姓名
+   */
+  customerName: string
+  /**
+   * 合同结束日期
+   */
+  endDate: string
+  /**
+   * 合同ID
+   */
+  id: string
+  /**
+   * 是否新合同，0：新单，1：续买
+   */
+  isNewContract: number
+  /**
+   * 卡信息ID
+   */
+  passId: string
+  /**
+   * 卡名称
+   */
+  passName: string
+  /**
+   * 应付金额
+   */
+  payableAmount: number
+  /**
+   * 推荐人ID
+   */
+  referrerId: string
+  /**
+   * 推荐人姓名
+   */
+  referrerName: string
+  /**
+   * 备注信息
+   */
+  remark: string
+  /**
+   * 销售人员列表
+   */
+  salers: StringIdNameItemVO[]
+  /**
+   * 合同开始日期
+   */
+  startDate: string
+  /**
+   * 合同状态
+   */
+  status: number
+  /**
+   * 更新时间
+   */
+  updateTime: string
+  /**
+   * 更新人id
+   */
+  updateUserId: string
+  /**
+   * 更新人姓名
+   */
+  updateUserName: string
+}
+
+export interface IntegerIdNameItemVO {
+  /**
+   * id
+   */
+  id: number
+  /**
+   * 名称
+   */
+  name: string
+}
+
+export interface ContractPageVO {
+  /**
+   * 实付金额
+   */
+  actualPayment: number
+  /**
+   * 创建时间
+   */
+  createTime: string
+  /**
+   * 创建人id
+   */
+  createUserId: string
+  /**
+   * 创建人姓名
+   */
+  createUserName: string
+  /**
+   * 客户ID
+   */
+  customerId: string
+  /**
+   * 客户姓名
+   */
+  customerName: string
+  /**
+   * 合同结束日期
+   */
+  endDate: string
+  /**
+   * 合同ID
+   */
+  id: string
+  /**
+   * 是否新合同，0：新单，1：续买
+   */
+  isNewContract: number
+  /**
+   * 卡ID
+   */
+  passId: string
+  /**
+   * 卡名称
+   */
+  passName: string
+  /**
+   * 应付金额
+   */
+  payableAmount: number
+  /**
+   * 推荐人id
+   */
+  referrerId: string
+  /**
+   * 推荐人姓名
+   */
+  referrerName: string
+  /**
+   * 备注信息
+   */
+  remark: string
+  /**
+   * 合同开始日期
+   */
+  startDate: string
+}
+
+export interface IPageContractPageVO {
+  current: number
+  pages: number
+  records: ContractPageVO[]
+  size: number
+  total: number
+}
+
+export interface CommodityClassification {
+  createTime: string
+  createUser: string
+  /**
+   * 图标
+   */
+  icon: string
+  /**
+   * 主键
+   */
+  id: string
+  /**
+   * id全路径
+   */
+  idPath: string
+  /**
+   * 级别1,2,3,4,5
+   */
+  level: number
+  /**
+   * 分类名称
+   */
+  name: string
+  /**
+   * 父级code
+   */
+  parentId: string
+  /**
+   * 1 启用 0 停用
+   */
+  status: number
+  updateTime: string
+  updateUser: string
+}
+
+export interface IPageCommodityClassification {
+  current: number
+  pages: number
+  records: CommodityClassification[]
+  size: number
+  total: number
+}
+
+export interface CommodityVO {
+  /**
+   * 分类全路径
+   */
+  classificationFullId: string
+  /**
+   * 分类id
+   */
+  classificationId: string
+  /**
+   * 分类名称
+   */
+  classificationName: string
+  createTime: string
+  createUser: string
+  /**
+   * 1 删除 0 在用
+   */
+  deleted: number
+  /**
+   * 商品描述
+   */
+  description: string
+  /**
+   * 主键
+   */
+  id: string
+  /**
+   * 库存
+   */
+  inventoryNum: number
+  /**
+   * 缩略图
+   */
+  mainPicture: string
+  /**
+   * 名称
+   */
+  name: string
+  /**
+   * 积分
+   */
+  points: number
+  /**
+   * 商品售价
+   */
+  price: number
+  /**
+   * 购买方式（1 仅金钱支出，2 仅积分兑换，3 合并支付）
+   */
+  priceMethod: string
+  /**
+   * 轮播宣传图
+   */
+  publicityPictureUrls: string[]
+  /**
+   * 上架状态 0 待上架  1 已上架
+   */
+  shelvesStatus: number
+  updateTime: string
+  updateUser: string
+}
+
+export interface IPageCommodityVO {
+  current: number
+  pages: number
+  records: CommodityVO[]
+  size: number
   total: number
 }
 
 export interface CaptchaResult {
   /**
-   * 验证码缓存key
-   */
-  captchaKey: string
-  /**
    * 验证码图片Base64字符串
    */
   captchaBase64: string
+  /**
+   * 验证码缓存key
+   */
+  captchaKey: string
 }
 
 export interface ArticleManagementPageVO {
-  /**
-   * 主键
-   */
-  id: string
-  /**
-   * 文章名称
-   */
-  title: string
   /**
    * 文章内容
    */
   articleDesc: string
   /**
-   * 链接地址
+   * 文章分类
    */
-  linkUrl: string
+  articleType: string
   /**
    * 创建时间
    */
   createTime: string
   /**
-   * 更新时间
-   */
-  updateTime: string
-  /**
    * 创建人ID
    */
   createUser: string
   createUserName: string
-  updateUserName: string
+  /**
+   * 主键
+   */
+  id: string
+  /**
+   * 链接地址
+   */
+  linkUrl: string
   /**
    * 主图
    */
   mainPicture: string
   /**
+   * 文章名称
+   */
+  title: string
+  /**
+   * 更新时间
+   */
+  updateTime: string
+  /**
    * 修改人ID
    */
   updateUser: string
-  /**
-   * 文章分类
-   */
-  articleType: string
+  updateUserName: string
 }
 
 export interface IPageArticleManagementPageVO {
-  size: number
   current: number
-  records: ArticleManagementPageVO[]
   pages: number
+  records: ArticleManagementPageVO[]
+  size: number
   total: number
 }
 
 export interface AgreementPageVO {
   /**
-   * 主键
-   */
-  id: string
-  /**
-   * 标题
-   */
-  title: string
-  /**
    * 内容
    */
   contentData: string
@@ -1590,295 +3125,715 @@ export interface AgreementPageVO {
    */
   createTime: string
   /**
-   * 更新时间
-   */
-  updateTime: string
-  /**
    * 创建人ID
    */
   createUser: string
   /**
-   * 修改人ID
+   * 主键
    */
-  updateUser: string
+  id: string
   /**
    * 是否展示
    */
   isDisplay: number
+  /**
+   * 标题
+   */
+  title: string
+  /**
+   * 更新时间
+   */
+  updateTime: string
+  /**
+   * 修改人ID
+   */
+  updateUser: string
 }
 
 export interface IPageAgreementPageVO {
-  size: number
   current: number
-  records: AgreementPageVO[]
   pages: number
+  records: AgreementPageVO[]
+  size: number
   total: number
 }
 
-export interface IPageRichTextPageVO {
-  size: number
+export interface CourseScheduleVO {
+  /**
+   * 已预约人数
+   */
+  bookedNum: number
+  /**
+   * 可预约人数
+   */
+  canBookNum: number
+  /**
+   * 课室ID
+   */
+  classroomId: string
+  /**
+   * 课室名称
+   */
+  classroomName: string
+  /**
+   * 课程ID
+   */
+  courseId: string
+  /**
+   * 课程名称
+   */
+  courseName: string
+  /**
+   * 结束时间（时间戳）
+   */
+  endTime: number
+  /**
+   * 课程表ID
+   */
+  id: number
+  /**
+   * 开始时间（时间戳）
+   */
+  startTime: number
+  /**
+   * 门店ID
+   */
+  storeId: string
+  /**
+   * 门店名称
+   */
+  storeName: string
+  /**
+   * 教师ID
+   */
+  teacherId: string
+  /**
+   * 教师名称
+   */
+  teacherName: string
+}
+
+export interface CourseScheduleDetailVO {
+  /**
+   * 已预约人数
+   */
+  bookedNum: number
+  /**
+   * 可预约总人数
+   */
+  canBookNum: number
+  /**
+   * 课室ID
+   */
+  classroomId: number
+  /**
+   * 课室名称
+   */
+  classroomName: string
+  /**
+   * 课程ID
+   */
+  courseId: string
+  /**
+   * 课程名称
+   */
+  courseName: string
+  /**
+   * 创建时间
+   */
+  createTime: string
+  /**
+   * 创建用户ID
+   */
+  createUserId: string
+  /**
+   * 创建用户名称
+   */
+  createUserName: string
+  /**
+   * 结束时间（时间戳）
+   */
+  endTime: number
+  /**
+   * 课程表ID
+   */
+  id: number
+  /**
+   * 开始时间（时间戳）
+   */
+  startTime: number
+  /**
+   * 门店ID
+   */
+  storeId: string
+  /**
+   * 门店名称
+   */
+  storeName: string
+  /**
+   * 教师ID
+   */
+  teacherId: string
+  /**
+   * 教师名称
+   */
+  teacherName: string
+  /**
+   * 更新时间
+   */
+  updateTime: string
+  /**
+   * 更新用户ID
+   */
+  updateUserId: string
+  /**
+   * 更新用户名称
+   */
+  updateUserName: string
+}
+
+export interface PageClassroomVO {
+  countId: string
   current: number
-  records: RichTextPageVO[]
+  maxLimit: number
+  optimizeCountSql: PageClassroomVO
+  optimizeJoinOfCountSql: boolean
+  orders: OrderItem[]
   pages: number
+  records: ClassroomVO[]
+  searchCount: PageClassroomVO
+  size: number
+  total: number
+}
+
+export interface PageStorePageVO {
+  countId: string
+  current: number
+  maxLimit: number
+  optimizeCountSql: PageStorePageVO
+  optimizeJoinOfCountSql: boolean
+  orders: OrderItem[]
+  pages: number
+  records: StorePageVO[]
+  searchCount: PageStorePageVO
+  size: number
+  total: number
+}
+
+export interface StorePageVO {
+  /**
+   * 详细地址
+   */
+  address: string
+  /**
+   * 门店ID
+   */
+  id: string
+  /**
+   * 纬度
+   */
+  latitude: string
+  /**
+   * 经度
+   */
+  longitude: string
+  /**
+   * 主图URL
+   */
+  mainImage: string
+  /**
+   * 门店名称
+   */
+  name: string
+  /**
+   * 联系电话
+   */
+  phone: string
+}
+
+export interface StoreDetailVO {
+  /**
+   * 详细地址
+   */
+  address: string
+  /**
+   * 轮播图URL列表
+   */
+  carouselImages: string[]
+  /**
+   * 创建时间
+   */
+  createTime: string
+  /**
+   * 门店介绍
+   */
+  description: string
+  /**
+   * 门店ID
+   */
+  id: string
+  /**
+   * 纬度
+   */
+  latitude: number
+  /**
+   * 经度
+   */
+  longitude: number
+  /**
+   * 主图URL
+   */
+  mainImage: string
+  /**
+   * 门店名称
+   */
+  name: string
+  /**
+   * 联系电话
+   */
+  phone: string
+  /**
+   * 更新时间
+   */
+  updateTime: string
+}
+
+export interface IPageRichTextPageVO {
+  current: number
+  pages: number
+  records: RichTextPageVO[]
+  size: number
   total: number
 }
 
 export interface RichTextPageVO {
   /**
-   * 主键
-   */
-  id: number
-  /**
-   * 标题
-   */
-  title: string
-  /**
    * 内容
    */
   contentData: string
-  /**
-   * 图片url
-   */
-  mainPicture: string
-  /**
-   * 是否展示
-   */
-  isDisplay: number
   /**
    * 创建时间
    */
   createTime: string
   /**
-   * 更新时间
-   */
-  updateTime: string
-  /**
    * 创建人ID
    */
   createUser: string
+  /**
+   * 主键
+   */
+  id: number
+  /**
+   * 是否展示
+   */
+  isDisplay: number
+  /**
+   * 图片url
+   */
+  mainPicture: string
+  /**
+   * 标题
+   */
+  title: string
+  /**
+   * 更新时间
+   */
+  updateTime: string
   /**
    * 修改人ID
    */
   updateUser: string
 }
 
-export interface IPageKsCustPageVO {
-  size: number
+export interface IPageMemberRuleVO {
   current: number
-  records: KsCustPageVO[]
   pages: number
+  records: MemberRuleVO[]
+  size: number
+  total: number
+}
+
+export interface MemberRuleVO {
+  /**
+   * 消费加分比例
+   */
+  consumeRatio: number
+  /**
+   * 创建时间
+   */
+  createTime: string
+  /**
+   * 创建人
+   */
+  createUser: string
+  /**
+   * 是否删除(0否 1是)
+   */
+  delFlag: number
+  /**
+   * 会员折扣
+   */
+  discount: number
+  /**
+   * 积分有效时长(天)
+   */
+  duration: number
+  /**
+   * 权益规则
+   */
+  equityRules: string
+  /**
+   * 积分兑换比例
+   */
+  exchangeRatio: number
+  /**
+   * 会员等级规则ID
+   */
+  id: number
+  /**
+   * 积分获取
+   */
+  integralGain: string
+  /**
+   * 权益说明
+   */
+  interestsStatement: string
+  /**
+   * 邀请加分比例
+   */
+  invitedRatio: number
+  /**
+   * 能否查看课程价格，0不可以，1可以
+   */
+  isShowCoursePrice: number
+  /**
+   * 能否查看讲师详情，0不可以，1可以
+   */
+  isShowTeacherDetail: number
+  /**
+   * 会员等级规则ID
+   */
+  level: number
+  /**
+   * 会员等级名称
+   */
+  levelName: string
+  /**
+   * 会员等级规则ID
+   */
+  levelRule: number
+  /**
+   * 编辑时间
+   */
+  updateTime: string
+  /**
+   * 编辑人
+   */
+  updateUser: string
+  /**
+   * 可查看的课程数量，-1表示不限制
+   */
+  viewableCourseCount: number
+  /**
+   * 可查看的讲师数量，-1表示不限制
+   */
+  viewableTeacherCount: number
+}
+
+export interface BaseDto {
+  level: number
+  name: string
+}
+
+export interface Editor {
+  /**
+   * 内容
+   */
+  contentData: string
+  createTime: string
+  /**
+   * 创建人ID
+   */
+  createUser: string
+  /**
+   * 类型
+   */
+  editorType: number
+  /**
+   * 主键
+   */
+  id: string
+  /**
+   * 是否展示 0 否  1 是
+   */
+  isDisplay: number
+  /**
+   * 图片url
+   */
+  mainPicture: string
+  /**
+   * 简述
+   */
+  summary: string
+  /**
+   * 标题
+   */
+  title: string
+  updateTime: string
+  /**
+   * 修改人ID
+   */
+  updateUser: string
+}
+
+export interface PageEditor {
+  countId: string
+  current: number
+  maxLimit: number
+  optimizeCountSql: PageEditor
+  optimizeJoinOfCountSql: boolean
+  orders: OrderItem[]
+  pages: number
+  records: Editor[]
+  searchCount: PageEditor
+  size: number
+  total: number
+}
+
+export interface IPageKsCustPageVO {
+  current: number
+  pages: number
+  records: KsCustPageVO[]
+  size: number
   total: number
 }
 
 export interface KsCustPageVO {
   /**
-   * 用户id
+   * 常住地
    */
-  id: string
+  addres: string
+  addresList: string[]
+  /**
+   * 分配时间
+   */
+  allocateTime: string
+  /**
+   * 1 已到店  2未办卡 3 已办卡
+   */
+  applyCard: number
   /**
    * 用户头像
    */
   avatar: string
   /**
-   * 用户昵称
-   */
-  nickname: string
-  /**
-   * 用户账户
-   */
-  username: string
-  /**
-   * 用户密码
-   */
-  password: string
-  /**
-   * 真实姓名
-   */
-  realName: string
-  /**
-   * 性别
-   */
-  gender: string
-  /**
-   * 用户备注
-   */
-  mark: string
-  /**
-   * 父级id
-   */
-  parentId: string
-  /**
-   * 用户ID
-   */
-  userId: number
-  registerFrom: string
-  /**
-   * 手机号码
-   */
-  phone: string
-  /**
    * 用户余额
    */
   balance: number
-  /**
-   * 用户剩余金币
-   */
-  goldBalance: number
-  /**
-   * 用户剩余积分
-   */
-  integralBalance: number
-  /**
-   * 1为正常，0为禁止
-   */
-  status: boolean
-  /**
-   * 颜色
-   */
-  preferenceColor: string
-  /**
-   * 子账户人数
-   */
-  childNum: number
-  /**
-   * 常住地
-   */
-  addres: string
-  /**
-   * 微信用户json信息
-   */
-  wxProfile: string
-  deleted: number
-  /**
-   * 注册时间
-   */
-  createTime: string
-  /**
-   * 最后一次登录时间
-   */
-  updateTime: string
   /**
    * 生日
    */
   birthday: string
   /**
-   * 用户等级
+   * 证件编码
    */
-  level: number
+  cardNumber: string
   /**
-   * wechat openID
+   * 证件类型
    */
-  openId: string
+  cardType: string
   /**
-   * 性别 1 男  2 女
+   * 渠道，OnLine-线上小程序，OffLine-线下后台
    */
-  sex: boolean
+  channel: string
+  childNum: number
+  /**
+   * 教练id
+   */
+  coachId: string
+  /**
+   * 教练名称
+   */
+  coachName: string
+  /**
+   * 合同编码
+   */
+  contractCode: string
+  /**
+   * 咨询师编码
+   */
+  counselor: string
+  /**
+   * 咨询师名称
+   */
+  counselorName: string
+  /**
+   * 希望学习的课程
+   */
+  courses: string
+  /**
+   * 注册时间
+   */
+  createTime: string
+  /**
+   * 当前卡种编码
+   */
+  currentPassCode: string
+  /**
+   * 当前卡种名称
+   */
+  currentPassName: string
+  custId: string
+  /**
+   * 会员类型  1 访客  2 会员
+   */
+  customerType: number
+  deleted: number
+  /**
+   * 场馆编码
+   */
+  deptId: number
+  /**
+   * 场馆名称
+   */
+  deptName: string
+  /**
+   * 亲子账户人数
+   */
+  familyMemberCount: number
+  /**
+   * 档案数量
+   */
+  filesNumber: number
+  /**
+   * 用户剩余金币
+   */
+  goldBalance: number
   /**
    * 爱好
    */
   hobbies: string
   /**
-   * 希望学习的课程
+   * 用户id
    */
-  courses: string
-  courseId: string
+  id: string
   /**
-   * 总积分
+   * 用户剩余积分
    */
-  points: number
+  integralBalance: number
   /**
-   * 渠道，OnLine-线上小程序，OffLine-线下后台
+   * 自身邀请码
    */
-  channel: string
-  /**
-   * 用户来源取自字典小程序码用途
-   */
-  userSource: string
-  /**
-   * 邀请人名称
-   */
+  invitationCode: string
   invitationCust: string
   /**
-   * 黑名单  0 否  1  是
+   * 邀请他人的邀请码
    */
-  disallowLogin: number
-}
-
-export interface KsCustBaseDto {
-  id: string
-  name: string
-  nickName: string
-  phone: string
-}
-
-export interface KsCust {
-  id: string
-  avatar: string
-  nickname: string
-  username: string
-  password: string
-  realName: string
-  gender: string
-  mark: string
-  parentId: string
-  userId: number
-  registerFrom: string
-  phone: string
-  balance: number
-  goldBalance: number
-  integralBalance: number
-  status: boolean
-  preferenceColor: string
-  familyMemberCount: number
-  addres: string
-  wxProfile: string
-  deleted: number
-  createTime: string
-  updateTime: string
-  birthday: string
-  level: number
-  points: number
-  effectivePoints: number
-  availablePoints: number
-  expiredPoints: number
-  usedPoints: number
-  openId: string
-  sex: boolean
-  hobbies: string
-  courses: string
-  courseId: string
-  childNum: number
-  invitationCode: string
-  custId: string
+  invitationCustCode: string
   /**
    * 邀请时间
    */
   invitationTime: string
-  channel: string
-  managerPerson: string
-  createUser: string
-  createUserName: string
-  unlimitCode: string
   /**
-   * 用户来源取自字典小程序码用途
+   * 是否白名单(0否 1是)
    */
-  userSource: string
-  /**
-   * 邀请人名称
-   */
-  invitationCust: string
-  /**
-   * 邀请人类型  1 员工  2 会员
-   */
-  invitationType: number
-  /**
-   * 黑名单  0 否  1  是
-   */
-  disallowLogin: number
   isWhitelist: number
   /**
-   * 邀请人部门id
+   * 用户等级
    */
-  invitationCustDeptId: number
+  level: number
+  /**
+   * 会员邮箱
+   */
+  mail: string
+  /**
+   * 用户备注
+   */
+  mark: string
+  /**
+   * 会员编码
+   */
+  memberCode: string
+  /**
+   * 入会时间
+   */
+  memberTime: string
+  /**
+   * 会员类型  取字典表memberType
+   */
+  memberType: string
+  /**
+   * 国籍
+   */
+  nationality: string
+  /**
+   * 用户昵称
+   */
+  nickname: string
+  /**
+   * wechat openID
+   */
+  openId: string
+  /**
+   * 父级id
+   */
+  parentId: string
+  /**
+   * 用户密码
+   */
+  password: string
+  /**
+   * 手机号码
+   */
+  phone: string
+  /**
+   * 积分
+   */
+  points: number
+  /**
+   * 颜色
+   */
+  preferenceColor: string
+  /**
+   * 真实姓名
+   */
+  realName: string
+  registerFrom: string
+  /**
+   * 性别  1 男  2 女
+   */
+  sex: number
+  /**
+   * 状态 1 未办卡 2 未激活 3 正常 4 过期 5 缴费暂停 6 因病暂停 7 投诉暂停 8 已转卡 9 已退卡 10 其他暂停
+   */
+  status: number
+  /**
+   * 累计耗课
+   */
+  sumConsumption: number
+  /**
+   * 最后一次登录时间
+   */
+  updateTime: string
+  /**
+   * 更新人
+   */
+  updateUser: string
+  /**
+   * 更新人姓名
+   */
+  updateUserName: string
+  /**
+   * 用户ID
+   */
+  userId: number
+  /**
+   * 用户账户
+   */
+  username: string
+  /**
+   * 微信用户json信息
+   */
+  wxProfile: string
 }
 

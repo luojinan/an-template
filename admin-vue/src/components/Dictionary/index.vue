@@ -1,5 +1,14 @@
 <script setup lang="ts">
+import { onBeforeMount, ref, useAttrs, watch } from 'vue'
+import type { Ref } from 'vue'
+import { ElOption, ElSelect } from 'element-plus'
 import DictAPI from '@/api/dict'
+
+// 定义选项类型
+interface OptionType {
+  label: string
+  value: string | number
+}
 
 const props = defineProps({
   /**
@@ -24,23 +33,33 @@ const props = defineProps({
 
 const emits = defineEmits(['update:modelValue']) // 父组件监听事件，同步子组件值的变化给父组件
 
+// 透传属性
+const attrs = useAttrs()
 const options: Ref<OptionType[]> = ref([]) // 字典下拉数据源
 
 const selectedValue = ref<string | number | undefined>()
 
-watch([options, () => props.modelValue], ([newOptions, newModelValue]) => {
-  if (newOptions.length === 0)
+watch([options, () => props.modelValue], ([newOptions, newModelValue]: [OptionType[], any]) => {
+  if (newOptions.length === 0) {
     return // 下拉数据源加载未完成不回显
+  }
   if (newModelValue == undefined) {
     selectedValue.value = undefined
     return
   }
-  if (typeof newOptions[0].value === 'number')
-    selectedValue.value = Number(newModelValue)
-  else if (typeof newOptions[0].value === 'string')
-    selectedValue.value = String(newModelValue)
-  else
+  if (Array.isArray(newModelValue)) {
     selectedValue.value = newModelValue
+    return
+  }
+  if (typeof newOptions[0].value === 'number') {
+    selectedValue.value = Number(newModelValue)
+  }
+  else if (typeof newOptions[0].value === 'string') {
+    selectedValue.value = String(newModelValue)
+  }
+  else {
+    selectedValue.value = newModelValue
+  }
 })
 
 function handleChange(val?: string | number | undefined) {
@@ -56,18 +75,19 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <el-select
+  <ElSelect
     v-model="selectedValue"
     :placeholder="placeholder"
     :disabled="disabled"
     clearable
+    v-bind="attrs"
     @change="handleChange"
   >
-    <el-option
+    <ElOption
       v-for="option in options"
       :key="option.value"
       :label="option.label"
       :value="option.value"
     />
-  </el-select>
+  </ElSelect>
 </template>

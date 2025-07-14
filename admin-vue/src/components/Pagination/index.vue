@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ElPagination, ElScrollbar } from 'element-plus'
+
 const props = defineProps({
   total: {
     required: true,
@@ -54,9 +56,9 @@ function handleCurrentChange(val: number) {
 </script>
 
 <template>
-  <el-scrollbar>
+  <ElScrollbar>
     <div :class="{ hidden }" class="pagination">
-      <el-pagination
+      <ElPagination
         v-model:current-page="currentPage"
         v-model:page-size="pageSize"
         :background="background"
@@ -67,7 +69,7 @@ function handleCurrentChange(val: number) {
         @current-change="handleCurrentChange"
       />
     </div>
-  </el-scrollbar>
+  </ElScrollbar>
 </template>
 
 <style lang="scss" scoped>

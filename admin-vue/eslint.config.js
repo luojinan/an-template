@@ -4,9 +4,7 @@ import antfu from '@antfu/eslint-config'
 export default antfu(
   {
     ignores: [
-      'vite.config.ts',
-      'src/proApi/*',
-      'src/utils/proProApi/*',
+      'src/utils/proApi/*',
     ],
     lessOpinionated: true, // allow arrow function and if else etc https://github.com/antfu/eslint-config?tab=readme-ov-file#top-level-function-style-etc
     isInEditor: false, // auto fix import by eslint https://github.com/antfu/eslint-config?tab=readme-ov-file#editor-specific-disables
