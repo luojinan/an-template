@@ -6,6 +6,10 @@ globs: *
 ## HEADERS
 
 ## PROJECT RULES
+- The web application must be responsive, providing good interaction on both PC web and mobile devices.
+- Data will be categorized (e.g., "Linux题," "Python题"). Category selection should be fixed at the top for easy switching.
+- Data structure details will be provided later.
+- Implement a solution to save edited question/answer pairs in the browser's local storage using a mature third-party IndexedDB library.
 
 ## CODING STANDARDS
 
@@ -14,8 +18,11 @@ globs: *
 ## TECH STACK
 - tailwindcss: ^4.1.8 (existing, may need update)
 - daisyui: ^5.0.43 (existing, may need update)
+  - Use the `collapse` component for question/answer interactions: https://daisyui.com/components/collapse/
+  - Use the `theme-controller` component for switching between light and dark themes: https://daisyui.com/components/theme-controller/
 
 ## PROJECT DOCUMENTATION & CONTEXT SYSTEM
+- All discussion results should be recorded in `plan.txt` for continuous iteration and updates.
 
 ## DEBUGGING
 
