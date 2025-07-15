@@ -11,7 +11,7 @@ import {
 } from '@/store'
 import defaultSettings from '@/settings'
 import { DeviceEnum } from '@/enums/DeviceEnum'
-import { getApiV1DictBytypecodeOptions, getApiV1UsersGetwxacodeunlimit, putApiV1UsersChangepassword } from '@/utils/proApi/system'
+import { putApiV1UsersChangepassword } from '@/utils/proApi/system'
 import { ProForm } from '@/components/ProComponent'
 
 const appStore = useAppStore()
@@ -60,25 +60,6 @@ async function onPasswordSubmit(data: any) {
   openResetPassword.value = false
 }
 
-const openQrcode = ref(false)
-const qrcodeFormRef = ref()
-const qrcodeImage = ref('')
-
-function onShowQrcode() {
-  openQrcode.value = true
-  qrcodeFormRef.value.resetFormData()
-}
-
-watch(() => openQrcode.value, () => {
-  if (!openQrcode.value) {
-    qrcodeImage.value = ''
-  }
-})
-
-async function onQrcodeSubmit(data: any) {
-  const res = await getApiV1UsersGetwxacodeunlimit(data)
-  qrcodeImage.value = `data: image/jpeg;base64,${res}`
-}
 </script>
 
 <template>
@@ -120,12 +101,6 @@ async function onQrcodeSubmit(data: any) {
         <div class="flex-y-center rounded mb-6px py-4px cursor-pointer hover:bg-black hover:bg-opacity-10" @click="onShowResetPassword">
           <div class="i-svg:lock mx-2" /> 修改密码
         </div>
-        <div class="flex-y-center rounded mb-6px py-4px cursor-pointer hover:bg-black hover:bg-opacity-10" @click="onShowQrcode">
-          <ElIcon class="mx-2">
-            <Share />
-          </ElIcon>
-          小程序邀请码
-        </div>
         <ElButton plain class="w-full" @click="logout">
           退出登录
         </ElButton>
@@ -161,35 +136,6 @@ async function onQrcodeSubmit(data: any) {
       ]"
       :on-submit="onPasswordSubmit"
     />
-
-    <ProForm
-      ref="qrcodeFormRef"
-      v-model:open="openQrcode"
-      type="drawer"
-      :drawer-props="{ title: '获取小程序邀请码' }"
-      :columns="[
-        {
-          prop: 'qRCodeUseFor',
-          label: '邀请码用途',
-          valueType: 'select',
-          initFn: async (formItem) => {
-            formItem.valueEnum = await getApiV1DictBytypecodeOptions({ typeCode: 'QRCodeUseFor' })
-          },
-          rules: [{ required: true, trigger: 'change' }],
-        },
-        {
-          prop: '',
-          label: '',
-          valueType: 'custom',
-          slotName: 'img',
-        },
-      ]"
-      :on-submit="onQrcodeSubmit"
-    >
-      <template v-if="qrcodeImage" #img>
-        <img :src="qrcodeImage" class="w-full">
-      </template>
-    </ProForm>
   </div>
 </template>
 
