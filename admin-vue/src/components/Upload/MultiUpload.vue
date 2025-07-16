@@ -8,6 +8,7 @@ import type {
   UploadRequestOptions,
   UploadUserFile,
 } from 'element-plus'
+import { Delete } from '@element-plus/icons-vue'
 import { ref, watch } from 'vue'
 import { ElImageViewer, ElMessage, ElUpload } from 'element-plus'
 import { uploadOss } from '@/utils'
@@ -204,7 +205,7 @@ defineExpose({ fileList })
             class="el-upload-list__item-delete"
             @click="handleRemove(file)"
           >
-            <ElIcon><Delete /></ElIcon>
+            <ElIcon><Delete size="4" /></ElIcon>
           </span>
         </span>
       </div>
