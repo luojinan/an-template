@@ -1,0 +1,64 @@
+{
+  "name": "vue3-h5-template",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">= 22",
+    "pnpm": ">= 10"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run type-check && npm run build-only",
+    "preview": "vite preview",
+    "build-only": "vite build",
+    "api": "node scripts/tsapi.mjs",
+    "type-check": "vue-tsc --noEmit",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix"
+  },
+  "dependencies": {
+    "@vueuse/core": "^14.0.0",
+    "axios": "^1.7.7",
+    "clsx": "^2.1.1",
+    "normalize.css": "^8.0.1",
+    "nprogress": "^0.2.0",
+    "pinia": "^3.0.3",
+    "tailwind-merge": "^2.5.4",
+    "vant": "^4.9.21",
+    "vue": "^3.5.22",
+    "vue-router": "^4.6.3"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^6.1.0",
+    "@iconify-icons/fa6-solid": "^1.2.13",
+    "@iconify/vue": "^4.1.2",
+    "@tailwindcss/vite": "^4.1.16",
+    "@types/node": "^24.9.1",
+    "@types/nprogress": "^0.2.3",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vitejs/plugin-vue-jsx": "^5.1.1",
+    "@vue/tsconfig": "^0.5.1",
+    "autoprefixer": "^10.4.20",
+    "cnjm-postcss-px-to-viewport": "^1.0.1",
+    "eslint": "^9.14.0",
+    "postcss": "^8.4.47",
+    "postcss-nested": "^7.0.2",
+    "tailwindcss": "^4.1.16",
+    "typescript": "~5.6.3",
+    "unplugin-vue-components": "^0.27.4",
+    "vite": "^7.1.12",
+    "vite-plugin-html": "^3.2.2",
+    "vite-plugin-svg-icons": "^2.0.1",
+    "vue-tsc": "^3.1.2"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "rollup"
+      ],
+      "allowedVersions": {
+        "eslint": "9"
+      }
+    }
+  }
+}
