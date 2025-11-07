@@ -203,6 +203,7 @@ defineExpose({ validateForm, getFormData, setFormData, setFormItemData, resetFor
           </FormItem>
         </template>
       </ElForm>
+      <slot name="drawer-after-form" />
 
       <template #footer>
         <div>

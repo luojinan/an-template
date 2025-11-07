@@ -8,7 +8,6 @@ import type {
   UploadRequestOptions,
   UploadUserFile,
 } from 'element-plus'
-import { Delete } from '@element-plus/icons-vue'
 import { ref, watch } from 'vue'
 import { ElImageViewer, ElMessage, ElUpload } from 'element-plus'
 import { uploadOss } from '@/utils'
@@ -92,6 +91,14 @@ function getBase64(file) {
  */
 async function handleUpload(options: UploadRequestOptions): Promise<any> {
   let data = null
+
+  // 中间状态的value需要同步到form中，ready uploading
+  emit(
+    'update:modelValue',
+    fileList.value,
+  )
+  emit('onChange', fileList.value)
+
   if (props.uploadResType === 'ossUrl') {
     // 上传API调用
     data = await uploadOss(options.file)
@@ -150,8 +157,8 @@ function handleBeforeUpload(file: UploadRawFile) {
     ElMessage.warning(`最多上传${props.limit}个`)
     return false
   }
-  if (file.size > 2 * 1048 * 1048) {
-    ElMessage.warning('上传文件不能大于2M')
+  if (file.size > 10 * 1048 * 1048) {
+    ElMessage.warning('上传文件不能大于10M')
     return false
   }
   return true
@@ -205,7 +212,7 @@ defineExpose({ fileList })
             class="el-upload-list__item-delete"
             @click="handleRemove(file)"
           >
-            <ElIcon><Delete size="4" /></ElIcon>
+            <ElIcon><Delete /></ElIcon>
           </span>
         </span>
       </div>

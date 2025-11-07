@@ -632,8 +632,10 @@ When image uploads are needed in a form, the following configuration specificati
     if (!val) { return [] }
     return [{ url: val }]
   },
-  rules: [{ required: true, trigger: 'change' }], // Message auto-generated in Chinese
-  tips: '请上传图片，只支持图片格式文件', // UI Tip
+  rules: [{
+    validator: imageUploadValidator,
+    trigger: 'change',
+  }],
 }
 ```
 

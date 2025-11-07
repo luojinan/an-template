@@ -78,6 +78,7 @@ export type Pagination = boolean
 interface AttrsByValueType {
   'input': InputProps
   'select': ISelectProps
+  'select-with-add': ISelectProps // 新增的类型，暂时复用 ISelectProps
   'radio': RadioProps
   'checkbox': CheckboxProps
   'tree-select': IObject
@@ -91,6 +92,7 @@ interface AttrsByValueType {
   'cascader': CascaderProps
   'group': IObject
   'switch': SwitchProps
+  'input-tag': IObject
 }
 
 /**
@@ -143,7 +145,7 @@ export type ProFormColumn<T = any> = {
     convertValue?: (value: any, alldata: T) => any
     // 监听函数-废弃
     watch?: (newValue: any, oldValue: any, data: T, items: ProFormColumn<T>[], formItemTool: IObject) => void
-    watchCallback?: (newVals: any[], options: {oldVals: any[], formData: T, formItems: ProFormColumn<T>[], formItem: ProFormColumn<T>}) => void
+    watchCallback?: (newVals: any[], options: { oldVals: any[], formData: T, formItems: ProFormColumn<T>[], formItem: ProFormColumn<T> }) => void
     // 依赖字段配置，用于自动注册 watch
     dependency?: (string | string[])[]
     // 计算属性函数

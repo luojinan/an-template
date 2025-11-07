@@ -10,6 +10,6 @@ defineProps<Props>()
 
 <template>
   <span>
-    {{ scope.row[col.prop] }}
+    {{ col.formatFn ? col.formatFn(scope.row[col.prop], scope.row) : (scope.row[col.prop] || '-') }}
   </span>
-</template> 
+</template>

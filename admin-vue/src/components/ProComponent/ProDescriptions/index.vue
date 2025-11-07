@@ -69,20 +69,20 @@ const copyToClipboard = async (text: string) => {
           </template>
         </template>
       </template>
+      <template v-else-if="column.formatFn">
+        <span>
+          {{ column.formatFn(column?.valueEnum?.find(item => item.value === dataSourse[column.prop!])?.label || dataSourse[column.prop!], dataSourse) }}
+          <ElIcon v-if="column.copyable" color="#409efc" class="ml-1 cursor-pointer" @click="copyToClipboard(column.formatFn(dataSourse[column.prop!], dataSourse))">
+            <CopyDocument />
+          </ElIcon>
+        </span>
+      </template>
       <template v-else-if="column.valueEnum">
         <span>
           <ElTag :type="column.valueEnum.find(item => item.value === dataSourse[column.prop!])?.tagType">
             {{ column.valueEnum.find(item => item.value === dataSourse[column.prop!])?.label || dataSourse[column.prop!] }}
           </ElTag>
           <ElIcon v-if="column.copyable" color="#409efc" class="ml-1 cursor-pointer" @click="copyToClipboard(dataSourse[column.prop!])">
-            <CopyDocument />
-          </ElIcon>
-        </span>
-      </template>
-      <template v-else-if="column.formatFn">
-        <span>
-          {{ column.formatFn(dataSourse[column.prop!], dataSourse) }}
-          <ElIcon v-if="column.copyable" color="#409efc" class="ml-1 cursor-pointer" @click="copyToClipboard(column.formatFn(dataSourse[column.prop!], dataSourse))">
             <CopyDocument />
           </ElIcon>
         </span>

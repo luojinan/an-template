@@ -26,6 +26,7 @@ const props = defineProps<{
   pagination?: any
   // pagination?: false | { pageSize: number, disabled: boolean }
   search?: any // TODO: vue3.5编译在any时产生的值会是true，而当指定boolean类型时，编译产生的值才会是false-符合直觉，问题容易出现在写any的prop类型
+  shadow?: 'hover' | 'always' | 'never'
 }>()
 // 定义自定义事件
 const emit = defineEmits<{
@@ -277,6 +278,7 @@ defineExpose({ fetchPageData, getFilterParams, clearSelect, proTableCoreRef })
     </ProForm>
   </ElCard>
   <ElCard
+    :shadow="props.shadow"
     class="protable"
     style="
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ElDivider, ElFormItem, ElIcon, ElTooltip } from 'element-plus'
+import { computed, watch } from 'vue'
 import type { ProFormColumn } from '../type'
 import { formItemComponentMap } from './components'
 import FormListFormItem from './components/FormListFormItem.vue'
-import { computed, watch } from 'vue'
 
 defineOptions({
   name: 'ProFormItem',
@@ -39,7 +39,7 @@ function initFormItem() {
   if (column.value.valueType === 'group') { return }
 
   column.value.initFn && column.value.initFn(column.value)
-  
+
   // 初始化基于 dependency 的 watch
   if (column.value.dependency && column.value.watchCallback) {
     prepareFuncs.push(() => {
@@ -49,7 +49,8 @@ function initFormItem() {
       const sources = column.value.dependency!.map((dep: string | string[]) => {
         if (Array.isArray(dep)) {
           return () => getNested(props.formData, dep) // 嵌套路径
-        } else {
+        }
+        else {
           return () => props.formData[dep] // 普通 key
         }
       })
@@ -62,13 +63,13 @@ function initFormItem() {
             formData: props.formData,
             formItems: props.formItems,
             formItem: column.value,
-        })
+          })
         },
         { immediate: true },
       )
     })
   }
-  
+
   // 初始化原有的 watch（保持向后兼容）
   if (column.value.watch && !column.value.dependency) {
     prepareFuncs.push(() => {
@@ -129,7 +130,7 @@ initFormItem()
 <template>
   <!-- formList 不用elform包裹 没有label -->
   <template v-if="column.valueType === 'formList'">
-    <FormListFormItem v-model:item-data="itemData" v-model:column="column">
+    <FormListFormItem v-if="!column.unMounted" v-model:item-data="itemData" v-model:column="column">
       <template v-for="(formListItemColumn, formIndex) in column?.columns?.filter?.(i => i.valueType === 'custom')" :key="formListItemColumn.slotName" #[formListItemColumn.slotName]="scope">
         <slot :name="formListItemColumn.slotName ?? formListItemColumn.prop" :form-data="itemData[formIndex]" v-bind="scope" :column="formListItemColumn" />
       </template>
@@ -199,7 +200,7 @@ initFormItem()
       <template v-if="typeof column.addonAfter === 'function'">
         <component :is="column.addonAfter" :close-drawer="closeDrawer" />
       </template>
-      <template v-else-if="column.addonAfter === 'string'">
+      <template v-else-if="typeof column.addonAfter === 'string'">
         <span>{{ column.addonAfter }}</span>
       </template>
     </ElFormItem>
