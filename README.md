@@ -34,6 +34,12 @@ npx degit luojinan/an-template/vue-mvp your-project-name
 npx degit luojinan/an-template/react-mvp your-project-name
 ```
 
+### 6. Tanstack Start + Shadcn Template
+
+```bash
+npx degit luojinan/an-template/tanstack-start-shadcn your-project-name
+```
+
 ## 使用方法
 
 1. 使用 degit 命令创建项目
