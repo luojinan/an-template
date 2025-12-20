@@ -37,6 +37,7 @@ export interface ValueEnum {
   value: any
   label?: string
   tagType?: 'primary' | 'success' | 'info' | 'warning' | 'danger'
+  disabled?: boolean
 }
 
 // table组件列属性(额外的属性templet,operat,slotName)
@@ -63,7 +64,11 @@ export interface ProTableColumn<T = IObject> {
   // filter值拼接符
   filterJoin?: string
   columnKey?: string
-  [key: string]: any
+  /**
+   * 显示溢出工具提示
+   * https://element-plus.org/zh-CN/component/table#%E6%98%BE%E7%A4%BA%E6%BA%A2%E5%87%BA%E5%B7%A5%E5%85%B7%E6%8F%90%E7%A4%BA%E7%9A%84%E8%A1%A8%E6%A0%BC
+   */
+  showOverflowTooltip?: boolean
 }
 
 // pagination组件属性
@@ -107,6 +112,7 @@ export type ProFormColumn<T = any> = {
   [K in keyof AttrsByValueType]: {
     // 组件类型(如input,select,radio,custom等，默认input)
     valueType?: K
+    // 控制formlist: maxLength/minLength
     // valueType对应的组件属性
     attrs?: Partial<AttrsByValueType[K]>
     /** ElFormItem的组件属性 */

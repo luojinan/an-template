@@ -64,3 +64,49 @@ export const uploadOss = (file: File, apiUrl?: string) => {
     },
   })
 }
+
+/**
+ * 判断是否oss图片链接，拼接webp转化
+ */
+
+export function setImageUrl(url?: string, size: number | string) {
+  if (!url) {
+    return url
+  }
+
+  const resize = size ? `/resize,w_${size}` : ''
+
+  // 相对路径处理
+  if (!url.startsWith('http')) {
+    return `https://mzy-assets.oss-cn-shanghai.aliyuncs.com/${url}?x-oss-process=image/format,webp${resize}`
+  }
+
+  // http开头的绝对路径处理
+  try {
+    const urlObj = new URL(url)
+    const isMzyOss = urlObj.hostname.includes('oss-cn-shanghai.aliyuncs.com')
+
+    if (isMzyOss) {
+      const ossProcess = urlObj.searchParams.get('x-oss-process')
+
+      // 检查是否已有format参数
+      if (!ossProcess || !ossProcess.includes('format')) {
+        // 如果已有x-oss-process参数，追加format
+        if (ossProcess) {
+          urlObj.searchParams.set('x-oss-process', `${ossProcess}/format,webp${resize}`)
+        }
+        else {
+          // 如果没有x-oss-process参数，新增
+          urlObj.searchParams.set('x-oss-process', `image/format,webp${resize}`)
+        }
+        return urlObj.toString()
+      }
+    }
+
+    return url
+  }
+  catch {
+    // URL解析失败，直接返回原始URL
+    return url
+  }
+}

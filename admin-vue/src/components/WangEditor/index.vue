@@ -1,11 +1,13 @@
 <script setup lang="ts">
+// TODO: 从有值切换到无值，仍显示上次的值
 import '@wangeditor-next/editor/dist/css/style.css'
 import { Editor, Toolbar } from '@wangeditor-next/editor-for-vue'
 import type { IEditorConfig, IToolbarConfig } from '@wangeditor-next/editor'
 import { onBeforeUnmount, ref, shallowRef, watch } from 'vue'
+import { ElEmpty } from 'element-plus'
 import { uploadOss } from '@/utils'
 
-const { needClear } = defineProps<{ needClear?: boolean }>()
+const { needClear, disabled } = defineProps<{ needClear?: boolean, disabled?: boolean }>()
 
 // 上传图片回调函数类型
 type InsertFnType = (_url: string, _alt: string, _href: string) => void
@@ -66,7 +68,13 @@ watch(() => needClear, (newVal) => {
 </script>
 
 <template>
-  <div class="editor-wrapper">
+  <!-- 禁用时直接渲染富文本内容 -->
+  <div v-if="disabled" class="editor-preview">
+    <div v-if="modelValue" v-html="modelValue" />
+    <ElEmpty v-else description="暂无内容" />
+  </div>
+  <!-- 编辑模式 -->
+  <div v-else class="editor-wrapper">
     <!-- 工具栏 -->
     <Toolbar
       :editor="editorRef"
@@ -88,5 +96,14 @@ watch(() => needClear, (newVal) => {
 .editor-wrapper{
   min-height: 250px;
   border: 1px solid #ebeef5;
+}
+
+.editor-preview {
+  padding: 10px;
+  line-height: 1.6;
+
+  img {
+    max-width: 100%;
+  }
 }
 </style>

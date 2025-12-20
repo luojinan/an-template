@@ -16,7 +16,7 @@ defineOptions({
 
 // ProTable 组件接收的参数
 const props = defineProps<{
-  request: (params: any) => Promise<{ records: T[], total: number } | T[]>
+  request: (params: any) => Promise<{ records: T[], total: number }>
   columns: ProTableColumn<R extends T ? R : T>[]
   rowKey?: string
   title?: string
@@ -218,13 +218,8 @@ async function fetchPageData(formData?: IObject, isRestart = false) {
     // 上一次搜索条件
     formData && (lastFormData = formData)
 
-    if (showPagination) {
-      pagination.total = data.total
-      pageData.value = data.records
-    }
-    else {
-      pageData.value = data
-    }
+    pagination.total = data.total
+    pageData.value = data.records
   }
   catch (error) {}
   loading.value = false
@@ -253,6 +248,7 @@ defineExpose({ fetchPageData, getFilterParams, clearSelect, proTableCoreRef })
 <template>
   <ElCard
     v-if="search !== false"
+    :shadow="props.shadow"
     class="mb-[10px]"
     style="
 

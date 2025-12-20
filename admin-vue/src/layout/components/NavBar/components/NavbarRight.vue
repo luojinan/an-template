@@ -3,6 +3,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { computed, ref, watch } from 'vue'
 import { useFullscreen } from '@vueuse/core'
 import { ElButton, ElIcon, ElMessage, ElMessageBox, ElPopover, ElTooltip } from 'element-plus'
+import { Share } from '@element-plus/icons-vue'
 import {
   useAppStore,
   useSettingsStore,
@@ -11,9 +12,12 @@ import {
 } from '@/store'
 import defaultSettings from '@/settings'
 import { DeviceEnum } from '@/enums/DeviceEnum'
-import { putApiV1UsersChangepassword } from '@/utils/proApi/system'
+import { getApiV1DictBytypecodeOptions, getApiV1UsersGetwxacodeunlimit, putApiV1UsersChangepassword } from '@/utils/proApi/system'
 import { ProForm } from '@/components/ProComponent'
 
+const emit = defineEmits<{
+  showSearch: []
+}>()
 const appStore = useAppStore()
 const tagsViewStore = useTagsViewStore()
 const userStore = useUserStore()
@@ -23,6 +27,13 @@ const route = useRoute()
 const router = useRouter()
 
 const isMobile = computed(() => appStore.device === DeviceEnum.MOBILE)
+
+/**
+ * 打开搜索对话框
+ */
+function openSearch() {
+  emit('showSearch')
+}
 
 const { isFullscreen, toggle } = useFullscreen()
 
@@ -60,11 +71,37 @@ async function onPasswordSubmit(data: any) {
   openResetPassword.value = false
 }
 
+const openQrcode = ref(false)
+const qrcodeFormRef = ref()
+const qrcodeImage = ref('')
+
+function onShowQrcode() {
+  openQrcode.value = true
+  qrcodeFormRef.value.resetFormData()
+}
+
+watch(() => openQrcode.value, () => {
+  if (!openQrcode.value) {
+    qrcodeImage.value = ''
+  }
+})
+
+async function onQrcodeSubmit(data: any) {
+  const res = await getApiV1UsersGetwxacodeunlimit(data)
+  qrcodeImage.value = `data: image/jpeg;base64,${res}`
+}
 </script>
 
 <template>
   <div class="flex mr-3">
     <template v-if="!isMobile">
+      <!-- 搜索 -->
+      <div class="search-input" @click="openSearch">
+        <ElIcon class="search-icon">
+          <Search />
+        </ElIcon>
+        <span class="search-placeholder">搜索页面 (Ctrl+K)</span>
+      </div>
       <!-- 全屏 -->
       <div class="setting-item" @click="toggle">
         <div :class="`i-svg:${isFullscreen ? 'fullscreen-exit' : 'fullscreen'}`" />
@@ -101,6 +138,12 @@ async function onPasswordSubmit(data: any) {
         <div class="flex-y-center rounded mb-6px py-4px cursor-pointer hover:bg-black hover:bg-opacity-10" @click="onShowResetPassword">
           <div class="i-svg:lock mx-2" /> 修改密码
         </div>
+        <div class="flex-y-center rounded mb-6px py-4px cursor-pointer hover:bg-black hover:bg-opacity-10" @click="onShowQrcode">
+          <ElIcon class="mx-2">
+            <Share />
+          </ElIcon>
+          小程序邀请码
+        </div>
         <ElButton plain class="w-full" @click="logout">
           退出登录
         </ElButton>
@@ -136,6 +179,35 @@ async function onPasswordSubmit(data: any) {
       ]"
       :on-submit="onPasswordSubmit"
     />
+
+    <ProForm
+      ref="qrcodeFormRef"
+      v-model:open="openQrcode"
+      type="drawer"
+      :drawer-props="{ title: '获取小程序邀请码' }"
+      :columns="[
+        {
+          prop: 'qRCodeUseFor',
+          label: '邀请码用途',
+          valueType: 'select',
+          initFn: async (formItem) => {
+            formItem.valueEnum = await getApiV1DictBytypecodeOptions({ typeCode: 'QRCodeUseFor' })
+          },
+          rules: [{ required: true, trigger: 'change' }],
+        },
+        {
+          prop: '',
+          label: '',
+          valueType: 'custom',
+          slotName: 'img',
+        },
+      ]"
+      :on-submit="onQrcodeSubmit"
+    >
+      <template v-if="qrcodeImage" #img>
+        <img :src="qrcodeImage" class="w-full">
+      </template>
+    </ProForm>
   </div>
 </template>
 
@@ -154,15 +226,81 @@ async function onPasswordSubmit(data: any) {
   }
 }
 
+.search-input {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 16px;
+  margin: 6px;
+  border: 1px solid var(--el-border-color);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: transparent;
+
+  &:hover {
+    background: transparent;
+    border-color: #000;
+  }
+
+  .search-placeholder {
+    margin-left: 8px;
+    font-size: 14px;
+    color: var(--el-text-color-placeholder);
+  }
+
+  .search-icon {
+    color: var(--el-text-color-secondary);
+    transition: color 0.3s;
+  }
+
+  &:hover .search-icon {
+    color: #000;
+  }
+}
+
 .layout-top,
 .layout-mix {
   .setting-item,
   .el-icon {
     color: var(--el-color-white);
   }
+
+  .search-input {
+    border-color: rgba(255, 255, 255, 0.3);
+
+    .search-placeholder {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    &:hover {
+      background: transparent;
+      border-color: #fff;
+    }
+
+    .search-icon {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    &:hover .search-icon {
+      color: #fff;
+    }
+  }
 }
 
 .dark .setting-item:hover {
   background: rgb(255 255 255 / 20%);
+}
+
+.dark .search-input:hover {
+  background: transparent;
+}
+
+.dark .search-input .search-icon {
+  color: var(--el-text-color-secondary);
+}
+
+.dark .search-input:hover .search-icon {
+  color: #000;
 }
 </style>

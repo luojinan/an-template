@@ -37,6 +37,11 @@ const formItemTool = {
 
 function initFormItem() {
   if (column.value.valueType === 'group') { return }
+  if (column.value.valueType === 'formList') {
+    column.value.columns?.forEach((config) => {
+      config.initFn && config.initFn(config)
+    })
+  }
 
   column.value.initFn && column.value.initFn(column.value)
 

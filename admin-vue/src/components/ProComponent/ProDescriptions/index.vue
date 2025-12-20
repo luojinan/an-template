@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { ElDescriptions, ElDescriptionsItem, ElIcon, ElImage, ElMessage, ElTag } from 'element-plus'
 import type { IObject, ProTableColumn } from '../type'
+import { setImageUrl } from '@/utils/index'
 
 defineOptions({
   name: 'ProDescriptions',
@@ -49,7 +50,7 @@ const copyToClipboard = async (text: string) => {
               :key="item"
             >
               <ElImage
-                :src="item"
+                :src="setImageUrl(item, column.imageWidth ?? 40)"
                 :preview-src-list="dataSourse[column.prop]"
                 :initial-index="index"
                 hide-on-click-modal
@@ -60,7 +61,7 @@ const copyToClipboard = async (text: string) => {
           </template>
           <template v-else>
             <ElImage
-              :src="dataSourse[column.prop]"
+              :src="setImageUrl(dataSourse[column.prop])"
               :preview-src-list="[dataSourse[column.prop]]"
               hide-on-click-modal
               :preview-teleported="true"

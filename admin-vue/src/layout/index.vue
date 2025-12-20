@@ -1,13 +1,20 @@
 <script setup lang="ts">
+import { computed, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { useWindowSize } from '@vueuse/core'
 import { useAppStore, usePermissionStore, useSettingsStore } from '@/store'
 import defaultSettings from '@/settings'
 import { DeviceEnum } from '@/enums/DeviceEnum'
 import { LayoutEnum } from '@/enums/LayoutEnum'
+import SearchRouteDialog from '@/components/SearchRouteDialog/index.vue'
+import { recordRouteVisit } from '@/utils/searchRoutes'
 
 const appStore = useAppStore()
 const settingsStore = useSettingsStore()
 const permissionStore = usePermissionStore()
 const width = useWindowSize().width
+
+const searchRouteDialogRef = ref<InstanceType<typeof SearchRouteDialog> | null>(null)
 
 const WIDTH_DESKTOP = 992 // 响应式布局容器固定宽度  大屏（>=1200px） 中屏（>=992px） 小屏（>=768px）
 const isMobile = computed(() => appStore.device === DeviceEnum.MOBILE)
@@ -40,10 +47,8 @@ watchEffect(() => {
   appStore.toggleDevice(
     width.value < WIDTH_DESKTOP ? DeviceEnum.MOBILE : DeviceEnum.DESKTOP,
   )
-  if (width.value >= WIDTH_DESKTOP)
-    appStore.openSideBar()
-  else
-    appStore.closeSideBar()
+  if (width.value >= WIDTH_DESKTOP) { appStore.openSideBar() }
+  else { appStore.closeSideBar() }
 })
 
 function handleOutsideClick() {
@@ -56,8 +61,12 @@ function toggleSidebar() {
 
 const route = useRoute()
 watch(route, () => {
-  if (isMobile.value && isOpenSidebar.value)
-    appStore.closeSideBar()
+  if (isMobile.value && isOpenSidebar.value) { appStore.closeSideBar() }
+
+  // 记录访问的路由
+  if (route.path) {
+    recordRouteVisit(route.path)
+  }
 })
 </script>
 
@@ -97,12 +106,15 @@ watch(route, () => {
     <!-- 左侧和顶部布局 -->
     <div v-else :class="{ hasTagsView: showTagsView }" class="main-container">
       <div :class="{ 'fixed-header': fixedHeader }">
-        <NavBar v-if="layout === 'left'" />
+        <NavBar v-if="layout === 'left'" @show-search="searchRouteDialogRef?.open()" />
         <TagsView v-if="showTagsView" />
       </div>
       <AppMain />
       <Settings v-if="defaultSettings.showSettings" />
     </div>
+
+    <!-- 路由搜索对话框 -->
+    <SearchRouteDialog ref="searchRouteDialogRef" />
   </div>
 </template>
 

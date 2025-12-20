@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { nextTick, ref } from 'vue'
 import { useResizeObserver } from '@vueuse/core'
 import { ElButton, ElIcon, ElInput, ElPopover } from 'element-plus'
 import type { PopoverProps } from 'element-plus'
+import { ProTable } from '../ProComponent'
 
 // 对象类型
 export type IObject = Record<string, any>
@@ -51,10 +52,12 @@ function onSelectChange(selection: any[]) {
   if (!isMultiple && selection.length > 1) {
     // 单选
     const item = selection[selection.length - 1]
+    selectedItems.value = [item]
     tableRef.value?.proTableCoreRef.clearSelection()
     nextTick(() => {
       tableRef.value?.proTableCoreRef.toggleRowSelection(item, true)
     })
+    return
   }
   selectedItems.value = selection
 }
@@ -76,7 +79,7 @@ const popoverContentRef = ref()
     <ElPopover
       :visible="popoverVisible"
       :width="popoverWidth"
-      popper-class="max-h-4/5 overflow-y-auto"
+      popper-class="max-h-[540px] overflow-y-auto overflow-x-hidden pt-0!"
       placement="left"
       v-bind="selectConfig.popover"
       @show="handleShow"
@@ -107,15 +110,14 @@ const popoverContentRef = ref()
       </template>
       <!-- 弹出框内容 -->
       <div ref="popoverContentRef">
-        <div class="feedback">
-          <ElButton size="small" @click="popoverVisible = false">
-            关 闭
-          </ElButton>
+        <div class="close-btn">
+          <ElButton icon="close" size="small" @click="popoverVisible = false" />
         </div>
         <ProTable
           ref="tableRef"
           v-bind="$attrs"
           selection
+          shadow="never"
           @selection-change="onSelectChange"
         />
       </div>
@@ -129,10 +131,15 @@ const popoverContentRef = ref()
   cursor: pointer;
 }
 
-.feedback {
+.close-btn {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   display: flex;
   justify-content: flex-end;
-  margin-top: 6px;
+  padding: 8px 0;
+  cursor: pointer;
+  background: var(--el-bg-color);
 }
 // 隐藏全选按钮
 .radio :deep(.el-table__header th.el-table__cell:nth-child(1) .el-checkbox) {

@@ -3,6 +3,7 @@
 import type {
   ElIcon,
   UploadFile,
+  UploadInstance,
   UploadProps,
   UploadRawFile,
   UploadRequestOptions,
@@ -11,6 +12,7 @@ import type {
 import { ref, watch } from 'vue'
 import { ElImageViewer, ElMessage, ElUpload } from 'element-plus'
 import { uploadOss } from '@/utils'
+import ImageCropper from './ImageCropper.vue'
 
 const props = defineProps({
   /**
@@ -34,14 +36,46 @@ const props = defineProps({
     type: String as PropType<'ossUrl' | 'base64'>,
     default: 'ossUrl',
   },
+  /**
+   * 是否启用裁剪
+   */
+  crop: {
+    type: Boolean,
+    default: false,
+  },
+  /**
+   * 裁剪比例 [宽, 高]
+   */
+  cropAspectRatio: {
+    type: Array as PropType<[number, number]>,
+    default: () => [1, 1],
+  },
+  /**
+   * 裁剪输出格式
+   */
+  cropOutputType: {
+    type: String as PropType<'jpeg' | 'png' | 'webp'>,
+    default: 'jpeg',
+  },
+  /**
+   * 裁剪输出质量 0.1 - 1
+   */
+  cropOutputQuality: {
+    type: Number,
+    default: 1,
+  },
 })
 
 const emit = defineEmits(['update:modelValue', 'onChange'])
 
+const uploadRef = ref<UploadInstance>()
 const viewVisible = ref(false)
 const initialIndex = ref(0)
-
 const viewFileList = ref([] as string[])
+
+// 裁剪相关状态
+const cropperVisible = ref(false)
+const pendingCropFile = ref<File | null>(null)
 
 const fileList = ref([] as UploadUserFile[])
 watch(
@@ -112,6 +146,7 @@ async function handleUpload(options: UploadRequestOptions): Promise<any> {
     file => file.uid == (options.file as any).uid,
   )
   fileList.value[fileIndex].url = data
+  fileList.value[fileIndex].status = 'success'
 
   emit(
     'update:modelValue',
@@ -161,7 +196,41 @@ function handleBeforeUpload(file: UploadRawFile) {
     ElMessage.warning('上传文件不能大于10M')
     return false
   }
+
+  // 如果启用裁剪且是图片类型
+  if (props.crop && file.type.startsWith('image/')) {
+    pendingCropFile.value = file
+    cropperVisible.value = true
+    return false // 阻止默认上传，等待裁剪完成
+  }
+
   return true
+}
+
+/**
+ * 裁剪成功回调
+ */
+function handleCropSuccess(croppedFile: File) {
+  cropperVisible.value = false
+  pendingCropFile.value = null
+
+  // 手动将裁剪后的文件添加到上传队列
+  // 创建一个带有 uid 的文件对象
+  const rawFile = croppedFile as UploadRawFile
+  rawFile.uid = Date.now()
+
+  // 先添加文件到列表
+  uploadRef.value?.handleStart(rawFile)
+  // 再触发上传（handleStart 只是添加文件，不会自动上传）
+  handleUpload({ file: rawFile } as UploadRequestOptions)
+}
+
+/**
+ * 裁剪取消回调
+ */
+function handleCropCancel() {
+  cropperVisible.value = false
+  pendingCropFile.value = null
 }
 
 /**
@@ -187,6 +256,7 @@ defineExpose({ fileList })
 
 <template>
   <ElUpload
+    ref="uploadRef"
     v-model:file-list="fileList"
     :accept="props.accept"
     list-type="picture-card"
@@ -198,7 +268,7 @@ defineExpose({ fileList })
     :http-request="handleUpload"
     :on-remove="handleRemove"
     :on-preview="previewImg"
-  >
+    >
     <i-ep-plus />
     <template #file="{ file }">
       <div v-if="file.url.includes('.mp4')">
@@ -226,6 +296,17 @@ defineExpose({ fileList })
     :url-list="viewFileList"
     hide-on-click-modal
     @close="closePreview"
+  />
+
+  <!-- 图片裁剪弹窗 -->
+  <ImageCropper
+    v-model:visible="cropperVisible"
+    :image-file="pendingCropFile"
+    :aspect-ratio="cropAspectRatio"
+    :output-type="cropOutputType"
+    :output-quality="cropOutputQuality"
+    @crop-success="handleCropSuccess"
+    @cancel="handleCropCancel"
   />
 </template>
 

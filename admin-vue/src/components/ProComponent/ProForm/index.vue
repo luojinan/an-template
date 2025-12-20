@@ -13,7 +13,7 @@ defineOptions({
 const props = defineProps<{
   type?: 'drawer'
   columns: ProFormColumn<T>[]
-  formProps?: any
+  formProps?: InstanceType<typeof ElForm>['$props']
   drawerProps?: Partial<DrawerProps>
   unMountedValueType?: 'string' | 'undefined'
   onSubmit?: (formdata: T) => Promise<void>

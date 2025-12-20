@@ -172,13 +172,18 @@ function generateRequestFunctions(apiData, allTypes, docBaseUrl) {
       let responseType = 'any'
       const content = method.responses['200']?.content
       if (content) {
-        if (content['*/*']?.schema?.$ref) { // 引用类型定义
-          responseType = content['*/*'].schema.$ref.replace(/^#\/components\/schemas\//, '')
-          // 当响应数据结构是{code,data,msg}时取data
-          const typeJson = allTypes[responseType]
-          if (typeJson && typeJson.type === 'object' && JSON.stringify(Object.keys(typeJson.properties)) === JSON.stringify(['code', 'data', 'msg'])) { responseType = typeJson.properties.data?.$ref?.replace(/^#\/components\/schemas\//, '') || convertType(typeJson.properties.data.type, typeJson.properties.data.items ? typeJson.properties.data.items.$ref?.replace(/^#\/components\/schemas\//, '') || typeJson.properties.data.items.type : 'any') }
+        const schema = content['*/*']?.schema || {}
+        if (schema.$ref) { // 引用类型定义
+          responseType = schema.$ref.replace(/^#\/components\/schemas\//, '')
         }
-        // else { console.log(pathKey, content) } // TODO: 处理不是引用而是直接定义的类型 同上object todo
+        else if (schema.type === 'array' && schema.items?.$ref) {
+          responseType = `${schema.items?.$ref.replace(/^#\/components\/schemas\//, '')}[]`
+        }
+        // 当响应数据结构是{code,data,msg}时取data
+        const typeJson = allTypes[responseType]
+        if (typeJson && typeJson.type === 'object' && JSON.stringify(Object.keys(typeJson.properties)) === JSON.stringify(['code', 'data', 'msg'])) {
+          responseType = typeJson.properties.data?.$ref?.replace(/^#\/components\/schemas\//, '') || convertType(typeJson.properties.data.type, typeJson.properties.data.items ? typeJson.properties.data.items.$ref?.replace(/^#\/components\/schemas\//, '') || typeJson.properties.data.items.type : 'any')
+        }
       }
       importTypeList.add(responseType.replace('[]', ''))
 

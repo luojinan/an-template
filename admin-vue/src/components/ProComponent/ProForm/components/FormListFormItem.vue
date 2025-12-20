@@ -38,7 +38,7 @@ watch(
 )
 
 watch(
-  [() => templateColumns.value],
+  [() => templateColumns.value, () => itemData.value],
   ([newTemplateVal]) => {
     // 强制重新渲染整个组件
     componentKey.value++
@@ -70,7 +70,7 @@ function addFormListItem() {
           {{ column.label }}
         </span>
         <ElButton
-          :icon="Delete" circle @click="removeFormList(index)"
+          v-if="!column.attrs?.minLength || (column.attrs?.minLength && realColumns.length < column.attrs?.minLength)" :icon="Delete" circle @click="removeFormList(index)"
         />
       </div>
       <div v-if="itemData.length === realColumns.length" class="flex flex-wrap gap-x-[6px]">
@@ -79,7 +79,7 @@ function addFormListItem() {
             v-model:item-data="itemData[index][formListItemColumn.prop]"
             v-model:column="formListItem[formIndex]"
             :form-item-prop="`${column.prop}.${index}.`"
-            :form-props="attrs"
+            :form-props="formListItemColumn.attrs"
             :form-data="itemData[index]"
             :form-items="formListItem"
           >
@@ -91,7 +91,7 @@ function addFormListItem() {
       </div>
     </div>
 
-    <ElButton plain type="success" style="width:80%;margin: auto;" @click="addFormListItem">
+    <ElButton v-if="!column.attrs?.maxLength || (column.attrs?.maxLength && realColumns.length < column.attrs?.maxLength)" plain type="success" style="width:80%;margin: auto;" @click="addFormListItem">
       新增{{ column.label }}
     </ElButton>
   </div>

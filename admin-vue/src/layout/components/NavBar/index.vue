@@ -1,10 +1,16 @@
+<script setup lang="ts">
+defineEmits<{
+  showSearch: []
+}>()
+</script>
+
 <template>
   <!-- 顶部导航栏 -->
   <div class="navbar-container">
     <!-- 导航栏左侧 -->
     <NavbarLeft />
     <!-- 导航栏右侧 -->
-    <NavbarRight />
+    <NavbarRight @show-search="$emit('showSearch')" />
   </div>
 </template>
 
