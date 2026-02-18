@@ -29,7 +29,7 @@ import {
   UserIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import * as React from "react";
+import { useState } from "react";
 import { Example, ExampleWrapper } from "@/components/example";
 import {
   AlertDialog,
@@ -171,12 +171,12 @@ const roleItems = [
 ];
 
 function FormExample() {
-  const [notifications, setNotifications] = React.useState({
+  const [notifications, setNotifications] = useState({
     email: true,
     sms: false,
     push: true,
   });
-  const [theme, setTheme] = React.useState("light");
+  const [theme, setTheme] = useState("light");
 
   return (
     <Example title="Form">

@@ -75,3 +75,4 @@ pnpm lint          # Run ESLint
 - shadcn/ui components use Base UI primitives, not Radix (different API from standard shadcn)
 - Tailwind CSS v4 uses native CSS variables instead of JIT compilation
 - DevTools are enabled in development (bottom-right corner) with Router panel
+- 当箭头函数需要忽略返回值（如 Promise）时，使用花括号写法 `() => { fn() }` 而非 `void` 操作符 `() => void fn()`

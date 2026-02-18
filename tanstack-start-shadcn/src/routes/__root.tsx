@@ -1,10 +1,30 @@
 import { TanStackDevtools } from "@tanstack/react-devtools";
-import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import {
+  createRootRouteWithContext,
+  HeadContent,
+  Outlet,
+  Scripts,
+  useMatches,
+} from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
+import { BackToHome } from "@/components/back-to-home";
+import { ThemeToggle } from "@/components/theme-toggle";
+
+import type { AuthUser } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth";
 import appCss from "../styles.css?url";
 
-export const Route = createRootRoute({
+interface RouterContext {
+  auth: AuthUser;
+}
+
+export const Route = createRootRouteWithContext<RouterContext>()({
+  component: RootLayout,
+  beforeLoad: async () => {
+    const auth = await getAuthUser();
+    return { auth };
+  },
   head: () => ({
     meta: [
       {
@@ -29,6 +49,24 @@ export const Route = createRootRoute({
   shellComponent: RootDocument,
 });
 
+function RootLayout() {
+  const isIndex = useMatches({
+    select: (matches) => matches[matches.length - 1]?.fullPath === "/",
+  });
+
+  return (
+    <>
+      <header className="flex w-full items-center px-4 pt-3 sm:px-6">
+        {!isIndex && <BackToHome />}
+        <div className="ml-auto">
+          <ThemeToggle />
+        </div>
+      </header>
+      <Outlet />
+    </>
+  );
+}
+
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -36,6 +74,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||(!t&&matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.classList.add("dark")}catch(e){}})()`,
+          }}
+        />
         {children}
         <TanStackDevtools
           config={{

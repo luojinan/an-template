@@ -188,3 +188,92 @@ export function ButtonDemo() {
 而shadcn则基于tailwindcss给baseui提供样式，编写一套带着样式，以及额外状态的组件源码，由用户通过pnpm下载到自己的业务代码中，此时为正常的基础组件（基础组件过于基础一般都要继承来额外开发 或者直接拉第三方继承shadcn基础组件二次开发过的组件源码...）
 
 业务代码可以再继承一次添加业务状态和逻辑，变为业务组件
+
+## 路由登录拦截
+
+基于 TanStack Router 的 `beforeLoad` 钩子实现，分为两步：
+
+### 1. 根路由获取认证状态
+
+`src/routes/__root.tsx`:
+
+```ts
+interface RouterContext {
+  auth: AuthUser;
+}
+
+export const Route = createRootRouteWithContext<RouterContext>()({
+  beforeLoad: async () => {
+    const auth = await getAuthUser();  // 从 Supabase 获取用户信息
+    return { auth };  // 存入路由 context
+  },
+  // ...
+});
+```
+
+根路由的 `beforeLoad` **只负责获取认证状态并存入 context**，本身不做拦截。
+
+### 2. 需要保护的路由检查并拦截
+
+`src/routes/supabase.tsx`:
+
+```ts
+export const Route = createFileRoute("/supabase")({
+  beforeLoad: ({ context, location }) => {
+    if (!context.auth) {
+      throw redirect({
+        to: "/login",
+        search: { redirect: location.href },  // 携带原始路径，登录后跳回
+      });
+    }
+  },
+  component: RouteComponent,
+});
+```
+
+子路由在 `beforeLoad` 中检查 `context.auth`，未登录则 `throw redirect` 跳转到登录页。
+
+### 设计原理
+
+| 步骤 | 位置 | 作用 |
+|------|------|------|
+| 1 | `__root.tsx` beforeLoad | 获取用户信息，存入 `context.auth` |
+| 2 | 子路由 beforeLoad | 检查 `context.auth`，决定是否重定向 |
+
+- **灵活**：不是所有页面都需要登录（如首页、登录页）
+- **按需保护**：每个路由自行决定是否拦截
+- `throw redirect` 会中断路由加载，触发跳转
+
+## 主题切换
+
+这个问题涉及两个方案的对比：在 <body> 开头放同步内联 `<script>` vs 在 React 组件中（如 `useEffect`）处理初始主题。
+
+为什么用内联 `<script>`
+
+核心原因：它在浏览器解析 `HTML` 时同步执行，早于任何 CSS 渲染和 React hydration。
+
+SSR 框架（TanStack Start）的页面加载流程是：
+
+```
+服务器返回 HTML → 浏览器解析 HTML → 首次绘制（paint）→ 加载 JS → React hydration → useEffect 执行
+```
+
+如果在 `useEffect` 中才添加 `.dark` 类，用户会先看到亮色主题闪一下再切换到暗色——这就是 `FOUC（Flash of Unstyled Content）`。而内联 `<script>`
+在首次绘制之前就执行了，用户不会感知到切换。
+
+优缺点
+
+优点：
+- 彻底消除 `FOUC`，用户体验最好
+- 不依赖 `React` 生命周期，即使 JS bundle 加载慢也不会闪烁
+- 脚本极小（~200 字节），对性能几乎无影响
+
+缺点：
+- 必须用 `dangerouslySetInnerHTML`，触发 `lint` 警告，可读性差
+- 脚本内容是字符串，没有类型检查和编辑器支持
+- 与 React 的声明式模型不一致——主题状态分散在两个地方（内联脚本做初始化，React 组件做后续交互）
+
+有没有替代方案
+
+如果不用内联 `<script>`，另一个常见做法是利用 `cookie` 在服务端渲染时就输出正确的类名。TanStack Start 支持服务端逻辑，可以在 `beforeLoad` 中读 `cookie`，然后直接在 `<html>` 上加
+`className="dark"`。这样完全不需要内联脚本，但会增加服务端逻辑复杂度，且首次访问（无 cookie）仍需回退到系统偏好检测。
